@@ -1,0 +1,31 @@
+Scribed by Harley Ewert
+
+Upload project board by next week - revisit lab 3
+Update github
+Possible solution 
+	Two groups
+		Ui 
+		And backend
+Every week release notes for project meeting 
+
+Scribe is responsible for creating table 
+	Names 
+	Number of commits that week
+Each person will go over the commit that they think is significant
+Go over grading rubric so we know what to expect
+Use uber api as well as weather
+Plan for next week
+	Login for users
+	Database (on docker)
+	Friends list
+If meeting time don’t work use office hours
+Send email for good time slots
+
+Create branches for user stories
+Before meeting merge branches to main 
+
+Update meeting notes in milestone 
+	Team meetings 
+	Meetings with TA
+
+Discord Call for team meeting discussing task division
