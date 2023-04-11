@@ -18,15 +18,17 @@ Frontend crew:
 	Sarah, Oscar, Andrey
 
 Things to do for this week
-	Frontend
-	-Login page and Registration
-		Messages for errors
-	-Friends list dropdown
+Frontend
+	-Login Page
+	-Registration Page
+	-Profile Page
 -Partials 
 		Nav bar
 		Footer
+		-Login page and Registration
+			Messages for errors
 Backend
-	-Create.sql
+	-Create.sql login and freinds databases. 
 	-Docker-compose.yaml and .env
 	-Er diagram
 	-Login api endpoints
