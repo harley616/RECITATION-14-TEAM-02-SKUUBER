@@ -32,4 +32,5 @@ Backend
 	-Docker-compose.yaml and .env
 	-Er diagram
 	-Login api endpoints
+	-Registration api endpoints
 	-Add friend endpoint
