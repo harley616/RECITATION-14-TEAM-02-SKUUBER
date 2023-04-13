@@ -1,0 +1,25 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+  <div class="container" >
+    <h1>Welcome back to Skuuber! Log in here.</h1>
+    
+    <form action="\login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" />
+
+        <input type="submit" value="Login" />
+         
+        <div></div>
+
+        <p>Don't have an account? <a href="/register">Register here</a></p>
+
+    </form>
+  </div>
+</main>
+
+<%- include ('../partials/footer') %>
