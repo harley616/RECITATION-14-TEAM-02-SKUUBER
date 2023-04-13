@@ -1,3 +1,5 @@
+-----------------------------------------------------------------------------------------------
+Date: 4/11
 Scribed by Harley Ewert
 
 Upload project board by next week - revisit lab 3
@@ -29,3 +31,4 @@ Update meeting notes in milestone
 	Meetings with TA
 
 Discord Call for team meeting discussing task division
+-----------------------------------------------------------------------------------------------
