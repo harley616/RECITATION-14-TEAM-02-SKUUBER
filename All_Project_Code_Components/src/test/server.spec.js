@@ -7,22 +7,23 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 chai.should();
 chai.use(chaiHttp);
-const { assert, expect } = chai;
+const {assert, expect} = chai;
 
 describe('Server!', () => {
-    // Sample test case given to test / endpoint.
-    it('Returns the default welcome message', done => {
-        chai
-            .request(server)
-            .get('/welcome')
-            .end((err, res) => {
-                expect(res).to.have.status(200);
-                expect(res.body.status).to.equals('success');
-                assert.strictEqual(res.body.message, 'Welcome!');
-                done();
-            });
-    });
+  // Sample test case given to test / endpoint.
+  it('Returns the default welcome message', done => {
+    chai
+      .request(server)
+      .get('/welcome')
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body.status).to.equals('success');
+        assert.strictEqual(res.body.message, 'Welcome!');
+        done();
+      });
+  });
 
-    // ===========================================================================
-    // TO-DO: Part A Login unit test case
+  // ===========================================================================
+  // TO-DO: Part A Login unit test case
+
 });

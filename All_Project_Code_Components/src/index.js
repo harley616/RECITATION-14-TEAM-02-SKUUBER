@@ -1,6 +1,7 @@
 // *****************************************************
 // <!-- Section 1 : Import Dependencies -->
-// ***********************************+******************
+// *****************************************************
+
 
 const express = require('express'); // To build an application server or API
 const app = express();
@@ -8,11 +9,12 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcrypt'); //  To hash passwords
-const axios = require('axios'); // To make HTTP requests from our server. We'll learn more about it in Part B.
+
 
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
+
 
 // database configuration
 const dbConfig = {
@@ -34,6 +36,13 @@ db.connect()
   .catch(error => {
     console.log('ERROR:', error.message || error);
   });
+
+
+
+app.get('/welcome', (req, res) => {
+    res.json({status: 'success', message: 'Welcome!'});
+  });
+
 
 // *****************************************************
 // <!-- Section 3 : App Settings -->
@@ -57,9 +66,7 @@ app.use(
   })
 );
 
-// *****************************************************
-// <!-- Section 4 : API Routes -->
-// *****************************************************
+
 
 // TODO - Include your API routes here
 
@@ -147,67 +154,12 @@ app.post('/login', async (req, res) => {
   }
 });
 
-//--------------------------------------------- D I S C O V E R ---------------------------------------------------------//
-
-app.get('/discover', async (req, res) => {
-
-    try {
-
-    const url = `https://app.ticketmaster.com/discovery/v2/events.json`;
-    const response = await axios.get(url, {params: {apikey: process.env.API_KEY, keyword: 'Sammy Rae', size: 10,}});
-  
-    const data = response.data._embedded.events;
-    console.log(response.data._embedded.events);
-    res.render('pages/discover', { results: data });
-
-    }catch (error){
-      console.error(error);
-      res.render('pages/discover', { results: [], message: 'Failed to fetch results from API' });
-    }
-
-});
-
-axios({
-    url: `https://app.ticketmaster.com/discovery/v2/events.json`,
-    method: 'GET',
-    dataType: 'json',
-    headers: {
-      'Accept-Encoding': 'application/json',
-    },
-    params: {
-      apikey: process.env.API_KEY,
-      keyword: 'Sammy Rae', 
-      size: 1,
-    },
-})
-
-// Authentication Middleware.
-const auth = (req, res, next) => {
-  if (!req.session.user) {
-    // Default to login page.
-    return res.redirect('/login');
-  }
-  next();
-};
-
-// Authentication Required
-app.use(auth);
-
-//--------------------------------------------- L O G O U T ---------------------------------------------------------//
-
-app.get("/logout", (req, res) => {
-  req.session.destroy();
-  res.render("pages/login");
-});
-
-
-
-
 
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
-app.listen(3000);
+
+module.exports = app.listen(3000);
 console.log('Server is listening on port 3000');
