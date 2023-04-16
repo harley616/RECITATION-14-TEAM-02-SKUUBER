@@ -28,3 +28,4 @@ services:
 # be extra sure you've made a stable backup somewhere.
 volumes:
   lab-skuuber:
+
