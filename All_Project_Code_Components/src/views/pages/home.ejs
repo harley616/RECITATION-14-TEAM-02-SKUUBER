@@ -2,9 +2,30 @@
 <%- include ('../partials/menu') %>
 
 <main>
-  <div class="container">
-    <h5>Hi......</h5>
-  </div>
+    <div class="container">
+        <h1 class="text-center">Home</h1>
+        <p>Welcome, <%= username %>!</p>
+        <h3>Your Rides:</h3>
+        <ul>
+            <% personalRides.forEach(function(ride) { %>
+                <li><%= ride %></li>
+            <% }); %>
+        </ul>
+        <h3>Joined Rides:</h3>
+        <ul>
+            <% joinedRides.forEach(function(ride) { %>
+                <li><%= ride %></li>
+            <% }); %>
+        </ul>
+        <h3>Friend Requests:</h3>
+        <ul>
+            <% friendRequests.forEach(function(request) { %>
+                <li><%= request %></li>
+            <% }); %>
+        </ul>
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
 </main>
+
 
 <%- include ('../partials/footer') %>

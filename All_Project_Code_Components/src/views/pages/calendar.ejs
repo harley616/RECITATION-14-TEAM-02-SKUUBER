@@ -1,0 +1,41 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rideshare Calendar</title>
+</head>
+<body>
+  <h1>Rideshare Calendar</h1>
+  <table>
+    <tr>
+      <th>Sunday</th>
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+    </tr>
+    <% for (let i = 0; i < calendarData.length; i += 7) { %>
+      <tr>
+        <% for (let j = i; j < i + 7; j++) { %>
+          <td>
+            <div><%= calendarData[j].day %></div>
+            <% calendarData[j].rides.forEach(ride => { %>
+              <div>
+                <strong><%= ride.pickup_time %></strong> - <%= ride.from %> to <%= ride.to %>
+              </div>
+            <% }) %>
+          </td>
+        <% } %>
+      </tr>
+    <% } %>
+  </table>
+</body>
+</html>
+
+<%- include ('../partials/footer') %>
