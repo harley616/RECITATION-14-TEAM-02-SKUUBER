@@ -153,6 +153,68 @@ app.post('/login', async (req, res) => {
      await res.redirect('/login');
   }
 });
+//--------------------------------------------Add Freind-------------------------------------------------
+
+// Add Friend
+app.post("/addFriend", (req, res) => {
+  const query = "INSERT INTO user_friends (username, friend_username) VALUES ($1, $2)";
+  const values = [req.session.username, req.body.friendUserName];
+  db.any(query, values)
+    .then(function () {
+      console.log("Successfully added friend!");
+      res.redirect("/profile");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/profile");
+    });
+});
+//Add Freind to request Queue
+app.post("/addFriendRequest", (req, res) => {
+  const query = "INSERT INTO friend_add_queue (username, friend_username) VALUES ($1, $2)";
+  const values = [req.session.username, req.body.friendUserName];
+  db.any(query, values)
+    .then(function () {
+      console.log("Successfully added friend request!");
+      res.redirect("/profile");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/profile");
+    });
+});
+//Friends queue accept or remove
+app.post("/acceptFriend", (req, res) => {
+  const add_friend_query = "INSERT INTO user_friends (username, friend_username) SELECT $1, $2 WHERE EXISTS (SELECT 1 FROM friend_add_queue WHERE username = $2 AND friend_username = $1);";
+  const delete_friend_query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
+  const values = [req.session.username, req.body.friend_username];
+  db.task('get-everything', task => {
+    return task.batch([task.any(add_friend_query), task.any(delete_friend_query)]);
+  })
+    .then(function () {
+      console.log("Successfully added friend!");
+      res.redirect("/profile");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/profile");
+    });
+});
+app.delete("/declineFriendRequest", (req, res) => {
+  const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
+  const values = [req.session.username, req.body.friend_username];
+  db.any(query, values)
+    .then(function () {
+      console.log("Successfully deleted friend request from queue!");
+      res.redirect("/profile");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
+
+
 
 
 
