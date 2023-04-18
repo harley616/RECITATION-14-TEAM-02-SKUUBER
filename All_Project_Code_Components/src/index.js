@@ -118,7 +118,9 @@ app.post('/register', async (req, res) => {
 app.get('/login', (req, res) => {
    res.render('pages/login')
 });
-
+app.get('/home', (req, res) => {
+  res.render('pages/home')
+});
 // Login
 app.post('/login', async (req, res) => {
   console.log('username: ', req.body.username);
@@ -157,47 +159,50 @@ app.post('/login', async (req, res) => {
 
 // Add Friend
 app.post("/addFriend", (req, res) => {
-  const query = "INSERT INTO user_friends (username, friend_username) VALUES ($1, $2)";
+  const query1 = "INSERT INTO user_friends (username, friend_username) VALUES ($1, $2)";
+  const query2 = "INSERT INTO user_friends (username, friend_username) VALUES ($2, $1)";
   const values = [req.session.username, req.body.friendUserName];
-  db.any(query, values)
+  db.task('get-everything', task => {
+    return task.batch([task.any(query1,[values]), task.any(query2,[values])]);
+  })
     .then(function () {
       console.log("Successfully added friend!");
-      res.redirect("/profile");
+      res.redirect("/home");
     })
     .catch(function (err) {
       console.log(err);
-      res.redirect("/profile");
+      res.redirect("/home");
     });
 });
 //Add Freind to request Queue
 app.post("/addFriendRequest", (req, res) => {
   const query = "INSERT INTO friend_add_queue (username, friend_username) VALUES ($1, $2)";
-  const values = [req.session.username, req.body.friendUserName];
+  const values = [req.session.username, req.body.friend_username];
   db.any(query, values)
     .then(function () {
       console.log("Successfully added friend request!");
-      res.redirect("/profile");
+      res.redirect("/home");
     })
     .catch(function (err) {
       console.log(err);
-      res.redirect("/profile");
+      res.redirect("/home");
     });
 });
 //Friends queue accept or remove
-app.post("/acceptFriend", (req, res) => {
-  const add_friend_query = "INSERT INTO user_friends (username, friend_username) SELECT $1, $2 WHERE EXISTS (SELECT 1 FROM friend_add_queue WHERE username = $2 AND friend_username = $1);";
+app.delete("/acceptFriend", (req, res) => {
+  
   const delete_friend_query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
   const values = [req.session.username, req.body.friend_username];
   db.task('get-everything', task => {
-    return task.batch([task.any(add_friend_query), task.any(delete_friend_query)]);
+    return task.batch(task.any(delete_friend_query,[values]));
   })
     .then(function () {
-      console.log("Successfully added friend!");
-      res.redirect("/profile");
+      console.log("removed from friend Queue");
+      res.redirect("/addFriend");
     })
     .catch(function (err) {
       console.log(err);
-      res.redirect("/profile");
+      res.redirect("/home");
     });
 });
 app.delete("/declineFriendRequest", (req, res) => {
@@ -206,15 +211,82 @@ app.delete("/declineFriendRequest", (req, res) => {
   db.any(query, values)
     .then(function () {
       console.log("Successfully deleted friend request from queue!");
-      res.redirect("/profile");
+      res.redirect("/home");
     })
     .catch(function (err) {
       console.log(err);
       res.sendStatus(500);
     });
 });
+// Get request for listing friends or friend request
+app.get('/friendList', function (req, res) {
+  // Fetch query parameters from the request object
+  var username = req.session.username;
+  
 
+  // Multiple queries using templated strings
+  
+  var friend_request = `select * from user_friends where username=$1`;
 
+  // use task to execute multiple queries
+  db.task('get-everything', task => {
+    return task.batch([task.any(friend_request, [username])]);
+  })
+    // if query execution succeeds
+    // query results can be obtained
+    // as shown below
+    .then(data => {
+      res.status(200).json({
+        Friends: data[0],
+        
+      });
+    })
+    // if query execution fails
+    // send error message
+    .catch(err => {
+      console.log('Uh Oh spaghettio');
+      console.log(err);
+      res.status('400').json({
+        current_user: '',
+        city_users: '',
+        error: err,
+      });
+    });
+});
+app.get('/friendList', function (req, res) {
+  // Fetch query parameters from the request object
+  var username = req.session.username;
+  
+
+  // Multiple queries using templated strings
+  
+  var friend_add_queue = `select * from friend_add_queue where username=$1`;
+
+  // use task to execute multiple queries
+  db.task('get-everything', task => {
+    return task.batch([task.any(friend_add_queue, [username])]);
+  })
+    // if query execution succeeds
+    // query results can be obtained
+    // as shown below
+    .then(data => {
+      res.status(200).json({
+        FriendReq: data[0],
+        
+      });
+    })
+    // if query execution fails
+    // send error message
+    .catch(err => {
+      console.log('Uh Oh spaghettio');
+      console.log(err);
+      res.status('400').json({
+        current_user: '',
+        city_users: '',
+        error: err,
+      });
+    });
+});
 
 
 
@@ -223,5 +295,5 @@ app.delete("/declineFriendRequest", (req, res) => {
 // *****************************************************
 // starting the server and keeping the connection open to listen for more requests
 
-module.exports = app.listen(3000);
+app.listen(3000);
 console.log('Server is listening on port 3000');
