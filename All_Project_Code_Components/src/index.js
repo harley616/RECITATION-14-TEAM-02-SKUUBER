@@ -39,9 +39,6 @@ db.connect()
 
 
 
-app.get('/welcome', (req, res) => {
-    res.json({status: 'success', message: 'Welcome!'});
-  });
 
 
 // *****************************************************
@@ -72,6 +69,10 @@ app.use(
 
 app.get('/', (req, res) => {
   res.render('pages/login')
+});
+
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
 });
 
 //--------------------------------------------- R E G I S T E R ---------------------------------------------------------//
@@ -123,6 +124,7 @@ app.get('/login', (req, res) => {
 app.post('/login', async (req, res) => {
   console.log('username: ', req.body.username);
   console.log('password: ', req.body.password);
+  //console.log('hashed password: ',  await bcrypt.hash(req.body.password, 10));
   const username= req.body.username;
   try {
   const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);  //Checking if username exists in the table
