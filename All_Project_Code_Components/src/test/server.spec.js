@@ -26,8 +26,8 @@ describe('Server!', () => {
   // ===========================================================================
   // TO-DO: Part A Login unit test case
 
-  //Positive cases
-  it('Negative : /login case where Username length is 0', done => {
+  //Negative cases
+  it('Negative : /login case where neighter username nor passwords exist in the table', done => {
     chai
       .request(server)
       .post('/login')
@@ -39,4 +39,28 @@ describe('Server!', () => {
       });
   });
 
+  it('Negative : /login case where username is in the table, but the password is not', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'shadow', password: ''})
+      .redirects(0)
+      .end((err, res) => {
+        res.should.redirectTo('/login');
+        done();
+      });
+  });
+
+  // Positive test case, where both username and password are in the table
+  it('Positive : /login is successful', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: 'shadow', password: 'toor'})
+      .redirects(0)
+      .end((err, res) => {
+        res.should.redirectTo('/home');
+        done();
+      });
+  });
 });
