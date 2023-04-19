@@ -1,18 +1,18 @@
 <%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
+
 
 <main>
-  <div class="container" >
+  <div class="container-fluid bg-light" >
     <h1>Welcome back to Skuuber! Log in here.</h1>
     
-    <form action="\login" method="POST">
-        <label for="username">Username:</label>
+    <form action="\login" method="POST" class="row">
+        <label for="username" class="col-md">Username:</label>
         <input type="text" id="username" name="username" />
 
-        <label for="password">Password:</label>
+        <label for="password" class="col-md">Password:</label>
         <input type="password" id="password" name="password" />
 
-        <input type="submit" value="Login" />
+        <input type="submit" class="col-md" value="Login" />
          
         <div></div>
 
