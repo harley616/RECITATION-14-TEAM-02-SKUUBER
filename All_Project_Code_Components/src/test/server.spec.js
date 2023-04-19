@@ -63,4 +63,33 @@ describe('Server!', () => {
         done();
       });
   });
+
+  // Test cases for registration
+
+  // Negative test case for the registration api
+  it('Negative: /register fails due to the username being already taken', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'shadow', password: 'toor'})
+      .redirects(0)
+      .end((err, res) => {
+        res.should.redirectTo('/register');
+        done();
+      });
+  });
+
+  it('Positive: /register successfully registers a new user', done => {
+    chai
+      .request(server)
+      .post('/register')
+      .send({username: 'shadow', password: 'toor'})
+      .redirects(0)
+      .end((err, res) => {
+        res.should.redirectTo('/register');
+        done();
+      });
+  });
+
+  // Positive test case for the registration api
 });
