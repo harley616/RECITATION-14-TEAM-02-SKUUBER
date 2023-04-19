@@ -27,3 +27,11 @@ Ryan Foley,		    rfoley0917,			ryfo6416@colorado.edu
 
 Artem Yatsenko,	    artem9k,			    arya4169@colorado.edu 
 
+# ---------------------------------------------------------------- #
+To Build the Project:
+1: Go to the /src directory
+2: Run the command "docker compose up" to start the server (Command does not include the double quotes)
+3: Server should now be started. 
+4: To stop the server run "docker compose down -v"
+# ---------------------------------------------------------------- #
+
