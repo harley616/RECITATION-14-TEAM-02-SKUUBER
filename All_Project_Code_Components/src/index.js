@@ -39,9 +39,6 @@ db.connect()
 
 
 
-app.get('/welcome', (req, res) => {
-    res.json({status: 'success', message: 'Welcome!'});
-  });
 
 
 // *****************************************************
@@ -72,6 +69,10 @@ app.use(
 
 app.get('/', (req, res) => {
   res.render('pages/login')
+});
+
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
 });
 
 //--------------------------------------------- R E G I S T E R ---------------------------------------------------------//

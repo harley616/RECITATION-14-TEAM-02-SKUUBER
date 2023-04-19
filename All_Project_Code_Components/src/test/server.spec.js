@@ -26,4 +26,17 @@ describe('Server!', () => {
   // ===========================================================================
   // TO-DO: Part A Login unit test case
 
+  //Positive cases
+  it('Negative : /login case where Username length is 0', done => {
+    chai
+      .request(server)
+      .post('/login')
+      .send({username: '', password: ''})
+      .redirects(0)
+      .end((err, res) => {
+        res.should.redirectTo('/register');
+        done();
+      });
+  });
+
 });

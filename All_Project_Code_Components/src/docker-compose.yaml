@@ -25,8 +25,8 @@ services:
       - '3000:3000'
     volumes:
       - ./:/home/node/app
-    command: 'npm start'
-    #command: 'npm test'
+    #command: 'npm start'
+    command: 'npm test'
 
     # To allow code testing for development, uncomment the "npm test" line, and comment out the "npm start line"
 
