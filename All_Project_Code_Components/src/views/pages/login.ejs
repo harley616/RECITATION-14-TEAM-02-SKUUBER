@@ -8,17 +8,27 @@
       <form action="\login" method="POST" class="col">
 
         <div class="row-md">
-          <label for="username" class="row-md py-2" style="font-family: Poppins;">Username</label>
+          <% if(locals.loginFailed == false){ %>
+            <label for="username" class="row-md pt-2 pb-1" style="font-family: Poppins;">Username</label>
+          <% } %>
+          <% if(locals.loginFailed == true) { %>
+            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+          <% } %>  
         </div>
         <div class="row-md">
-          <input class="border-0 row-md bg-secondary rounded-3" style="width: 80%" type="text" id="username" name="username" />
+          <input class="border-0 row-md bg-secondary rounded-1" style="width: 80%" type="text" id="username" name="username" />
         </div>
           
         <div class="row-md">
-          <label for="password" class="col-md py-2" style="font-family: Poppins;">Password</label>
+          <% if(locals.loginFailed == false){ %>
+            <label for="password" class="col-md pt-2 pb-1" style="font-family: Poppins;">Password</label>
+          <% } %>
+          <% if(locals.loginFailed == true) { %>
+            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+          <% } %>
         </div>
         <div class="row-md">
-          <input class="border-0 col-md bg-secondary rounded-3" style="width: 80%" type="password" id="password" name="password" />
+          <input class="border-0 col-md bg-secondary rounded-1" style="width: 80%" type="password" id="password" name="password" />
         </div>
 
         <div>

@@ -117,7 +117,7 @@ app.post('/register', async (req, res) => {
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
 app.get('/login', (req, res) => {
-   res.render('pages/login')
+   res.render('pages/login', {loginFailed: false})
 });
 
 // Login
@@ -130,7 +130,7 @@ app.post('/login', async (req, res) => {
   const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);  //Checking if username exists in the table
   if(user.length === 0){                                                                        //if username does not exist: 
     console.log('Username not found.');
-    await res.redirect('/register');                                                  //redirect to registration page
+    res.render('pages/login', {loginFailed: true});                                                  //redirect to registration page
   } else {                                                                                      //if username does exist:
     console.log('Username found. Matching passwords...');
     console.log('Inputted password: ', req.body.password);
@@ -141,11 +141,11 @@ app.post('/login', async (req, res) => {
       console.log('Username and password match. Setting user.'); 
       req.session.user = user;                                                                            //set user, redirect to discover
       req.session.save();
-      await res.redirect('/home');         
+      res.redirect('pages/home');         
     } else {                                                                                          //if passwords do not match
       //console.error(error);                                                                               //throw error, incorrect username/password
       console.log('Incorrect username or password.'); 
-      await res.redirect('/login');                                                                       
+      res.render('pages/login', {loginFailed: true});                                                                       
     }
   }
 
