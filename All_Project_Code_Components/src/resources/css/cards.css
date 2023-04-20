@@ -1,0 +1,12 @@
+.card {
+    border: 5px solid rgba(221, 221, 221, 0.152);
+    padding: 20px;
+    margin: 20px;
+}
+hr {    
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:darkslategrey;
+    height: 1px;
+}
