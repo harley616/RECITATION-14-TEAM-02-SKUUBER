@@ -114,6 +114,8 @@ app.post('/register', async (req, res) => {
 
 });
 
+
+app.get('/home', (req, res) => res.render('pages/home'));
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
 app.get('/login', (req, res) => {

@@ -3,7 +3,22 @@
 
 <main>
   <div class="container">
-    <h5>Hi......</h5>
+
+    <div class="card" style="width: 18rem;" id="weather-popup" style="display:none;">
+      <div class="card-header" id="popup-header">
+        Weather
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Temp: <span id="temp"></span></li>
+        <li class="list-group-item">Precipiation: <span id="precip"></span></li>
+        <li class="list-group-item">Wind: <span id="wind"></span></li>
+      </ul>
+    </div>
+
+    <div>
+      <div id="location">Denver</div>
+      <button onclick="renderPopup()">Get Weather</button>
+    </div>
   </div>
 </main>
 
