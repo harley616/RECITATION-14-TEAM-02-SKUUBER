@@ -72,7 +72,7 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({username: 'shadow', password: 'toor'})
+      .send({username: 'shadow', password: 'foorloop'})
       .redirects(0)
       .end((err, res) => {
         res.should.redirectTo('/register');
@@ -84,10 +84,10 @@ describe('Server!', () => {
     chai
       .request(server)
       .post('/register')
-      .send({username: 'shadow', password: 'toor'})
+      .send({username: 'adam', password: 'hello'})
       .redirects(0)
       .end((err, res) => {
-        res.should.redirectTo('/register');
+        res.should.redirectTo('/login');
         done();
       });
   });
