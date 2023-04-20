@@ -1,0 +1,17 @@
+Skuuber UAT plans 
+Friends:
+    User should be able to add a friend if they are in the user table
+    Add friend fails if user is not in user table
+    User can remove a existing friend from their friends list
+Calendar:
+    User can add an event to their calendar if they fill in event criteria
+    User can join a friends event
+    User can remove an event from their calendar
+    User can leave an event that they are in
+Event criteria:
+    Date and time 
+    Destination
+    Pickup Location
+Weather widget:
+    User clicks button to pull up weather data for a specific day on the calendar
+    If the day is over 7 days in the future api call will fail
