@@ -1,7 +1,9 @@
+<%
 
 async function renderPopup() {
     let data
     const location = document.getElementById('location');
+    console.log("renderPopup was called!");
     await axios({
         url: ` http://api.weatherapi.com/v1/forcast.json?key=${session.env.API_KEY}?q=${location.innerHTML}`,
         method: 'GET',
@@ -25,4 +27,4 @@ async function renderPopup() {
         });
     const popup = document.getElementById('weather-popup');
     popup.style.display = 'block'
-}
+};%>
