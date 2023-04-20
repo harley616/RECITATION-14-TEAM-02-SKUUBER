@@ -66,6 +66,7 @@ describe('Server!', () => {
 
   // Test cases for registration
 
+  
   // Negative test case for the registration api
   it('Negative: /register fails due to the username being already taken', done => {
     chai
