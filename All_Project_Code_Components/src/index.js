@@ -47,7 +47,7 @@ db.connect()
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
-
+app.use(express.static('functions'));
 // initialize session variables
 app.use(
   session({
@@ -115,11 +115,35 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.get('/home', (req, res) => res.render('pages/home'));
+app.get('/home', (req, res) => {
+  res.render('pages/home', { data: null });
+});
+
+app.post('/home', async (req, res) => {
+  const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=7`;
+  await axios({
+    url: request,
+    method: 'GET',
+    dataType: 'json',
+  })
+    .then(results => {
+      console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      res.render('pages/home', {
+        data: results.data,
+      })
+    })
+    .catch(error => {
+      console.log("There was and error!", error);
+      res.render('pages/home', {
+        error: error,
+        data: null
+      })
+    });
+})
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
 app.get('/login', (req, res) => {
-  res.render('pages/login')
+  res.render('pages/login');
 });
 
 // Login

@@ -1,24 +1,27 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
-<% include ('../partials/functions') %>
+
+
 
 <main>
   <div class="container">
-    <div class="card" style="width: 18rem;display:none;" id="weather-popup">
+    <% if(data){ %>
+    <div class="card" style="width: 18rem;" id="weather-popup">
       <div class="card-header" id="popup-header">
         Weather
       </div>
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Temp: <span id="temp"></span></li>
-        <li class="list-group-item">Precipiation: <span id="precip"></span></li>
-        <li class="list-group-item">Wind: <span id="wind"></span></li>
+        <li class="list-group-item">Temp: <span id="temp"><%- data.current.temp_f%></span></li>
+        <li class="list-group-item">Precipiation: <span id="precip"><%- data.current.precip_in%></span></li>
+        <li class="list-group-item">Wind: <span id="wind"><%- data.current.wind_mph%></span></li>
       </ul>
     </div>
-
-    <div>
-      <div id="location">Denver</div>
-      <button onclick="renderPopup()">Get Weather</button>
-    </div>
+    <% } %>
+    <form action="/home" method="POST">
+      <label for="location">Location</label>
+      <input type="location" id="location" name="location" />
+      <button type="submit">Get Weather</button>
+    </form>
   </div>
 </main>
 
