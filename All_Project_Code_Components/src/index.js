@@ -104,7 +104,7 @@ app.post('/register', async (req, res) => {
     if (checker.length === 0 && req.body.password === req.body.confirmPassword) {
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
       console.log('hash: ', hash);
-      await res.render('pages/home');
+      await res.render('pages/home', {data: null});
     } else if (checker.length !== 0) {
 
       //If username is already taken (i.e. check.length != 0)
@@ -177,7 +177,7 @@ app.post('/login', async (req, res) => {
         console.log('Username and password match. Setting user.');
         req.session.user = user;                                                                            //set user, redirect to discover
         req.session.save();
-        res.render('pages/home');
+        res.render('pages/home', {data: null});
       } else {                                                                                          //if passwords do not match
         //console.error(error);                                                                               //throw error, incorrect username/password
         console.log('Incorrect username or password.');
@@ -193,9 +193,11 @@ app.post('/login', async (req, res) => {
   }
 });
 
-//--------------------------------------------- H O M E ---------------------------------------------------------//
+//--------------------------------------------- Friend API ---------------------------------------------------------//
 
-
+app.get('/friend', (req, res) => {
+  res.render('pages/friend');
+});
 
 
 // *****************************************************
