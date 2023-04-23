@@ -27,6 +27,7 @@ services:
       - ./:/home/node/app
     command: 'npm start'
     #command: 'npm test'
+
     # To allow code testing for development, uncomment the "npm test" line, and comment out the "npm start line"
 
     # This defines our volume(s), which will persist throughout startups.
