@@ -8,21 +8,21 @@ const d = new Date();
 <main>
   <div class="container">
     <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
-      <% if(data){ %>
+      <% if(locals.data){ %>
       <div class="card-header" id="popup-header">
-        Weather for <%-data.location.name%>, <%-data.location.region%>, <%-data.location.country%>
+        Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
       </div>
         <%for(let i = 0; i < 7; i++){ %>
         <div class="row">
-          <%console.log("forecastday = , i = ", data.forecast.forecastday[i], ",", i);%>
+          <%console.log("forecastday = , i = ", locals.data.forecast.forecastday[i], ",", i);%>
           <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
           <div class="col">
-            <div class="list-group-item">Max Temp: <span id="temp"><%- data.forecast.forecastday[i].day.maxtemp_f%></span></div>
-            <div class="list-group-item">Min Temp: <span id="temp"><%- data.forecast.forecastday[i].day.mintemp_f%></span></div>
+            <div class="list-group-item">Max Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.maxtemp_f%></span></div>
+            <div class="list-group-item">Min Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.mintemp_f%></span></div>
           </div>
           <div class="col">
-            <div class="list-group-item">Precipiation: <span id="precip"><%- data.forecast.forecastday[i].day.totalprecip_in%></span></div><div class="col"></div>
-            <div class="list-group-item">Wind: <span id="wind"><%- data.forecast.forecastday[i].day.maxwind_mph%></span></div><div class="col"></div>
+            <div class="list-group-item">Precipiation: <span id="precip"><%- locals.data.forecast.forecastday[i].day.totalprecip_in%></span></div><div class="col"></div>
+            <div class="list-group-item">Wind: <span id="wind"><%- locals.data.forecast.forecastday[i].day.maxwind_mph%></span></div><div class="col"></div>
           </div>
         </div>
           
