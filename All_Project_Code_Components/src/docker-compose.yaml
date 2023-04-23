@@ -30,10 +30,11 @@ services:
 
     # To allow code testing for development, uncomment the "npm test" line, and comment out the "npm start line"
 
-# This defines our volume(s), which will persist throughout startups.
-# If you want to get rid of a hanging volume, e.g. to test your database init,
-# run `docker-compose rm -v`. Note that this will remove ALL of your data, so
-# be extra sure you've made a stable backup somewhere.
+    # This defines our volume(s), which will persist throughout startups.
+    # If you want to get rid of a hanging volume, e.g. to test your database init,
+    # run `docker-compose rm -v`. Note that this will remove ALL of your data, so
+    # be extra sure you've made a stable backup somewhere.
 volumes:
   lab-skuuber:
+
 

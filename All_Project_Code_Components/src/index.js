@@ -8,6 +8,7 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
+
 const bcrypt = require('bcrypt'); //  To hash passwords
 
 var path = require('path');
@@ -49,7 +50,7 @@ db.connect()
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
-
+app.use(express.static('functions'));
 // initialize session variables
 app.use(
   session({
@@ -76,7 +77,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 //--------------------------------------------- R E G I S T E R ---------------------------------------------------------//
@@ -106,7 +107,7 @@ app.post('/register', async (req, res) => {
       await res.render('pages/home');
     } else if(checker.length !== 0) {
 
-    //If username is already taken (i.e. check.length != 0)
+      //If username is already taken (i.e. check.length != 0)
       console.log('username already exists');
       await res.render('pages/register', {usernameExists: true, passwordNoMatch: false});
     } else if(req.body.password != req.body.confirmPassword) {
@@ -116,13 +117,39 @@ app.post('/register', async (req, res) => {
     }
   } catch (error) {
 
-  //General catch-all for errors
-     console.error(error);
-     await res.redirect('/register');
+    //General catch-all for errors
+    console.error(error);
+    await res.redirect('/register');
   }
 
 });
 
+
+app.get('/home', (req, res) => {
+  res.render('pages/home', { data: null });
+});
+
+app.post('/home', async (req, res) => {
+  const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=7`;
+  await axios({
+    url: request,
+    method: 'GET',
+    dataType: 'json',
+  })
+    .then(results => {
+      console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      res.render('pages/home', {
+        data: results.data,
+      })
+    })
+    .catch(error => {
+      console.log("There was and error!", error);
+      res.render('pages/home', {
+        error: error,
+        data: null
+      })
+    });
+})
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
 app.get('/login', (req, res) => {
@@ -134,7 +161,7 @@ app.post('/login', async (req, res) => {
   console.log('username: ', req.body.username);
   console.log('password: ', req.body.password);
   //console.log('hashed password: ',  await bcrypt.hash(req.body.password, 10));
-  const username= req.body.username;
+  const username = req.body.username;
   try {
   const user = await db.query('SELECT * FROM users WHERE username = $1', [username]);  //Checking if username exists in the table
   if(user.length === 0){                                                                        //if username does not exist: 
@@ -155,13 +182,13 @@ app.post('/login', async (req, res) => {
       //console.error(error);                                                                               //throw error, incorrect username/password
       console.log('Incorrect username or password.'); 
       res.render('pages/login', {loginFailed: true});                                                                       
+
     }
-  }
 
   } catch (error) {
-  //General catch-all for errors
-     console.error(error);
-     await res.redirect('/login');
+    //General catch-all for errors
+    console.error(error);
+    await res.redirect('/login');
   }
 });
 
