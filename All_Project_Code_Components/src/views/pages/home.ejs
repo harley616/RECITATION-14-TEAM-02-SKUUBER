@@ -1,8 +1,7 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
-<%const days = ["Saturday","Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday"];
+<%const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const d = new Date();
-let n;
 %>
 
 
@@ -15,7 +14,7 @@ let n;
       </div>
         <%for(let i = 0; i < 7; i++){ %>
         <div class="row">
-          <%n =`${d.getYear()}-${d.getMonth()}-${d.getDate()}`;console.log("forecastday = , i = ", data.forecast.forecastday[i], ",", i);%>
+          <%console.log("forecastday = , i = ", data.forecast.forecastday[i], ",", i);%>
           <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
           <div class="col">
             <div class="list-group-item">Max Temp: <span id="temp"><%- data.forecast.forecastday[i].day.maxtemp_f%></span></div>
