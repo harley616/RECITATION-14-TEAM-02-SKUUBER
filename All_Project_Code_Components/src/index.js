@@ -9,7 +9,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 
-const bcrypt = require('bcrypt'); //  To hash passwords
+const bcrypt = require('bcryptjs'); //  To hash passwords
 
 var path = require('path');
 
@@ -185,7 +185,7 @@ app.post('/login', async (req, res) => {
 
     }
 
-  } catch (error) {
+  }} catch (error) {
     //General catch-all for errors
     console.error(error);
     await res.redirect('/login');
