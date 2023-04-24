@@ -8,7 +8,7 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-const bcrypt = require('bcrypt'); //  To hash passwords
+const bcrypt = require('bcryptjs'); //  To hash passwords
 
 
 // *****************************************************
@@ -37,10 +37,6 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
-
-
-
-
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -54,6 +50,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     resave: false,
+
   })
 );
 
@@ -62,8 +59,6 @@ app.use(
     extended: true,
   })
 );
-
-
 
 // TODO - Include your API routes here
 
@@ -156,7 +151,160 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.post("/addFriendRequest", (req, res) => {
+    const query = "INSERT INTO friend_add_queue (username, friend_username) VALUES ($1, $2)";
+    const values = [req.session.user[0]['username'], req.body.friend_username];
+    db.any(query, values)
+      .then(function () {
+        console.log("Successfully added friend request!");        
+        console.log('from ' + req.session.user[0]['username'])
+        console.log('friend request to ' + req.body.friend_username);
+        console.log(req.body)
+        console.log(values)
+        res.redirect("/home");
+      })
+      .catch(function (err) {
+        console.log(err);
+        res.redirect("/home");
+      });
+  });
 
+app.get("/acceptFriend", (req, res) => {
+    console.log('hello')
+    console.log(req.query.friend_username)
+    console.log(req.session.user[0]['username'])
+    const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
+    const values = [req.session.user[0]['username'], req.query.friend_username];
+    db.any(query, values)
+      .then(function () {
+        const query1 = "INSERT INTO user_friends (username, friend_username) VALUES ($1, $2)";
+        const query2 = "INSERT INTO user_friends (username, friend_username) VALUES ($2, $1)";
+        //const values = [req.session.user[0]['username'], req.query.friend_username];
+        console.log('got to part 2');
+        console.log(values)
+        db.task('get-everything', task => {
+          return task.batch([task.any(query1,values), task.any(query2,values)]);
+        })
+          .then(function () {
+            console.log("Successfully added friend!");
+            console.log('AAAAAAAAA')
+            res.redirect("/home");
+          })
+          .catch(function (err) {
+            console.log(err);
+            res.redirect("/home");
+          });
+      })
+      .catch(function (err) {
+        console.log(err);
+        res.redirect("/home");
+      });
+});
+  app.delete("/declineFriendRequest", (req, res) => {
+    const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
+    const values = [req.session.user, req.body.friend_username];
+    db.any(query, values)
+      .then(function () {
+        console.log("Successfully deleted friend request from queue!");
+        res.redirect("/home");
+      })
+      .catch(function (err) {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  });
+  app.get('/friendList', function (req, res) {
+    // Fetch query parameters from the request object
+    var username = req.session.user;
+    // Multiple queries using templated strings
+    var friend_request = `select * from user_friends where username=$1`;
+    // use task to execute multiple queries
+    db.task('get-everything', task => {
+      return task.batch([task.any(friend_request, [username])]);
+    })
+      // if query execution succeeds
+      // query results can be obtained
+      // as shown below
+      .then(data => {
+        res.status(200).json({
+          Friends: data[0],
+  
+        });
+      })
+      // if query execution fails
+      // send error message
+      .catch(err => {
+        console.log('Uh Oh spaghettio');
+        console.log(err);
+        res.status('400').json({
+          current_user: '',
+          city_users: '',
+          error: err,
+        });
+      });
+  });
+
+app.get('/friendRequestList', function (req, res) {
+    
+    // Fetch query parameters from the request object
+    var username = req.session.user[0]['username'];
+
+    console.log('friend request list')
+    console.log(username)
+    // Multiple queries using templated strings
+    var friend_add_queue = `select * from friend_add_queue`;
+
+    console.log(friend_add_queue)
+    // use task to execute multiple queries
+    db.any(friend_add_queue)
+      // if query execution succeeds
+      // query results can be obtained
+      // as shown below
+      .then(data => {
+
+        console.log("the friend request list for")
+        console.log(username)
+        console.log(data)
+        res.status(200).json({
+          FriendReq: data[0],
+        });
+      })
+      // if query execution fails
+      // send error message
+      .catch(err => {
+        console.log('Uh Oh spaghettio');
+        console.log(err);
+        res.status('400').json({
+          current_user: '',
+          city_users: '',
+          error: err,
+        });
+      });
+  });
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+app.get('/home', async (req, res) => {
+    // Fetch query parameters from the request object
+    var username = req.session.user[0]['username'];
+    // Multiple queries using templated strings
+    var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
+    // use task to execute multiple queries
+    const friend_req_data = await db.any(friend_add_queue, username)
+    console.log("the friend request list for")
+    console.log(friend_req_data)
+    res.render('pages/home', {user: req.session.user[0]['username'],
+    friend_request_list: friend_req_data
+    })
+});
+
+app.get('/friendTest', (req, res) => {
+    console.log('user')
+    console.log(req.session.user)
+
+});
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
