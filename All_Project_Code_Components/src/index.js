@@ -170,24 +170,25 @@ app.post("/addFriendRequest", (req, res) => {
   });
 
 app.get("/acceptFriend", (req, res) => {
-    console.log('hello')
-    console.log(req.query.friend_username)
-    console.log(req.session.user[0]['username'])
+    console.log('accepting friend : ' + req.query.username + ' as ' + req.session.user[0]['username'])
+    const friend_username = req.session.user[0]['username'];
+    const username = req.query.username
+    console.log('deleting add_friend_queue')
+    // because this is from the perspective of the other person, we swap $2 and $1
     const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
-    const values = [req.session.user[0]['username'], req.query.friend_username];
+    const values = [username, friend_username];
     db.any(query, values)
       .then(function () {
+        console.log('successfully deleted.')
+        console.log('adding relationship into user_friends.')
         const query1 = "INSERT INTO user_friends (username, friend_username) VALUES ($1, $2)";
         const query2 = "INSERT INTO user_friends (username, friend_username) VALUES ($2, $1)";
         //const values = [req.session.user[0]['username'], req.query.friend_username];
-        console.log('got to part 2');
-        console.log(values)
         db.task('get-everything', task => {
           return task.batch([task.any(query1,values), task.any(query2,values)]);
         })
           .then(function () {
-            console.log("Successfully added friend!");
-            console.log('AAAAAAAAA')
+            console.log("Successfully added friend: friend " + values[1] + " for " + values[0]);
             res.redirect("/home");
           })
           .catch(function (err) {
@@ -293,10 +294,16 @@ app.get('/home', async (req, res) => {
     var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
     // use task to execute multiple queries
     const friend_req_data = await db.any(friend_add_queue, username)
-    console.log("the friend request list for")
+    console.log("the friend request list for: " + username)
     console.log(friend_req_data)
+
+    var friend_list_query = `select * from user_friends where username = $1`;
+    const friend_data = await db.any(friend_list_query, username)
+    console.log("the friend list for: " + username) 
+    console.log(friend_data)
     res.render('pages/home', {user: req.session.user[0]['username'],
-    friend_request_list: friend_req_data
+    friend_request_list: friend_req_data,
+    friend_list: friend_data
     })
 });
 
