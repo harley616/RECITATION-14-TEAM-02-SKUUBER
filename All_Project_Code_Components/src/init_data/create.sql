@@ -27,6 +27,8 @@ CREATE TABLE events (
     name VARCHAR(50) NOT NULL,
     title VARCHAR(50) NOT NULL,
     location VARCHAR(50) NOT NULL,
+    FOREIGN KEY (owner) REFERENCES users(username),
+
 );
 
 DROP TABLE IF EXISTS users_to_events;
