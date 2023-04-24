@@ -19,3 +19,18 @@ CREATE TABLE friend_add_queue (
     FOREIGN KEY (username) REFERENCES users(username),
     FOREIGN KEY (friend_username) REFERENCES users(username)
 );
+
+DROP TABLE IF EXISTS events;
+CREATE TABLE events (
+    event_id serial primary key,
+    owner VARCHAR(50) NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    title VARCHAR(50) NOT NULL,
+    location VARCHAR(50) NOT NULL,
+);
+
+DROP TABLE IF EXISTS users_to_events;
+create table users_to_events(
+    username VARCHAR(50) NOT NULL, 
+    event_id smallint
+);

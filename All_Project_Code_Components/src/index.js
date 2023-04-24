@@ -313,6 +313,40 @@ app.get('/friendTest', (req, res) => {
 
 });
 
+app.get('/calendar', async (req, res) => {
+    const event = {
+        'time': 8
+    }
+
+    var calendarData = [];
+    for (let i = 0; i < 7; i++) {
+        if (i == 3) {
+            calendarData.push([event])
+        }
+        else {
+            calendarData.push([])
+        }
+    }
+
+    res.render('pages/calendar', calendarData)
+  
+})
+
+// add an event for a user
+// must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
+app.post('/addEvent', async (req, res) => {
+
+    const name = req.body.name;
+    const time = req.body.time;
+    const location = req.body.location;
+
+    // add the event to events
+
+
+    // add the user to users_to_events
+
+})
+
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
