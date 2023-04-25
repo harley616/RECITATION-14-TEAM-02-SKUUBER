@@ -366,7 +366,15 @@ function updateEventFromModal(id) {
                    
                         <% } %>
                         <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                            <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                            <div class="calendarItem" 
+                            onclick="openEventModal(
+                                
+                                '<%= calendarData[i][j].owner %>',
+                                '<%= calendarData[i][j].event_id %>',
+                                '<%= calendarData[i][j].title %>'
+                            )"
+                            
+                            style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
                             <p class="align-middle scuuber-cal-text" style=""> title: 
                                 <%= calendarData[i][j].title %>
                             
