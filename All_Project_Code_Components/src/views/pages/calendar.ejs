@@ -385,37 +385,38 @@ function updateTooltips() {
                 <!-- ejs loop for 7 days of calendarData-->
                 <% for (let i = 0; i < 7; i++) { %>
                     <!-- header: todo add weather thing -->
-                    <div id="calendar-div-<%=i%>" class="col-sm" style="position:relative;border: 0.5px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
+                    <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
                         <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
                             <h1 class="align-middle" style="color: white;margin-top:20px;">
                                 <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                             </h1>
                         </div>
-                        <!-- ejs loop for 24 hours of calendarData-->
-                        <% for (let j = 0; j < 23; j++) { %>
-                            <hr style="margin-top:3.125vh;z-index:0">
-                   
-                        <% } %>
-                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                            <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
-                            <p class="align-middle scuuber-cal-text" style=""> title: 
-                                <%= calendarData[i][j].title %>
-                            
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> owner: 
-                                <%= calendarData[i][j].owner %>
-                  
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> location: 
-                 
-                                <%= calendarData[i][j].location %>
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> event id: 
-                       
-                                <%= calendarData[i][j].event_id %>
-                            </p>
-                            </div>
-                        <% } %>
+                            <!-- ejs loop for 24 hours of calendarData-->
+                            <% for (let j = 0; j < 23; j++) { %>
+                                <hr style="margin-top:3.125vh;z-index:0">
+
+                            <% } %>
+                            <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                                <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                                <p class="align-middle scuuber-cal-text" style=""> title: 
+                                    <%= calendarData[i][j].title %>
+                                
+                                </p>
+                                <p class="align-middle scuuber-cal-text" style=""> owner: 
+                                    <%= calendarData[i][j].owner %>
+
+                                </p>
+                                <p class="align-middle scuuber-cal-text" style=""> location: 
+
+                                    <%= calendarData[i][j].location %>
+                                </p>
+                                <p class="align-middle scuuber-cal-text" style=""> event id: 
+
+                                    <%= calendarData[i][j].event_id %>
+                                </p>
+                                </div>
+                                <% } %>
+                        
                     </div>                 
                 <%}%>
             </div>

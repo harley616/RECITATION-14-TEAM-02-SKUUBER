@@ -65,13 +65,17 @@
             <p class="scuuber-text">You have no friends. Better get you some friends</p>
         <% } %>
         <% if (friend_list.length > 0) { %>
-            <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
-            <% for (var i = 0; i < friend_list.length; i++)%>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <%= friend_list[0]['friend_username'] %>
-                </li>
-            </ul>
+                <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
+                <% for (var i = 0; i < friend_list.length; i++)%>
+                <div class="row">
+
+                <ul class="list-group w-50">
+                    <li class="list-group-item">
+                        <%= friend_list[0]['friend_username'] %>
+                    </li>
+                </ul>
+                </div>
+       
         <% } %>
     </div>
 
