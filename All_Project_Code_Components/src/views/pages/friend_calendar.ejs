@@ -23,6 +23,7 @@ const initializeContent = async () => {
 
     //initializeContent must call /getEvents to get the list of events for the user
     // later we will also call /getFriendEvents and overlay them on the calendar
+    // set the element event_name = 
 
     const modal_options = {
         backdrop: 'static',
@@ -34,7 +35,7 @@ const initializeContent = async () => {
 
     /** 
     const calendarElement = document.getElementById('calendar');
-
+calendarData[i][j]
     // forEach() allows us to perform an action, using a callback function, on each element of an array.
     CALENDAR_DAYS.forEach(day => {
         // Create a bootstrap card for each weekday
@@ -196,7 +197,14 @@ function updateLocationOptions(value) {
     }
   }
 
-function openEventModal() {
+function openEventModal(owner, event_id, event_name) {
+
+    const event_name_descriptor = document.getElementById("modal-event-name");
+    event_name_descriptor.innerHTML = "event name: " + event_name;
+    const event_owner_descriptor = document.getElementById("modal-event-owner");
+    event_owner_descriptor.innerHTML = "event made by: " + owner;
+    const event_id_variable = document.getElementById("modal-event-id");
+    event_id_variable.value = event_id;
     
     /*
     // Since we will be reusing the same modal for both creating and updating events,
@@ -358,9 +366,9 @@ function updateTooltips() {
                                 <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                             </h1>
                         </div>
-                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                        <% for (let j = 0; j < calendarData[i].length; j++) { let obj=calendarData[i][j] %>
                             <div class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
-                            <p class="align-middle" style="color: black;">
+                            <p class="align-middle" style="color: black;" onclick="() => openModal(obj.owner, obj.event_id, obj.title)">
                                 <%= calendarData[i][j].title %>
                                 <%= calendarData[i][j].owner %>
                                 <%= calendarData[i][j].location %>
@@ -377,34 +385,19 @@ function updateTooltips() {
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Add a ride</h5>
+          <h5 class="modal-title">Add shared event to your calendar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="addEvent", method="post">
-                <div class="mb-3" id="title">
-                    <label for="title" class="form-label">Event Name</label>
-                    <input type="text" name="title" class="form-control"  required>
-                </div>
+            <form action="addSelfToFriendEvent", method="post">
+                <input id="event_id_variable" type="hidden" name="event_id" value="placeholder" /> 
 
-                <div class="mb-3" id="date">
-                    <label for="date" class="form-label">Date</label>
-                    <input type="date" name="date" class="form-control"  required>
-                </div>
-
-                <div class="mb-3" id="time">
-
-                    <label for="time" class="form-label">Time</label>
-                    <input type="time" name="time" class="form-control"  required>
-                </div>
-
-                <div class="mb-3" id="location">
-                    <label for="location" class="form-label">Location</label>
-                    <input type="text" name="location" class="form-control"  required>
-                </div>
+                <p id="event_name_descriptor"></p>
+                <p id="event_owner_descriptor"></p>
+                <p>Add event to calendar?</p>
 
                 <button id="submit_button" class="btn btn-primary" type="submit">
-                    Create Event
+                    Add
                 </button>
               </form>
         </div>

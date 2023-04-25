@@ -141,6 +141,22 @@ app.get('/calendar', async (req, res) => {
     const get_event_result = await db.any(get_events_query, values);
     console.log('successfully got events for user: ' + owner);
     const calendarData = get_event_result;
+
+    // add any events that you are shared with
+    const get_shared_events_query = `select * from users_to_events where username = $1`;
+    var values  = [owner];
+    const get_shared_event_result = await db.any(get_shared_events_query, values);
+    // map to event_id
+    const shared_event_ids = get_shared_event_result.map(event => event.event_id);
+    console.log('shared_event_ids: ', shared_event_ids);
+    // get events with those event_ids
+    const get_shared_events_query2 = `select * from events where event_id = ANY($1)`;
+    var values  = [shared_event_ids];
+    const get_shared_event_result2 = await db.any(get_shared_events_query2, values);
+    console.log('successfully got shared events for user: ' + owner);
+    const shared_events = get_shared_event_result2;
+    console.log('shared_events: ', shared_events);
+
     const processed_calendar_data = processData(calendarData);
     res.render('pages/calendar', {calendarData: processed_calendar_data});
 })

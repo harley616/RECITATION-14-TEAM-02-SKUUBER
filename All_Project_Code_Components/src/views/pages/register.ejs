@@ -1,23 +1,53 @@
 <%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
+
 
 <main>
-  <div class="container">
-    <h1>Welcome! Please register yourself here.</h1>
-    <div></div>
-    <form action="\register" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" />
+  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%;">
+    <div class="container rounded-3" style="background-color: #aaabad; box-shadow: 0 0 20px rgba(170, 171, 173, 5); font-family: Poppins;">
+      <h1 class="text-center" style="font-family: Poppins; font-weight: bold;">Register Here!</h1>
+      <form action="\register" method="POST" class="col">
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" />
+        <div class="row-md"> 
+          <% if(locals.usernameExists == true){ %>
+            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;"> Error: Username already exists </label>
+          <% } else { %> 
+            <label for="username" class="row-md pt-2 pb-1" style="font-family: Poppins;">Username</label>
+          <% } %>
+        </div>
+  
+        <div class="row-md">
+          <input class="border-0 row-md bg-secondary rounded-1" type="text" id="username" name="username" />
+        </div>
+          
+        <div class="row-md">
+            <% if(locals.passwordNoMatch == true) { %>
+              <label for="password" class="col-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Error: Passwords do not match</label>
+            <% } else { %>
+              <label for="password" class="col-md pt-2 pb-1" style="font-family: Poppins;">Password</label>
+            <% } %>  
+        </div>
+        <div class="row-md">
+          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="password" name="password" />
+        </div>
 
-        <input type="submit" value="Register" />
+        <div class="row-md">
+          <% if(locals.passwordNoMatch == true) { %>
+            <label for="confirmPassword" class="col-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Error: Passwords do not match</label>
+          <% } else { %>
+            <label for="confirmPassword" class="col-md pt-2 pb-1" style="font-family: Poppins;">Confirm Password</label>
+          <% } %> 
+        </div>
+        <div class="row-md">
+          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="confirmPassword" name="confirmPassword" />
+        </div>
 
-        <div></div>
-
-        <p>Already have an account? <a href="/login">Log in here</a></p>
-    </form>
+        <div>
+          <input type="submit" style="font-family: Poppins; width: 25%" class="btn btn-primary mt-3 mb-1" value="Register" />
+          <p style="font-size: 12px;">Already have an account? <a href="/login">Login</a></p>
+        </div>
+  
+      </form>
+    </div>
   </div>
 </main>
 

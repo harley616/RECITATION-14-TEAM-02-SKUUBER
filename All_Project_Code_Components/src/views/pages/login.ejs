@@ -1,24 +1,41 @@
 <%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
+
 
 <main>
-  <div class="container" >
-    <h1>Welcome back to Skuuber! Log in here.</h1>
-    
-    <form action="\login" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" />
+  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%;">
+    <div class="container rounded-3" style="background-color: #aaabad; box-shadow: 0 0 20px rgba(170, 171, 173, 5); font-family: Poppins;">
+      <h1 class="text-center" style="font-family: Poppins; font-weight: bold;">Welcome back!</h1>
+      <form action="\login" method="POST" class="col">
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" />
+        <div class="row-md">
+          <% if(locals.loginFailed == true) { %>
+            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+          <% } else { %>  
+            <label for="username" class="row-md pt-2 pb-1" style="font-family: Poppins;">Username</label>
+          <% } %>
+        </div>
+        <div class="row-md">
+          <input class="border-0 row-md bg-secondary rounded-1" type="text" id="username" name="username" />
+        </div>
+          
+        <div class="row-md">
+          <% if(locals.loginFailed == true) { %>
+            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+          <% } else { %>
+            <label for="password" class="col-md pt-2 pb-1" style="font-family: Poppins;">Password</label>
+          <% } %>
+        </div>
+        <div class="row-md">
+          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="password" name="password" />
+        </div>
 
-        <input type="submit" value="Login" />
-         
-        <div></div>
-
-        <p>Don't have an account? <a href="/register">Register here</a></p>
-
-    </form>
+        <div>
+          <input type="submit" style="font-family: Poppins; width: 25%" class="btn btn-primary mt-3 mb-1" value="Login" />
+          <p style="font-size: 12px;">Need an account? <a href="/register">Register</a></p>
+        </div>
+  
+      </form>
+    </div>
   </div>
 </main>
 
