@@ -1,4 +1,18 @@
 <header>
+    <style>
+        .scuuber-menu {
+    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+}
+
+.scuuber-title {
+    color: black; font-size: 30px;font-family: 'IBM Plex Mono', monospace;
+}
+
+.scuuber-text {
+    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+}
+
+    </style>
     <nav class="navbar navbar-expand-sm border-bottom">
       <div class="container">
         <button
@@ -13,22 +27,23 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar-collapse">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <!-- TO-DO: For Discover, add a <a> tag with an attribute href to call the '/discover' API -->
-                <a class="nav-link" href="/home" >Home</a>
+            <a href="/home">
+                <img src="scuuber_large.png" height="50px" width="158px" />
+
+            </a>
+
+            <li class="nav-item  me-1">
+                <a class="nav-link scuuber-menu" href="/home"  >home</a>
             </li>
-            <li class="nav-item">
-              <!-- TO-DO: For Discover, add a <a> tag with an attribute href to call the '/discover' API -->
-                <a class="nav-link" href="/myCalendar" >My Calendar</a>
+            <li class="nav-item  me-1">
+                <a class="nav-link scuuber-menu" href="/calendar" >my calendar</a>
             </li>
-            <li class="nav-item">
-              <!-- TO-DO: For Discover, add a <a> tag with an attribute href to call the '/discover' API -->
-                <a class="nav-link" href="/friend" >Add Friend</a>
+            <li class="nav-item  me-1">
+                <a class="nav-link scuuber-menu" href="/friend_calendar"  >my friends' calendars</a>
             </li>
           </ul>
           <div class="nav-item me-1">
-            <!-- TO-DO: For Logout, add a <a> tag with an attribute href to call the '/logout API -->
-                <a class="nav-link" href="/logout" >Logout</a>
+                <a class="nav-link scuuber-menu" href="/logout">logout</a>
           </div>
         </div>
       </div>
