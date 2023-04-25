@@ -341,9 +341,7 @@ function updateTooltips() {
             event_div.classList.add("text-center")
             element.appendChild(event_div);
 
-        }, 100);
-
-       
+        }, 100);       
         // get the calendar div
         //todo make the calendar div scrollable, kind of like gcal
     </script>
@@ -354,7 +352,6 @@ function updateTooltips() {
             <div class="row" style="height: 100vh;border-radius:10px">
                 <!-- ejs loop for 7 days of calendarData-->
                 <% for (let i = 0; i < 7; i++) { %>
-
                     <!-- header: todo add weather thing -->
                     <div id="calendar-div-<%=i%>" class="col-sm" style="border: 1px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px">
                         <div class="weather_and_day text-center align-middle" style="border: 1px solid blue;height: 10vh;margin:0px;padding:0px;background-color:cyan">

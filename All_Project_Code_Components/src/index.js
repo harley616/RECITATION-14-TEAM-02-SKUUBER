@@ -59,7 +59,7 @@ app.use(bodyParser.json()); // specify the usage of JSON for parsing request bod
 
 
 // initialize session variables
-/*
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -69,7 +69,7 @@ app.use(
   })
 );
 
-*/
+
 
 app.use(
   bodyParser.urlencoded({
@@ -143,6 +143,34 @@ app.get('/calendar', async (req, res) => {
     const calendarData = get_event_result;
     const processed_calendar_data = processData(calendarData);
     res.render('pages/calendar', {calendarData: processed_calendar_data});
+})
+
+app.get('/friend_calendar', async (req, res) => {
+    // get list of your friends
+    const owner = 'b';
+    const get_friends_query = `select * from user_friends where username = $1`;
+    var values  = [owner];
+    const get_friends_result = await db.any(get_friends_query, values);
+    console.log('successfully got friends for user: ' + owner);
+    const friends = get_friends_result;
+    const friend_usernames = friends.map(friend => friend.friend_username);
+    console.log('friend_usernames: ', friend_usernames);
+
+    // get events for each friend
+    const friendEvents = [];
+    const get_friend_events_query = `select * from events where owner = $1`;
+    for (let i = 0; i < friend_usernames.length; i++) {
+        const friend_username = friend_usernames[i];
+        var values  = [friend_username];
+        const get_friend_events_result = await db.any(get_friend_events_query, values);
+        console.log('successfully got events for user: ' + friend_username);
+        const friend_events = get_friend_events_result[0];
+        for (let j = 1; j < get_friend_events_result.length; j++) {
+            friendEvents.push(get_friend_events_result[j]);
+        }
+    }
+    const processed_calendar_data = processData(friendEvents);
+    res.render('pages/friend_calendar', {calendarData: processed_calendar_data}); 
 })
 
 
@@ -389,8 +417,6 @@ app.get('/friendTest', (req, res) => {
 
 });
 
-
-
 // add an event for a user
 // must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
 app.post('/addEvent', async (req, res) => {
@@ -424,7 +450,6 @@ app.post('/addEvent', async (req, res) => {
 
 // get list of events for a user
 // Event{date: '2020-04-20T08:00', event_id: 1, owner: 'a', title: 'test', location: 'Boulder, CO'}
-
 
 app.get('/getFriendEvents', async (req, res) => {
     const friend_username = 'a'; // req.query.friend_username username of the person whose events to get
