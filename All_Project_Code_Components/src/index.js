@@ -335,17 +335,72 @@ app.get('/calendar', async (req, res) => {
 // add an event for a user
 // must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
 app.post('/addEvent', async (req, res) => {
+    const name = 'a';
+    const time = 'b';
+    const location = 'c';
 
-    const name = req.body.name;
-    const time = req.body.time;
-    const location = req.body.location;
+    // add the event to events table
+    const add_event_query = "INSERT INTO events (owner, name, time, location) VALUES ($1, $2, $3, $4)";
+    var values = [req.session.user[0]['username'], name, time, location];
+    const add_event_result = await db.any(add_event_query, values);
 
-    // add the event to events
-
-
-    // add the user to users_to_events
-
+    // assuming success
+    const event_id = add_event_result[0]['event_id'];
+    const u2e_query = "INSERT INTO users_to_events (username, event_id) VALUES ($1, $2)";
+    var values = [req.session.user[0]['username'], event_id];
+    const u2e_result = await db.any(add_event_query, values);
 })
+
+app.get('/getEvents', async (req, res) => {
+    const get_events_query = `select * from events where owner = $1`;
+    var values  = [req.session.user[0]['username']];
+    const get_event_result = await db.any(add_event_query, values);
+    console.log('successfully got events for user: ' + req.session.user[0]['username']);
+    return res.status(200).json(get_event_result);
+})
+
+app.get('/getFriendEvents', async (req, res) => {
+    const friend_username = 'a'; // req.query.friend_username username of the person whose events to get
+    const get_events_query = `select * from events where owner = $1`;
+    var values  = [friend_username];
+    const get_event_result = await db.any(get_events_query, values);
+    console.log('successfully got events for user: ' + req.session.user[0]['username']);
+    return res.status(200).json(get_event_result);
+})
+
+app.post('/addSelfToFriendEvent', async (req, res) => {
+    const username = req.session.user[0]['username'];
+    const event_id = req.query.event_id; // req.query.event_id id of the event to add self to 
+    const set_users_to_events = `insert INTO events_to_users (username, event_id) VALUES ($1, $2)`;
+    var values  = [username, event_id];
+    const get_event_result = await db.any(set_users_to_events, values);
+    console.log('successfully added: ' + username + " to event id: " + event_id);
+    return res.redirect('/calendar');
+})
+
+app.get('/getAddedEvents', async (req, res) => {
+    // get all event_id from users_to_events where youre the user
+    const username = req.session.user[0]['username'];
+    const u2e_query = `select * from users_to_events where username = $1`;
+    var values  = [username];
+    const u2e_result = await db.any(u2e_query, values);
+    //get a list of the event ids
+    const mapped_u2e_result = u2e_result.map((u2e) => u2e['event_id']);
+    // list of Event object
+    const full_events_list = [];
+    for (let i = 0; i < mapped_u2e_result.length; i++) {
+        const current_event_id = mapped_u2e_result[i];
+        const get_event_query = `select * from events where event_id = $1`;
+        var values  = [current_event_id];
+        const get_event_result = await db.any(get_event_query, values);
+        full_events_list.push(get_event_result[0]);
+    }
+    return res.status(200).json(full_events_list)
+
+    console.log('successfully added: ' + username + " to event id: " + event_id);
+    return res.redirect('/calendar');
+})
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
