@@ -96,14 +96,7 @@ app.get('/register', (req, res) => {
   res.render('pages/register')
 });
 
-app.get('/getEvents', async (req, res) => {
-    const owner = 'a';
-    const get_events_query = `select * from events where owner = $1`;
-    var values  = [owner];
-    const get_event_result = await db.any(add_event_query, values);
-    console.log('successfully got events for user: ' + req.session.user[0]['username']);
-    return res.status(200).json(get_event_result);
-})
+
 // Register
 app.post('/register', async (req, res) => {
   console.log('username: ', req.body.username);
@@ -436,7 +429,15 @@ app.get('/getAddedEvents', async (req, res) => {
     return res.status(200).json(full_events_list)
 })
 
-
+// get the events for a user
+app.get('/getEvents', async (req, res) => {
+    const owner = req.session.user[0]['username'];
+    const get_events_query = `select * from events where owner = $1`;
+    var values  = [owner];
+    const get_event_result = await db.any(get_events_query, values);
+    console.log('successfully got events for user: ' + owner);
+    return res.status(200).json(get_event_result);
+})
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
