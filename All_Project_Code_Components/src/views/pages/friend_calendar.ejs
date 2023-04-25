@@ -24,6 +24,9 @@
     margin-bottom: 0;
     margin-left:10px;
 }
+.scuuber-cal-text-small {
+    color: lightgrey; font-size: 8px;font-family: 'IBM Plex Mono', monospace;
+}
 
     </style>
 <script>
@@ -363,10 +366,26 @@ function updateEventFromModal(id) {
 
                         <% for (let j = 0; j < 23; j++) { %>
                             <hr style="margin-top:3.125vh;z-index:0">
+                                <div style="position: relative; width: 20px; height: 0px">
+                                    <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: white;">
+                                        <p class='scuuber-cal-text-small'>
+                                            <%= times[j] %>
+
+                                        </p>
+                                    </div>
+                                </div>
                    
                         <% } %>
                         <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                            <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                            <div class="calendarItem" 
+                            onclick="openEventModal(
+                                
+                                '<%= calendarData[i][j].owner %>',
+                                '<%= calendarData[i][j].event_id %>',
+                                '<%= calendarData[i][j].title %>'
+                            )"
+                            
+                            style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
                             <p class="align-middle scuuber-cal-text" style=""> title: 
                                 <%= calendarData[i][j].title %>
                             

@@ -46,17 +46,27 @@
             <% for (var i = 0; i < friend_request_list.length; i++)%>
             <ul class="list-group">
                 <li class="list-group-item">
-                    <%= friend_request_list[0]['username'] %>
-                    <form action="acceptFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Add friend :>" />
-                        <div></div>
-                    </form>
-                    <form action="declineFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Decline friend :/" />
-                        <div></div>
-                    </form>
+                    <div class="row">
+                        <div class="form-group w-50">
+                            <p class="scuuber-text"><%= friend_request_list[0]['username'] %></p>
+
+                        </div>
+                        <div class="col-sm">
+                            <form action="acceptFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
+                                <input type="submit"class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;"  value="Accept friend" />
+                                <div></div>
+                            </form>
+                        </div>
+                        <div class="col-sm">
+                            <form action="declineFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
+                                <input type="submit" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" value="Decline friend" />
+                                <div></div>
+                            </form>
+                        </div>
+                    </div>
+                   
                 </li>
             </ul>
         <% } %>
@@ -65,16 +75,20 @@
             <p class="scuuber-text">You have no friends. Better get you some friends</p>
         <% } %>
         <% if (friend_list.length > 0) { %>
-            <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
-            <% for (var i = 0; i < friend_list.length; i++)%>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <%= friend_list[0]['friend_username'] %>
-                </li>
-            </ul>
+                <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
+                <% for (var i = 0; i < friend_list.length; i++)%>
+                <div class="row">
+
+                <ul class="list-group w-50">
+                    <li class="list-group-item">
+                        <%= friend_list[0]['friend_username'] %>
+                    </li>
+                </ul>
+                </div>
+       
         <% } %>
     </div>
-
+    <!--
     <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
       <% if(locals.data){ %>
       <div class="card-header" id="popup-header">
@@ -106,6 +120,7 @@
           </div>
         </form>
     </div>
+    -->
   </div>
 
 </main>
