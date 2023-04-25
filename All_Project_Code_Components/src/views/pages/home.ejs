@@ -3,20 +3,46 @@
 
 
 <main>
-  <div class="container">
+    <style>
+        .scuuber-menu {
+    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+}
+
+.scuuber-title {
+    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace; font-weight: semibold;
+}
+
+.scuuber-text {
+    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
+}
+.scuuber-btn {
+    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;
+}
+
+    </style>
+  <div class="container" style="padding-top: 10px">
+        <p class="scuuber-title">Add a friend</p>
 
         <form action="\addFriendRequest" method="POST">
-            <label for="friend_username">Username:</label>
-            <input type="text" id="friend_username" name="friend_username" />
-            <input type="submit" value="Add friend" />
-            <div></div>
+
+            <div class="row">
+                <div class="form-group col-md">
+                    <label class="scuuber-text" for="friend_username">Username:</label>
+                    <input class="form-control" type="text" id="friend_username" name="friend_username" />
+                </div>
+                <div class="col mt-4" >
+                    <input type="submit" value="Add friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" />
+
+                </div>
+            </div>
+    
         </form>
-        <p>Your friend requests</p>
+        <p class="scuuber-title">Your friend requests</p>
         <% if (friend_request_list.length == 0) { %>
-            <p>You have no friend requests</p>
+            <p class="scuuber-text">You have no friend requests</p>
         <% } %>
         <% if (friend_request_list.length > 0) { %>
-            <p>You have <%= friend_request_list.length %> friend requests</p>
+            <p class="scuuber-text"> You have <%= friend_request_list.length %> friend requests</p>
             <% for (var i = 0; i < friend_request_list.length; i++)%>
             <ul class="list-group">
                 <li class="list-group-item">
@@ -34,12 +60,12 @@
                 </li>
             </ul>
         <% } %>
-        <p>Your friends</p>
+        <p class="scuuber-title">Your friends</p>
         <% if (friend_list.length == 0) { %>
-            <p>You have no friends. Better get you some friends</p>
+            <p class="scuuber-text">You have no friends. Better get you some friends</p>
         <% } %>
         <% if (friend_list.length > 0) { %>
-            <p>You have <%= friend_list.length %> friends </p>
+            <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
             <% for (var i = 0; i < friend_list.length; i++)%>
             <ul class="list-group">
                 <li class="list-group-item">

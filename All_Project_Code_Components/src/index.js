@@ -12,6 +12,8 @@ const session = require('express-session'); // To set the session object. To sto
 const bcrypt = require('bcryptjs'); //  To hash passwords
 
 
+
+
 // *****************************************************
 // <!-- Section 2 : Classes -->
 // *****************************************************
@@ -77,6 +79,9 @@ app.use(
     extended: true,
   })
 );
+
+app.use( express.static( "public" ) );
+
 
 // TODO - Include your API routes here
 
