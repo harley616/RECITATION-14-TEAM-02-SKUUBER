@@ -19,7 +19,7 @@
 			}
 
 			.calendar-container{
-				width: 100%;
+				width: 70%;
 			}
 
 			.month-container{
@@ -49,6 +49,28 @@
 				text-align: center;
 			}
 
+      #weather-popup {
+  background-color: #F6F1F1;
+  color: #19A7CE;
+  width: 22rem;
+  float: right;
+
+}
+
+#weather-popup .row {
+  margin: .5rem;
+  background-color: #146C94;
+  padding: .5rem;
+  color: #F6F1F1;
+  height: min-content;
+}
+
+#weather-btn {
+  background-color: black;
+  color: #F6F1F1;
+  width: 50%;
+  margin: auto;
+}
 	</style>
 
 </head>
@@ -61,28 +83,65 @@
         <h2><%= year %></h2>
     </header>
 
+    <div class="row">
 
-    <div class="calendar-container">
-        <% for(let month = 0;month < calendar.length;month++) { %>
-        <div class="month-container" id="<%= months[month] %>">
-            <h3 style="text-align: center;"> <%= months[month] %> </h3>
-            <div class="day-of-week">
-                <span>Sun</span><span>Mon</span><span>Tue</span><span>
-                    Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-            </div>
-            <% for(let x = 0;x < calendar[month].length;x++) { %>
-            <div class="days">
-                <% for(let y = 0;y < calendar[month][x].length;y++) { %>
-                <div class="date">
-                    <div id="<%=calendar[month][x][y] %>">
-                        <%= calendar[month][x][y] %>
-                    </div>
-                </div>
-                <% } %>
-            </div>
-            <% } %>
+      <div class="calendar-container col" >
+          <% for(let month = 0;month < calendar.length;month++) { %>
+          <div class="month-container" id="<%= months[month] %>">
+              <h3 style="text-align: center;"> <%= months[month] %> </h3>
+              <div class="day-of-week">
+                  <span>Sun</span><span>Mon</span><span>Tue</span><span>
+                      Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <% for(let x = 0;x < calendar[month].length;x++) { %>
+              <div class="days">
+                  <% for(let y = 0;y < calendar[month][x].length;y++) { %>
+                  <div class="date">
+                      <div id="<%=calendar[month][x][y] %>">
+                          <%= calendar[month][x][y] %>
+                      </div>
+                  </div>
+                  <% } %>
+              </div>
+              <% } %>
+          </div>
+          <% } %>
+          
+      </div>
+      <div class="card m-2 col" id="weather-popup">
+  
+        <form action="/MyCalendar" method="POST">
+          <div class="row">
+            <label for="location">Location</label>
+            <input type="location" id="location" name="location" placeholder="City, State"/>
+          </div>
+          <div class="row">
+            <button type="submit" id="weather-btn" class="btn btn-primary">Get Weather</button>
+          </div>
+        </form>
+  
+        <% if(locals.data){ %>
+        <div class="card-header" id="popup-header">
+          Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
         </div>
-        <% } %>
+          <%for(let i = 0; i < 7; i++){ %>
+          <div class="row">
+            <%console.log("forecastday = , i = ", locals.data.forecast.forecastday[i], ",", i);%>
+            <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
+            <div class="col">
+              <div class="list-group-item">Max Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.maxtemp_f%></span> f</div>
+              <div class="list-group-item">Min Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.mintemp_f%></span> f</div>
+            </div>
+            <div class="col">
+              <div class="list-group-item">Precipiation: <span id="precip"><%- locals.data.forecast.forecastday[i].day.totalprecip_in%></span> in</div>
+              <div class="list-group-item">Wind: <span id="wind"><%- locals.data.forecast.forecastday[i].day.maxwind_mph%></span> mph</div>
+            </div>
+          </div>
+            
+          <% } %>
+          <% } %>
+          
+      </div>
     </div>
 
 </body>
