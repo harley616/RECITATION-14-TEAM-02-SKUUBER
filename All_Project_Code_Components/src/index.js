@@ -335,24 +335,56 @@ app.get('/friendTest', (req, res) => {
 
 });
 
-app.get('/calendar', async (req, res) => {
-    const event = {
-        'time': 8
-    }
-
-    var calendarData = [];
+// WANT: 
+// list of 7
+// list of events for each day
+// in each event: title, location, owner, event_id, 
+// padding amount.
+const process = (events) => {
+    const calendarList = [];
     for (let i = 0; i < 7; i++) {
-        if (i == 3) {
-            calendarData.push([event])
+        calendarList.push([]);
+    }
+    const currentDate = Date.now();
+    for (let i = 0; i < 7; i++) {
+        const futureDate = currentDate + (i * 24 * 60 * 60 * 1000);
+        const day = new Date(futureDate).getDay();
+        const dayEvents = events.filter(event => {
+            const eventDate = new Date(event.date);
+            return eventDate.getDay() === day;
         }
-        else {
-            calendarData.push([])
-        }
+        )
+        const mappedDayEvents = dayEvents.map(event => {
+            const obj = new Object()
+            obj.title = event.title;
+            obj.location = event.location;
+            obj.owner = event.owner;
+            obj.event_id = event.event_id;
+            // get time in hours (0-24)
+            // the padding is (3.125vh * hours)
+            const hours = new Date(event.date).getHours();
+            obj.hours = hours;
+            obj.padding = (3.125 * hours).toFixed(2) + 'vh';
+            return obj;
+        })
+
+        calendarList[i] = mappedDayEvents;
+
     }
 
+    return calendarList;
 
-    res.render('pages/calendar', calendarData)
-  
+}
+
+app.get('/calendar', async (req, res) => {
+    const owner = req.session.user[0]['username'];
+    const get_events_query = `select * from events where owner = $1`;
+    var values  = [owner];
+    const get_event_result = await db.any(get_events_query, values);
+    console.log('successfully got events for user: ' + owner);
+    const calendarData = get_event_result;
+    const processed_calendar_data = process(calendar_data);
+    res.render('pages/calendar', {calendarData: processed_calendar_data});
 })
 
 // add an event for a user
