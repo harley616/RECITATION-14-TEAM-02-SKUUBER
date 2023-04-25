@@ -2,8 +2,7 @@
 <%- include ('../partials/menu') %>
 
 <main>
-
-    <script>
+<script>
 
 const CALENDAR_DAYS = [
     'Sunday',
@@ -317,10 +316,9 @@ function updateTooltips() {
             Time: ${event_time}\n
             Attendees: ${event_attendees}
         ` })
-
         console.log(tooltip);
-    })
-}
+        })
+        }
         setTimeout(()=>{
             initializeContent();
 
@@ -372,32 +370,31 @@ function updateTooltips() {
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form>
-                <div class="mb-3" id="event-name">
-                    <label for="event_name" class="form-label">Event Name</label>
-                    <input type="text" class="form-control"  required>
+            <form action="addEvent", method="post">
+                <div class="mb-3" id="title">
+                    <label for="title" class="form-label">Event Name</label>
+                    <input type="text" name="title" class="form-control"  required>
                 </div>
 
-                <div class="mb-3" id="weekday">
-                    <label for="weekday" class="col-form-label">Weekday</label>
-                    <select class="form-select">
-                        <option value="monday">Monday</option>
-                        <option value="tuesday">Tuesday</option>
-                        <option value="wednesday">Wednesday</option>
-                        <option value="thursday">Thursday</option>
-                        <option value="friday">Friday</option>
-                    </select>
+                <div class="mb-3" id="date">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control"  required>
                 </div>
 
                 <div class="mb-3" id="time">
 
                     <label for="time" class="form-label">Time</label>
-                    <input type="time" class="form-control"  required>
+                    <input type="time" name="time" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="location">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control"  required>
                 </div>
 
                 <button id="submit_button" class="btn btn-primary" type="submit">
                     Create Event
-                  </button>
+                </button>
               </form>
         </div>
       </div>

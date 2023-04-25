@@ -13,7 +13,6 @@ let EVENT_MODAL;
 // Location and url are intentionally mutually exclusive fields in this scenario.
 // If you are adding value for one, you needn't for the other.
 
-
 function initializeContent() {
 
     const modal_options = {
