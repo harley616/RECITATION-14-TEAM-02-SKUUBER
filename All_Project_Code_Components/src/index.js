@@ -199,6 +199,22 @@ app.get('/friend', (req, res) => {
   res.render('pages/friend');
 });
 
+//--------------------------------------------- C A L E N D A R ---------------------------------------------------------//
+
+//MyCalendar Page
+
+
+const calendar = require("./views/pages/calendarconfig");
+
+app.get("/MyCalendar",(req,res)=>{
+  const year = 2023;
+  const months = ["January", "February", "March", "April", "May", "June", "July",
+  "August", "September", "October", "November", "December"];
+
+  res.render("pages/MyCalendar",{calendar: calendar(year),months,year});
+});  
+
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->
