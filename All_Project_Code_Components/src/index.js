@@ -126,11 +126,11 @@ const processData = (events) => {
             obj.owner = event.owner;
             obj.event_id = event.event_id;
             // get time in hours (0-24)
-            // the padding is (3.125vh * hours)
+            // the padding is (3.125vh * hours) + 8vh
             // this is where on the calendar the event shows up
             const hours = new Date(event.date).getHours();
             obj.hours = hours;
-            obj.padding = (3.125 * hours).toFixed(2) + 'vh';
+            obj.padding = (3.125 * hours + 7).toFixed(2)+ 'vh';
             return obj;
         })
         calendarList[i] = mappedDayEvents;
@@ -139,7 +139,32 @@ const processData = (events) => {
     return calendarList;
 
 }
-
+const TIMES = [
+    '02 AM',
+    '03 AM',
+    '04 AM',
+    '05 AM',
+    '06 AM',
+    '07 AM',
+    '08 AM',
+    '09 AM',
+    '10 AM',
+    '11 AM',
+    '12 PM',
+    '01 PM',
+    '02 PM',
+    '03 PM',
+    '04 PM',
+    '05 PM',
+    '06 PM',
+    '07 PM',
+    '08 PM',
+    '09 PM',
+    '10 PM',
+    '11 PM',
+    '12 AM',
+    '01 AM'
+]
 app.get('/calendar', async (req, res) => {
     const owner = req.session.user[0]['username'];
     const get_events_query = `select * from events where owner = $1`;
@@ -172,7 +197,7 @@ app.get('/calendar', async (req, res) => {
     console.log('full_events: ', full_events)
     const processed_full_events = processData(full_events);
 
-    res.render('pages/calendar', {calendarData: processed_full_events});
+    res.render('pages/calendar', {calendarData: processed_full_events, times: TIMES});
 })
 
 //WORKS dont fuck with it
@@ -201,7 +226,7 @@ app.get('/friend_calendar', async (req, res) => {
         }
     }
     const processed_calendar_data = processData(friendEvents);
-    res.render('pages/friend_calendar', {calendarData: processed_calendar_data}); 
+    res.render('pages/friend_calendar', {calendarData: processed_calendar_data, times: TIMES}); 
 })
 
 

@@ -46,17 +46,27 @@
             <% for (var i = 0; i < friend_request_list.length; i++)%>
             <ul class="list-group">
                 <li class="list-group-item">
-                    <%= friend_request_list[0]['username'] %>
-                    <form action="acceptFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Add friend :>" />
-                        <div></div>
-                    </form>
-                    <form action="declineFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Decline friend :/" />
-                        <div></div>
-                    </form>
+                    <div class="row">
+                        <div class="form-group w-50">
+                            <p class="scuuber-text"><%= friend_request_list[0]['username'] %></p>
+
+                        </div>
+                        <div class="col-sm">
+                            <form action="acceptFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
+                                <input type="submit"class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;"  value="Accept friend" />
+                                <div></div>
+                            </form>
+                        </div>
+                        <div class="col-sm">
+                            <form action="declineFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
+                                <input type="submit" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" value="Decline friend" />
+                                <div></div>
+                            </form>
+                        </div>
+                    </div>
+                   
                 </li>
             </ul>
         <% } %>
