@@ -385,8 +385,8 @@ function updateTooltips() {
                 <!-- ejs loop for 7 days of calendarData-->
                 <% for (let i = 0; i < 7; i++) { %>
                     <!-- header: todo add weather thing -->
-                    <div id="calendar-div-<%=i%>" class="col-sm" style="position:relative;border: 1px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
-                        <div class="weather_and_day text-center align-middle" style="border: 1px solid blue;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
+                    <div id="calendar-div-<%=i%>" class="col-sm" style="position:relative;border: 0.5px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
+                        <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
                             <h1 class="align-middle" style="color: white;margin-top:20px;">
                                 <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                             </h1>

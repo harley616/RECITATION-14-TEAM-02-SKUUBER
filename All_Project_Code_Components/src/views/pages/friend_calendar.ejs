@@ -2,6 +2,30 @@
 <%- include ('../partials/menu') %>
 
 <main>
+
+    <style>
+        .scuuber-menu {
+    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+}
+
+.scuuber-title {
+    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace; font-weight: semibold;
+}
+
+.scuuber-text {
+    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
+}
+.scuuber-btn {
+    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;
+}
+.scuuber-cal-text {
+    color: black; font-size: 10px;font-family: 'IBM Plex Mono', monospace;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left:10px;
+}
+
+    </style>
 <script>
 
 const CALENDAR_DAYS = [
@@ -329,22 +353,34 @@ function updateEventFromModal(id) {
                 <!-- ejs loop for 7 days of calendarData-->
                 <% for (let i = 0; i < 7; i++) { %>
                     <!-- header: todo add weather thing -->
-                    <div id="calendar-div-<%=i%>" class="col-sm" style="border: 1px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px">
-                        <div class="weather_and_day text-center align-middle" style="border: 1px solid blue;height: 10vh;margin:0px;padding:0px;background-color:cyan">
+                    <div id="calendar-div-<%=i%>" class="col-sm" style="position:relative;border: 0.5px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
+                        <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
                             <h1 class="align-middle" style="color: white;margin-top:20px;">
                                 <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                             </h1>
                         </div>
-                        <% for (let j = 0; j < calendarData[i].length; j++) { let obj=calendarData[i][j] %>
-                            <div onClick="(() => openEventModal(
-                                '<%=calendarData[i][j].owner %>',
-                                '<%=calendarData[i][j].event_id %>',
-                                '<%=calendarData[i][j].title %>'
-                                ))()" class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
-                            <p class="align-middle" style="color: black;" >
+                         <!-- ejs loop for 24 hours of calendarData-->
+
+                        <% for (let j = 0; j < 23; j++) { %>
+                            <hr style="margin-top:3.125vh;z-index:0">
+                   
+                        <% } %>
+                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                            <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                            <p class="align-middle scuuber-cal-text" style=""> title: 
                                 <%= calendarData[i][j].title %>
+                            
+                            </p>
+                            <p class="align-middle scuuber-cal-text" style=""> owner: 
                                 <%= calendarData[i][j].owner %>
+                  
+                            </p>
+                            <p class="align-middle scuuber-cal-text" style=""> location: 
+                 
                                 <%= calendarData[i][j].location %>
+                            </p>
+                            <p class="align-middle scuuber-cal-text" style=""> event id: 
+                       
                                 <%= calendarData[i][j].event_id %>
                             </p>
                             </div>
