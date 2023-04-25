@@ -20,7 +20,10 @@ let EVENT_MODAL;
 // If you are adding value for one, you needn't for the other.
 
 
-function initializeContent() {
+const initializeContent = async () => {
+
+    //initializeContent must call /getEvents to get the list of events for the user
+    // later we will also call /getFriendEvents and overlay them on the calendar
 
     const modal_options = {
         backdrop: 'static',
@@ -345,20 +348,32 @@ function updateTooltips() {
         //todo make the calendar div scrollable, kind of like gcal
     </script>
   <div class="container">
+    <!-- print the ejs object called calendarData -->
+    <%= JSON.stringify(calendarData) %>
         <div class="container">
             <div class="row" style="height: 100vh;border-radius:10px">
                 <!-- ejs loop for 7 days of calendarData-->
                 <% for (let i = 0; i < 7; i++) { %>
+
+                    <!-- header: todo add weather thing -->
                     <div id="calendar-div-<%=i%>" class="col-sm" style="border: 1px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px">
                         <div class="weather_and_day text-center align-middle" style="border: 1px solid blue;height: 10vh;margin:0px;padding:0px;background-color:cyan">
                             <h1 class="align-middle" style="color: white;margin-top:20px;">
                                 24
                             </h1>
                         </div>
-               
-                    </div>
+                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                            <div class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
+                            <p class="align-middle" style="color: black;">
+                                <%= calendarData[i][j].title %>
+                                <%= calendarData[i][j].owner %>
+                                <%= calendarData[i][j].location %>
+                                <%= calendarData[i][j].event_id %>
+                            </p>
+                            </div>
+                        <% } %>
+                    </div>                 
                 <%}%>
-                
             </div>
           </div>
           <!-- Button trigger modal -->
