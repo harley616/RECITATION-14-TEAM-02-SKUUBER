@@ -12,6 +12,17 @@ const bcrypt = require('bcryptjs'); //  To hash passwords
 
 
 // *****************************************************
+// <!-- Section 2 : Classes -->
+// *****************************************************
+
+function Event(owner, name, date, time, location) {
+    this.owner = owner;
+    this.name = name;
+    this.date = date; // Date() object, this also has the time (use getTime())
+    this.location = location;
+}
+
+// *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
 
@@ -24,6 +35,7 @@ const dbConfig = {
   user: process.env.POSTGRES_USER, // the user account to connect with
   password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
+
 
 const db = pgp(dbConfig);
 
@@ -44,7 +56,9 @@ db.connect()
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
 
+
 // initialize session variables
+/*
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -53,6 +67,7 @@ app.use(
 
   })
 );
+*/
 
 app.use(
   bodyParser.urlencoded({
@@ -69,6 +84,37 @@ app.get('/', (req, res) => {
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
+
+app.post('/addEvent', async (req, res) => {
+    const username = 'a';
+    const title = 'New Event';
+    const date = "2023-4-24"
+    const time = '14:48:00';
+    const location = 'Boulder, Colorado';
+    const full_date = date + 'T' + time;
+
+    // add the event to events table
+    const add_event_query = "INSERT INTO events (owner, date, title, location) VALUES ($1, $2, $3, $4)";
+    var values = [username, full_date, title, location];
+    const add_event_result = await db.any(add_event_query, values);
+
+    // get the id of the event
+    const event_id_query = "SELECT event_id FROM events WHERE owner = $1 AND date = $2 AND title = $3 AND location = $4";
+    var values = [username, full_date, title, location];
+    const event_id_result = await db.any(event_id_query, values);
+
+    console.log('event id result')
+    const event_id = event_id_result[0]['event_id'];
+    console.log(event_id)
+    
+    const u2e_query = "INSERT INTO users_to_events (username, event_id) VALUES ($1, $2)";
+    var values = [username, event_id];
+    const u2e_result = await db.any(u2e_query, values);
+    res.status(200).json({status: 'success', message: 'Event added.', u2e_result: u2e_result});
+
+
+})
+
 
 //--------------------------------------------- R E G I S T E R ---------------------------------------------------------//
 
@@ -334,22 +380,7 @@ app.get('/calendar', async (req, res) => {
 
 // add an event for a user
 // must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
-app.post('/addEvent', async (req, res) => {
-    const name = 'a';
-    const time = 'b';
-    const location = 'c';
 
-    // add the event to events table
-    const add_event_query = "INSERT INTO events (owner, name, time, location) VALUES ($1, $2, $3, $4)";
-    var values = [req.session.user[0]['username'], name, time, location];
-    const add_event_result = await db.any(add_event_query, values);
-
-    // assuming success
-    const event_id = add_event_result[0]['event_id'];
-    const u2e_query = "INSERT INTO users_to_events (username, event_id) VALUES ($1, $2)";
-    var values = [req.session.user[0]['username'], event_id];
-    const u2e_result = await db.any(add_event_query, values);
-})
 
 app.get('/getEvents', async (req, res) => {
     const get_events_query = `select * from events where owner = $1`;
@@ -396,9 +427,6 @@ app.get('/getAddedEvents', async (req, res) => {
         full_events_list.push(get_event_result[0]);
     }
     return res.status(200).json(full_events_list)
-
-    console.log('successfully added: ' + username + " to event id: " + event_id);
-    return res.redirect('/calendar');
 })
 
 
