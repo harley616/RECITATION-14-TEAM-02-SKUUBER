@@ -10,6 +10,7 @@ const pgp = require('pg-promise')(); // To connect to the Postgres DB from the n
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
 const bcrypt = require('bcryptjs'); //  To hash passwords
+const axios = require('axios');
 
 
 
@@ -446,27 +447,27 @@ app.get('/friendRequestList', function (req, res) {
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
+app.get('/home', (req, res) => { res.render('pages/home', { data: null }) });
+// app.get('/home', async (req, res) => {
+//   // Fetch query parameters from the request object
+//   var username = req.session.user[0]['username'];
+//   // Multiple queries using templated strings
+//   var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
+//   // use task to execute multiple queries
+//   const friend_req_data = await db.any(friend_add_queue, username)
+//   console.log("the friend request list for: " + username)
+//   console.log(friend_req_data)
 
-app.get('/home', async (req, res) => {
-  // Fetch query parameters from the request object
-  var username = req.session.user[0]['username'];
-  // Multiple queries using templated strings
-  var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
-  // use task to execute multiple queries
-  const friend_req_data = await db.any(friend_add_queue, username)
-  console.log("the friend request list for: " + username)
-  console.log(friend_req_data)
-
-  var friend_list_query = `select * from user_friends where username = $1`;
-  const friend_data = await db.any(friend_list_query, username)
-  console.log("the friend list for: " + username)
-  console.log(friend_data)
-  res.render('pages/home', {
-    user: req.session.user[0]['username'],
-    friend_request_list: friend_req_data,
-    friend_list: friend_data
-  })
-});
+//   var friend_list_query = `select * from user_friends where username = $1`;
+//   const friend_data = await db.any(friend_list_query, username)
+//   console.log("the friend list for: " + username)
+//   console.log(friend_data)
+//   res.render('pages/home', {
+//     user: req.session.user[0]['username'],
+//     friend_request_list: friend_req_data,
+//     friend_list: friend_data
+//   })
+// });
 
 app.get('/friendTest', (req, res) => {
   console.log('user')
@@ -482,6 +483,34 @@ app.get("/MyCalendar", (req, res) => {
 
   res.render("pages/MyCalendar", { calendar: calendar(year), months, year });
 });
+app.post("/MyCalendar", async (req, res) => {
+  const year = 2023;
+  const months = ["January", "February", "March", "April", "May", "June", "July",
+    "August", "September", "October", "November", "December"];
+
+  const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=7`;
+  await axios({
+    url: request,
+    method: 'GET',
+    dataType: 'json',
+  })
+    .then(results => {
+      console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      res.render('pages/MyCalendar', {
+        data: results.data,
+        calendar: calendar(year), months, year
+      })
+    })
+    .catch(error => {
+      console.log("There was and error!", error, "Query: ", request);
+      res.render('pages/MyCalendar', {
+        error: error,
+        data: null,
+        calendar: calendar(year), months, year
+      })
+    });
+});
+
 // add an event for a user
 // must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
 app.post('/addEvent', async (req, res) => {
