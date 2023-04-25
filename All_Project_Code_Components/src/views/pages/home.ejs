@@ -1,8 +1,13 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu') %>
+<%const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const d = new Date();
+%>
+
 
 <main>
   <div class="container">
+
         <form action="\addFriendRequest" method="POST">
             <label for="friend_username">Username:</label>
             <input type="text" id="friend_username" name="friend_username" />
@@ -38,6 +43,40 @@
             </ul>
         <% } %>
     </div>
+
+    <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
+      <% if(locals.data){ %>
+      <div class="card-header" id="popup-header">
+        Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
+      </div>
+        <%for(let i = 0; i < 7; i++){ %>
+        <div class="row">
+          <%console.log("forecastday = , i = ", locals.data.forecast.forecastday[i], ",", i);%>
+          <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
+          <div class="col">
+            <div class="list-group-item">Max Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.maxtemp_f%></span></div>
+            <div class="list-group-item">Min Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.mintemp_f%></span></div>
+          </div>
+          <div class="col">
+            <div class="list-group-item">Precipiation: <span id="precip"><%- locals.data.forecast.forecastday[i].day.totalprecip_in%></span></div><div class="col"></div>
+            <div class="list-group-item">Wind: <span id="wind"><%- locals.data.forecast.forecastday[i].day.maxwind_mph%></span></div><div class="col"></div>
+          </div>
+        </div>
+          
+        <% } %>
+        <% } %>
+        <form action="/home" method="POST">
+          <div class="row">
+            <label for="location">Location</label>
+            <input type="location" id="location" name="location" placeholder="City, State"/>
+          </div>
+          <div class="row">
+            <button type="submit" class="btn btn-primary">Get Weather</button>
+          </div>
+        </form>
+    </div>
+  </div>
+
 </main>
 
 <%- include ('../partials/footer') %>

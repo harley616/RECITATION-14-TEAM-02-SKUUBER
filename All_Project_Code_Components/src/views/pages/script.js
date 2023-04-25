@@ -312,4 +312,5 @@ function updateTooltips() {
 
         console.log(tooltip);
     })
+
 }
