@@ -368,7 +368,7 @@ function updateTooltips() {
                         </div>
                         <% for (let j = 0; j < calendarData[i].length; j++) { let obj=calendarData[i][j] %>
                             <div class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
-                            <p class="align-middle" style="color: black;" onclick="() => openModal(obj.owner, obj.event_id, obj.title)">
+                            <p class="align-middle" style="color: black;" onclick="() => openEventModal(obj.owner, obj.event_id, obj.title)">
                                 <%= calendarData[i][j].title %>
                                 <%= calendarData[i][j].owner %>
                                 <%= calendarData[i][j].location %>
@@ -391,7 +391,6 @@ function updateTooltips() {
         <div class="modal-body">
             <form action="addSelfToFriendEvent", method="post">
                 <input id="event_id_variable" type="hidden" name="event_id" value="placeholder" /> 
-
                 <p id="event_name_descriptor"></p>
                 <p id="event_owner_descriptor"></p>
                 <p>Add event to calendar?</p>

@@ -119,14 +119,13 @@ const processData = (events) => {
             obj.event_id = event.event_id;
             // get time in hours (0-24)
             // the padding is (3.125vh * hours)
+            // this is where on the calendar the event shows up
             const hours = new Date(event.date).getHours();
             obj.hours = hours;
             obj.padding = (3.125 * hours).toFixed(2) + 'vh';
             return obj;
         })
-
         calendarList[i] = mappedDayEvents;
-
     }
 
     return calendarList;
@@ -134,22 +133,22 @@ const processData = (events) => {
 }
 
 app.get('/calendar', async (req, res) => {
-    //const owner = req.session.user[0]['username'];
-    const owner = 'a';
+    const owner = req.session.user[0]['username'];
     const get_events_query = `select * from events where owner = $1`;
     var values  = [owner];
     const get_event_result = await db.any(get_events_query, values);
     console.log('successfully got events for user: ' + owner);
-    const calendarData = get_event_result;
+
+    //******* friend stuff *******/
 
     // add any events that you are shared with
-    const get_shared_events_query = `select * from users_to_events where username = $1`;
+    const users_to_events_query = `select * from users_to_events where username = $1`;
     var values  = [owner];
     const get_shared_event_result = await db.any(get_shared_events_query, values);
-    // map to event_id
+    // list of event_id
     const shared_event_ids = get_shared_event_result.map(event => event.event_id);
     console.log('shared_event_ids: ', shared_event_ids);
-    // get events with those event_ids
+    // get all the events with those event_ids, as long as event.owner != owner
     const get_shared_events_query2 = `select * from events where event_id = ANY($1)`;
     var values  = [shared_event_ids];
     const get_shared_event_result2 = await db.any(get_shared_events_query2, values);
@@ -157,13 +156,19 @@ app.get('/calendar', async (req, res) => {
     const shared_events = get_shared_event_result2;
     console.log('shared_events: ', shared_events);
 
-    const processed_calendar_data = processData(calendarData);
-    res.render('pages/calendar', {calendarData: processed_calendar_data});
+    // filter shared events, only keep the ones that are not owned by owner
+    const filtered_shared_events = shared_events.filter(event => event.owner != owner);
+
+    const full_events = get_event_result + filtered_shared_events;
+    const processed_full_events = processData(full_events);
+
+    res.render('pages/calendar', {calendarData: processed_full_events});
 })
 
+//WORKS dont fuck with it
 app.get('/friend_calendar', async (req, res) => {
     // get list of your friends
-    const owner = 'b';
+    const owner = req.session.user[0]['username'];
     const get_friends_query = `select * from user_friends where username = $1`;
     var values  = [owner];
     const get_friends_result = await db.any(get_friends_query, values);
@@ -468,7 +473,7 @@ app.post('/addEvent', async (req, res) => {
 // Event{date: '2020-04-20T08:00', event_id: 1, owner: 'a', title: 'test', location: 'Boulder, CO'}
 
 app.get('/getFriendEvents', async (req, res) => {
-    const friend_username = 'a'; // req.query.friend_username username of the person whose events to get
+    const owner = req.query.friend_username; //username of the person whose events to get
     const get_events_query = `select * from events where owner = $1`;
     var values  = [friend_username];
     const get_event_result = await db.any(get_events_query, values);
