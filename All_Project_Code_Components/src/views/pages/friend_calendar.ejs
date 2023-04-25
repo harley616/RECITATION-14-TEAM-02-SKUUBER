@@ -303,52 +303,6 @@ function updateEventFromModal(id) {
     EVENT_MODAL.hide();
   }
 
-function updateTooltips() {
-    // @TODO: Display tooltip with the Name, Time and Location of the event.
-    // The formatting of the contents of the tooltip is up to your discretion.
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
-    // select all events using the event class
-    const containers = document.querySelectorAll('.event');
-    containers.forEach((item) => {
-        const id = parseInt(item.id.slice(6));
-        const event = CALENDAR_EVENTS[id];
-        const event_name = event.name;
-        const event_time = event.time;
-        const event_attendees = event.attendees;
-
-        console.log("#" + item.id);
-
-        const tooltip = bootstrap.Tooltip.getOrCreateInstance('#' + item.id);
-        tooltip.setContent({ '.tooltip-inner': `
-            Name: ${event_name}\n
-            Time: ${event_time}\n
-            Attendees: ${event_attendees}
-        ` })
-        console.log(tooltip);
-        })
-        }
-        setTimeout(()=>{
-            initializeContent();
-
-            const element = document.getElementById("calendar-div-0");
-            element.setAttribute('onclick', `openEventModal()`);
-            var event_div = document.createElement('div')
-
-            //height is 3.125vh per hour
-            //marginTop is 3.125vh * starting hour
-            event_div.onclick = openModal;
-
-            event_div.style.marginTop = "37.5vh";
-            event_div.style.height = "6.25vh";
-            event_div.style.background = "lightblue";
-            event_div.style.borderRadius = "5px";
-            event_div.innerHTML = "Hello";
-            event_div.classList.add("text-center")
-            element.appendChild(event_div);
-
-        }, 100);       
         // get the calendar div
         //todo make the calendar div scrollable, kind of like gcal
     </script>
@@ -367,8 +321,8 @@ function updateTooltips() {
                             </h1>
                         </div>
                         <% for (let j = 0; j < calendarData[i].length; j++) { let obj=calendarData[i][j] %>
-                            <div class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
-                            <p class="align-middle" style="color: black;" onclick="() => openEventModal(obj.owner, obj.event_id, obj.title)">
+                            <div onClick="() => openEventModal(obj.owner, obj.event_id, obj.title)" class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
+                            <p class="align-middle" style="color: black;" >
                                 <%= calendarData[i][j].title %>
                                 <%= calendarData[i][j].owner %>
                                 <%= calendarData[i][j].location %>

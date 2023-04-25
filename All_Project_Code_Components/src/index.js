@@ -106,6 +106,8 @@ const processData = (events) => {
     for (let i = 0; i < 7; i++) {
         const futureDate = currentDate + (i * 24 * 60 * 60 * 1000);
         const day = new Date(futureDate).getDay();
+        console.log('filtering events');
+        console.log(events);
         const dayEvents = events.filter(event => {
             const eventDate = new Date(event.date);
             return eventDate.getDay() === day;
@@ -142,7 +144,7 @@ app.get('/calendar', async (req, res) => {
     //******* friend stuff *******/
 
     // add any events that you are shared with
-    const users_to_events_query = `select * from users_to_events where username = $1`;
+    const get_shared_events_query = `select * from users_to_events where username = $1`;
     var values  = [owner];
     const get_shared_event_result = await db.any(get_shared_events_query, values);
     // list of event_id
@@ -158,8 +160,10 @@ app.get('/calendar', async (req, res) => {
 
     // filter shared events, only keep the ones that are not owned by owner
     const filtered_shared_events = shared_events.filter(event => event.owner != owner);
-
-    const full_events = get_event_result + filtered_shared_events;
+    console.log('filtered_shared_events: ', filtered_shared_events)
+    console.log('event result: ', get_event_result)
+    const full_events = []. concat(get_event_result, filtered_shared_events);
+    console.log('full_events: ', full_events)
     const processed_full_events = processData(full_events);
 
     res.render('pages/calendar', {calendarData: processed_full_events});
