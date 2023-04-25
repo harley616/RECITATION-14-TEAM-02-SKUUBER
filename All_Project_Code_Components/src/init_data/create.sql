@@ -32,5 +32,7 @@ CREATE TABLE events (
 DROP TABLE IF EXISTS users_to_events;
 create table users_to_events(
     username VARCHAR(50) NOT NULL, 
-    event_id smallint
+    event_id smallint, 
+    FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE
 );

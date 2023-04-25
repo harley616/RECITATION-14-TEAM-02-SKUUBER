@@ -243,9 +243,7 @@ app.post('/register', async (req, res) => {
 });
 
 
-app.get('/home', (req, res) => {
-  res.render('pages/home', { data: null });
-});
+
 
 app.post('/home', async (req, res) => {
   const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=7`;
@@ -504,7 +502,7 @@ app.post('/addEvent', async (req, res) => {
     const u2e_result = await db.any(u2e_query, values);
     console.log('SUCC!!!!!!!1!!!!!');
     res.render('pages/calendar');
-})
+});
 
 // get list of events for a user
 // Event{date: '2020-04-20T08:00', event_id: 1, owner: 'a', title: 'test', location: 'Boulder, CO'}
@@ -516,7 +514,7 @@ app.get('/getFriendEvents', async (req, res) => {
     const get_event_result = await db.any(get_events_query, values);
     console.log('successfully got events for user: ' + req.session.user[0]['username']);
     return res.status(200).json(get_event_result);
-})
+});
 
 app.post('/addSelfToFriendEvent', async (req, res) => {
     const username = req.session.user[0]['username'];
@@ -527,7 +525,7 @@ app.post('/addSelfToFriendEvent', async (req, res) => {
     console.log('successfully added: ' + username + " to event id: " + event_id);
     console.log(get_event_result);
     return res.redirect('/calendar');
-})
+});
 
 app.get('/getAddedEvents', async (req, res) => {
     // get all event_id from users_to_events where youre the user
@@ -547,7 +545,7 @@ app.get('/getAddedEvents', async (req, res) => {
         full_events_list.push(get_event_result[0]);
     }
     return res.status(200).json(full_events_list)
-})
+});
 
 // get the events for a user
 app.get('/getEvents', async (req, res) => {
@@ -557,7 +555,83 @@ app.get('/getEvents', async (req, res) => {
     const get_event_result = await db.any(get_events_query, values);
     console.log('successfully got events for user: ' + owner);
     return res.status(200).json(get_event_result);
-})
+});
+app.get('/deleteEvent_byID', async (req, res) => {
+  const user = req.session.user[0]['username'];
+  
+  const select_event_query = 'Select * FROM events WHERE event_id = $1';
+  db.any(select_event_query, req.body.event_id)
+    .then(function () {
+      if(user === data[0].owner){
+        console.log(user+' owns the event');
+        res.redirect('/deleteEvent_byID_Owner', {event_id: req.body.event_id});
+      }
+      else{
+        console.log(user+' user does not own event')
+        res.redirect('/deleteEvent_byID_Party', {event_id: req.body.event_id})
+      }
+    })
+    .catch(err => {
+      console.log('Uh Oh spaghettio');
+      console.log(err);
+      res.redirect('/calendar')
+    });
+});
+app.delete("/deleteEvent_byID_Owner", (req, res) => {
+  const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
+  const query_2 = "DELETE FROM users WHERE event_id = $1;";
+  const value = req.body.event_id
+  db.task('get-everything', task => {
+    return task.batch([task.any(query_1,value), task.any(query_2,value)]);
+  })
+    .then(function () {
+      console.log("Successfully deleted "+req.session.user[0]['username']+' event. event_id: '+value);
+      res.redirect("/home");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/calendar");
+    });
+});
+app.delete("/deleteEvent_byID_Party", (req, res) => {
+  const query = "DELETE FROM users_to_events WHERE event_id = $1;";
+  const value = req.body.event_id
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted "+req.session.user[0]['username']+' from event_id '+value);
+      res.redirect("/calendar");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/calendar');
+    });
+});
+app.delete("/deleteEvent_by_Date", (req, res) => {
+  const query = "DELETE FROM events WHERE date < $1;";
+  const value = req.body.cutOff_Date
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted events prior to: "+value);
+      res.redirect("/home");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/home');
+    });
+});
+app.delete("/deleteEvent_by_User", (req, res) => {
+  const query = "DELETE FROM events WHERE owner =  $1;";
+  const value = req.session.user[0]['username'];
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted events from user: "+value);
+      res.redirect("/calendar");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/calendar');
+    });
+});
 // *****************************************************
 // <!-- Section 5 : Start Server-->
 // *****************************************************
