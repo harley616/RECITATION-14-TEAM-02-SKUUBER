@@ -16,66 +16,45 @@
     color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
 }
 .scuuber-btn {
-    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;
+    color: black; 
+    font-size: 15px;
+    font-family: 'IBM Plex Mono', monospace;
+    border-radius: 10px;
 }
 
     </style>
   <div class="container" style="padding-top: 10px">
-        <p class="scuuber-title">Add a friend</p>
+    <p class="scuuber-title">List of Users</p>
+    <div>
+      <table class="table">
+        <tr>
+          <th>
+            Username
+          </th>
+          <th>
 
-        <form action="\addFriendRequest" method="POST">
-
-            <div class="row">
-                <div class="form-group col-md">
-                    <label class="scuuber-text" for="friend_username">Username:</label>
-                    <input class="form-control" type="text" id="friend_username" name="friend_username" />
-                </div>
-                <div class="col mt-4" >
-                    <input type="submit" value="Add friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" />
-
-                </div>
-            </div>
-    
-        </form>
-        <p class="scuuber-title">Your friend requests</p>
-        <% if (friend_request_list.length == 0) { %>
-            <p class="scuuber-text">You have no friend requests</p>
+          </th>
+        </tr>
+  
+        <% for(let i = 0; i < users.length; i++){ %>
+          <form action="/home/add_friends" method="POST">
+            <tr>
+              <td>
+                <%= users[i].username%>
+              </td>
+              <td>
+                <button class="scuuber-btn" name="user_id" type="submit" value="<%- users[i].username %>">Add Friend</button>
+              </td>
+            </tr>
+          </form>
         <% } %>
-        <% if (friend_request_list.length > 0) { %>
-            <p class="scuuber-text"> You have <%= friend_request_list.length %> friend requests</p>
-            <% for (var i = 0; i < friend_request_list.length; i++)%>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <%= friend_request_list[0]['username'] %>
-                    <form action="acceptFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Add friend :>" />
-                        <div></div>
-                    </form>
-                    <form action="declineFriend" method="GET">
-                        <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                        <input type="submit" value="Decline friend :/" />
-                        <div></div>
-                    </form>
-                </li>
-            </ul>
-        <% } %>
-        <p class="scuuber-title">Your friends</p>
-        <% if (friend_list.length == 0) { %>
-            <p class="scuuber-text">You have no friends. Better get you some friends</p>
-        <% } %>
-        <% if (friend_list.length > 0) { %>
-            <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
-            <% for (var i = 0; i < friend_list.length; i++)%>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <%= friend_list[0]['friend_username'] %>
-                </li>
-            </ul>
-        <% } %>
+        
+        </table>
     </div>
+    
+        
 
-    <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
+    <!-- <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
       <% if(locals.data){ %>
       <div class="card-header" id="popup-header">
         Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
@@ -106,7 +85,7 @@
           </div>
         </form>
     </div>
-  </div>
+  </div> -->
 
 </main>
 
