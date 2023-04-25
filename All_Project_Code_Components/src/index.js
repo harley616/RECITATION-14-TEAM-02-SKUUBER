@@ -475,8 +475,7 @@ app.post('/addEvent', async (req, res) => {
     const u2e_query = "INSERT INTO users_to_events (username, event_id) VALUES ($1, $2)";
     var values = [username, event_id];
     const u2e_result = await db.any(u2e_query, values);
-    console.log('SUCC!!!!!!!1!!!!!');
-    res.render('pages/calendar');
+    res.redirect('/calendar');
 })
 
 // get list of events for a user
