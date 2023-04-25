@@ -487,11 +487,12 @@ app.get('/getFriendEvents', async (req, res) => {
 
 app.post('/addSelfToFriendEvent', async (req, res) => {
     const username = req.session.user[0]['username'];
-    const event_id = req.query.event_id; // req.query.event_id id of the event to add self to 
-    const set_users_to_events = `insert INTO events_to_users (username, event_id) VALUES ($1, $2)`;
+    const event_id = req.body.event_id; // req.query.event_id id of the event to add self to 
+    const set_users_to_events = `insert INTO users_to_events (username, event_id) VALUES ($1, $2)`;
     var values  = [username, event_id];
     const get_event_result = await db.any(set_users_to_events, values);
     console.log('successfully added: ' + username + " to event id: " + event_id);
+    console.log(get_event_result);
     return res.redirect('/calendar');
 })
 
