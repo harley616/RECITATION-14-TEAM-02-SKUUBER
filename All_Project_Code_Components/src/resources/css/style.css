@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 input[type=text], input[type=password] {
     -webkit-transition: all 0.30s ease-in-out;
@@ -8505,3 +8506,48 @@ input[type=text], input[type=password] {
     border-color: #cd4dcc; }
 
 
+=======
+input[type=text],
+input[type=password] {
+  -webkit-transition: all 0.30s ease-in-out;
+  -moz-transition: all 0.30s ease-in-out;
+  -ms-transition: all 0.30s ease-in-out;
+  -o-transition: all 0.30s ease-in-out;
+  outline: none;
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid #DDDDDD;
+  width: 80%;
+}
+
+input[type=text]:focus,
+input[type=password]:focus {
+  box-shadow: 0 0 10px rgba(81, 203, 238, 5);
+  padding: 3px 0px 3px 3px;
+  margin: 5px 1px 3px 0px;
+  border: 1px solid rgba(81, 203, 238, 5);
+}
+
+#weather-popup {
+  background-color: #F6F1F1;
+  color: #19A7CE;
+  width: 22rem;
+  float: right;
+
+}
+
+#weather-popup .row {
+  margin: .5rem;
+  background-color: #146C94;
+  padding: .5rem;
+  color: #F6F1F1;
+  height: min-content;
+}
+
+#weather-btn {
+  background-color: black;
+  color: #F6F1F1;
+  width: 50%;
+  margin: auto;
+}
+>>>>>>> styling-weather
