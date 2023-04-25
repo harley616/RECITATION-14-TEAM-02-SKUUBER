@@ -498,7 +498,9 @@ app.post("/MyCalendar", async (req, res) => {
       console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
       res.render('pages/MyCalendar', {
         data: results.data,
-        calendar: calendar(year), months, year
+        calendar: calendar(year),
+        months,
+        year
       })
     })
     .catch(error => {
