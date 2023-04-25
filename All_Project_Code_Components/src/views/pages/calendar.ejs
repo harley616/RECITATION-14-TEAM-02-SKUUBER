@@ -1,3 +1,9 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+<script>
+
 const CALENDAR_DAYS = [
     'Sunday',
     'Monday',
@@ -13,7 +19,11 @@ let EVENT_MODAL;
 // Location and url are intentionally mutually exclusive fields in this scenario.
 // If you are adding value for one, you needn't for the other.
 
-function initializeContent() {
+
+const initializeContent = async () => {
+
+    //initializeContent must call /getEvents to get the list of events for the user
+    // later we will also call /getFriendEvents and overlay them on the calendar
 
     const modal_options = {
         backdrop: 'static',
@@ -199,7 +209,7 @@ function openEventModal() {
     // Check if the event exists in the CALENDAR_EVENTS by using `id`
     // Note that on the first try, when you attempt to access an event that does not exist
     // an event will be added to the list. This is expected.
-    let event = CALENDAR_EVENTS[0];
+    let event = {};
 
     let newid = id; //CALENDAR_EVENTS.length;
 
@@ -309,8 +319,100 @@ function updateTooltips() {
             Time: ${event_time}\n
             Attendees: ${event_attendees}
         ` })
-
         console.log(tooltip);
-    })
+        })
+        }
+        setTimeout(()=>{
+            initializeContent();
 
-}
+            const element = document.getElementById("calendar-div-0");
+            element.setAttribute('onclick', `openEventModal()`);
+            var event_div = document.createElement('div')
+
+            //height is 3.125vh per hour
+            //marginTop is 3.125vh * starting hour
+            event_div.onclick = openModal;
+
+            event_div.style.marginTop = "37.5vh";
+            event_div.style.height = "6.25vh";
+            event_div.style.background = "lightblue";
+            event_div.style.borderRadius = "5px";
+            event_div.innerHTML = "Hello";
+            event_div.classList.add("text-center")
+            element.appendChild(event_div);
+
+        }, 100);       
+        // get the calendar div
+        //todo make the calendar div scrollable, kind of like gcal
+    </script>
+  <div class="container">
+    <!-- print the ejs object called calendarData -->
+    <%= JSON.stringify(calendarData) %>
+        <div class="container">
+            <div class="row" style="height: 100vh;border-radius:10px">
+                <!-- ejs loop for 7 days of calendarData-->
+                <% for (let i = 0; i < 7; i++) { %>
+                    <!-- header: todo add weather thing -->
+                    <div id="calendar-div-<%=i%>" class="col-sm" style="border: 1px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px">
+                        <div class="weather_and_day text-center align-middle" style="border: 1px solid blue;height: 10vh;margin:0px;padding:0px;background-color:cyan">
+                            <h1 class="align-middle" style="color: white;margin-top:20px;">
+                                <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
+                            </h1>
+                        </div>
+                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                            <div class="calendarItem text-center align-middle" style="position:absolute;border: 1px solid blue;height:6.25vh;margin:0px;margin-top:<%=calendarData[i][j].padding %>;background-color:grey">
+                            <p class="align-middle" style="color: black;">
+                                <%= calendarData[i][j].title %>
+                                <%= calendarData[i][j].owner %>
+                                <%= calendarData[i][j].location %>
+                                <%= calendarData[i][j].event_id %>
+                            </p>
+                            </div>
+                        <% } %>
+                    </div>                 
+                <%}%>
+            </div>
+          </div>
+          <!-- Button trigger modal -->
+  <div id="event-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add a ride</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="addEvent", method="post">
+                <div class="mb-3" id="title">
+                    <label for="title" class="form-label">Event Name</label>
+                    <input type="text" name="title" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="date">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="time">
+
+                    <label for="time" class="form-label">Time</label>
+                    <input type="time" name="time" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="location">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control"  required>
+                </div>
+
+                <button id="submit_button" class="btn btn-primary" type="submit">
+                    Create Event
+                </button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+</main>
+
+<%- include ('../partials/footer') %>
