@@ -18,26 +18,3 @@ input[type=password]:focus {
   margin: 5px 1px 3px 0px;
   border: 1px solid rgba(81, 203, 238, 5);
 }
-
-#weather-popup {
-  background-color: #F6F1F1;
-  color: #19A7CE;
-  width: 22rem;
-  float: right;
-
-}
-
-#weather-popup .row {
-  margin: .5rem;
-  background-color: #146C94;
-  padding: .5rem;
-  color: #F6F1F1;
-  height: min-content;
-}
-
-#weather-btn {
-  background-color: black;
-  color: #F6F1F1;
-  width: 50%;
-  margin: auto;
-}
