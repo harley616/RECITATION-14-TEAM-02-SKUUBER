@@ -130,7 +130,7 @@ const processData = (events) => {
             // this is where on the calendar the event shows up
             const hours = new Date(event.date).getHours();
             obj.hours = hours;
-            obj.padding = (3.125 * hours + 7).toFixed(2)+ 'vh';
+            obj.padding = (3.23 * hours + 7).toFixed(2)+ 'vh';
             return obj;
         })
         calendarList[i] = mappedDayEvents;
