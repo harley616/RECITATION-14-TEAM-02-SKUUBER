@@ -1,51 +1,70 @@
-<header>
-    <style>
-        .scuuber-menu {
-    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
-}
+<footer class="text-center text-muted w-100 fixed-bottom">
+    <!-- TO-DO: Add the <script><script /> tag to include bootstrap javascript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
-.scuuber-title {
-    color: black; font-size: 30px;font-family: 'IBM Plex Mono', monospace;
-}
+  <style type="text/css">
 
-.scuuber-text {
-    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
-}
+    .screen-darken{
+      content: ''; 
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background-color: rgba(0,0,0,.5);
+        pointer-events: none;
+        z-index:10; opacity:1; 
+      visibility:visible;
+      position: fixed;
+    }
+    
+    .navbar{
+      position: relative;
+      z-index: 15;
+    }
+  
+  </style>
+  
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function(){
+  
+      document.querySelectorAll('.navbar .dropdown').forEach(function(everydropdown){
+        
+        everydropdown.addEventListener('shown.bs.dropdown', function () {
+          el_overlay = document.createElement('span');
+              el_overlay.className = 'screen-darken';
+              document.body.appendChild(el_overlay)
+        });
+  
+        everydropdown.addEventListener('hide.bs.dropdown', function () {
+          document.body.removeChild(document.querySelector('.screen-darken'));
+        });
+  
+      });
+  
+    }); 
+    // DOMContentLoaded  end
+  </script>
 
-    </style>
-    <nav class="navbar navbar-expand-sm border-bottom">
-      <div class="container">
-        <button
-          class="navbar-toggler ms-auto"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbar-collapse"
-          aria-controls="navbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-          <ul class="navbar-nav me-auto">
-            <a href="/home">
-                <img src="scuuber_large.png" height="50px" width="158px" />
-
-            </a>
-
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/home"  >home</a>
-            </li>
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/calendar" >my calendar</a>
-            </li>
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/friend_calendar"  >my friends' calendars</a>
-            </li>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="font-family: 'IBM Plex Mono', monospace; background-color: white;">
+    <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="main_nav">
+    <ul class="navbar-nav dropup" style="padding-top: 0px;">
+        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" style="padding: 0px">  
+          <img src="scuuber_large.png" height="45px" width="140px">
+        </a>
+          <ul class="dropdown-menu fade-up">
+          <li><a class="dropdown-item" href="/calendar"> Calendar </a></li>
+          <li><a class="dropdown-item" href="/home"> Profile Page</a></li>
+          <li><a class="dropdown-item" href="/friend_calendar"> Friend Calendar  </a></li>
+          <li><a class="dropdown-item" href="/logout"> Logout  </a></li>
           </ul>
-          <div class="nav-item me-1">
-                <a class="nav-link scuuber-menu" href="/logout">logout</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-   </header>
+      </li>
+    </ul>
+    </div> <!-- navbar-collapse.// -->
+    </div> <!-- container-fluid.// -->
+  </nav>
+
+</footer>
+</body>
+</html>
