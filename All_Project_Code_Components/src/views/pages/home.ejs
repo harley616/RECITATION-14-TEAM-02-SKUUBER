@@ -76,9 +76,9 @@
         <% } %>
         <% if (friend_list.length > 0) { %>
                 <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
-                <% for (var i = 0; i < friend_list.length; i++){ %>
-                <div class="row">
+                <% for (var i = 0; i < friend_list.length; i++) { %>
 
+                <div class="row">
                 <ul class="list-group w-50">
                     <li class="list-group-item">
                         <%= friend_list[i]['friend_username'] %>
