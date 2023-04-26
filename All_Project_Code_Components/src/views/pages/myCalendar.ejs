@@ -57,6 +57,7 @@
         height:min-content;
       }
 
+
 #weather-popup .row {
   margin: .5rem;
   background-color: #146C94;
@@ -71,6 +72,8 @@
   width: 50%;
   margin: auto;
 }
+	</style>
+
 	</style>
 <%const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
 const d = new Date();
@@ -89,6 +92,7 @@ const d = new Date();
 
       <div class="calendar-container col-9" >
           <% for(let month = 0;month < locals.calendar.length; month++) { %>
+
           <div class="month-container" id="<%= months[month] %>">
               <h3 style="text-align: center;"> <%= months[month] %> </h3>
               <div class="day-of-week">
@@ -111,6 +115,7 @@ const d = new Date();
           
       </div>
       <div class="card m-2 col-3" id="weather-popup">
+
   
         <form action="/MyCalendar" method="POST">
           <div class="row">
