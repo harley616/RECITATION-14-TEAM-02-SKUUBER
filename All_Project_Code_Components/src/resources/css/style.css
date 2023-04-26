@@ -18,6 +18,7 @@ input[type=password]:focus {
   margin: 5px 1px 3px 0px;
   border: 1px solid rgba(81, 203, 238, 5);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 }
 
@@ -43,4 +44,6 @@ input[type=password]:focus {
   width: 50%;
   margin: auto;
 >>>>>>> 74ac6bb (integrated weather and calendar)
+=======
+>>>>>>> 09964e3 (works but calendar only shows january)
 }
