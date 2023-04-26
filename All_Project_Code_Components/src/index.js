@@ -501,10 +501,6 @@ app.post("/MyCalendar", async (req, res) => {
         calendar: calendar(year),
         months,
         year
-<<<<<<< HEAD
-
-=======
->>>>>>> 09964e3 (works but calendar only shows january)
       })
     })
     .catch(error => {
