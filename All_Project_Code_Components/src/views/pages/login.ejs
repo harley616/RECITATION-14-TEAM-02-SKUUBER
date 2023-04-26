@@ -1,37 +1,84 @@
 <%- include ('../partials/header') %>
 
 
+
 <main>
-  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%;">
-    <div class="container rounded-3" style="background-color: #aaabad; box-shadow: 0 0 20px rgba(170, 171, 173, 5); font-family: Poppins;">
-      <h1 class="text-center" style="font-family: Poppins; font-weight: bold;">Welcome back!</h1>
+  <style>
+    .login-labels {
+      font-family: 'IBM Plex Mono', monospace;
+      width: 80%;
+      padding-top: 10px;
+      padding-bottom: 5px;
+    }
+    .outer-container {
+      background-color: rgb(25, 165, 204);
+      box-shadow: 0 0 20px rgba(25, 165, 204, 5);
+      border-radius: 10px;
+      flex: 1;
+      padding-left: 5%;
+    }
+    .text-input-login {
+      background-color: #146C94;
+      -webkit-transition: all 0.30s ease-in-out;
+      -moz-transition: all 0.30s ease-in-out;
+      -ms-transition: all 0.30s ease-in-out;
+      -o-transition: all 0.30s ease-in-out;
+      outline: none;
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+      border: 0px solid #DDDDDD;
+      width: 80%; 
+      border-radius: 6px;
+    }
+    .text-input-login:focus {
+      box-shadow: 0 0 10px rgba(81, 203, 238, 5);
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+      border: 1px solid rgba(81, 203, 238, 5);
+    }
+    .submit-button {
+      font-family: 'IBM Plex Mono', monospace;
+      background-color: black;
+      color: #F6F1F1;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      height: 40px;
+      width: 100px;
+      border: none;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 5);
+    }
+  </style>
+  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%; background-color: #F6F1F1;">
+    <div class="outer-container">
+      <h1 class="text-center" style="font-family: 'IBM Plex Mono', monospace;">Welcome back!</h1>
       <form action="\login" method="POST" class="col">
 
         <div class="row-md">
           <% if(locals.loginFailed == true) { %>
-            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+            <label for="username" class="login-labels" style="color:orange">Login Failed - Incorrect Username or Password</label>
           <% } else { %>  
-            <label for="username" class="row-md pt-2 pb-1" style="font-family: Poppins;">Username</label>
+            <label for="username" class="login-labels" style="color:black">Username</label>
           <% } %>
         </div>
         <div class="row-md">
-          <input class="border-0 row-md bg-secondary rounded-1" type="text" id="username" name="username" />
+          <input class="text-input-login" type="text" id="username" name="username" />
         </div>
           
         <div class="row-md">
           <% if(locals.loginFailed == true) { %>
-            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Login Failed - Incorrect Username or Password</label>
+            <label for="username" class="login-labels" style="color: orange">Login Failed - Incorrect Username or Password</label>
           <% } else { %>
-            <label for="password" class="col-md pt-2 pb-1" style="font-family: Poppins;">Password</label>
+            <label for="password" class="login-labels" style="color: black">Password</label>
           <% } %>
         </div>
         <div class="row-md">
-          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="password" name="password" />
+          <input class="text-input-login" type="password" id="password" name="password" />
         </div>
 
         <div>
-          <input type="submit" style="font-family: Poppins; width: 25%" class="btn btn-primary mt-3 mb-1" value="Login" />
-          <p style="font-size: 12px;">Need an account? <a href="/register">Register</a></p>
+          <input type="submit" class="submit-button" value="Login" />
+          <p style="font-size: 12px;">Need an account? <a href="/register" style="color:orange">Register</a></p>
         </div>
   
       </form>

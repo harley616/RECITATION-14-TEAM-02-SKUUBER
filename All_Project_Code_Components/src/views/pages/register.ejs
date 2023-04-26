@@ -1,49 +1,96 @@
 <%- include ('../partials/header') %>
 
 <main>
-  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%;">
-    <div class="container rounded-3" style="background-color: #aaabad; box-shadow: 0 0 20px rgba(170, 171, 173, 5); font-family: Poppins;">
-      <h1 class="text-center" style="font-family: Poppins; font-weight: bold;">Register Here!</h1>
+  <style>
+    .register-labels {
+      font-family: 'IBM Plex Mono', monospace;
+      width: 80%;
+      padding-top: 10px;
+      padding-bottom: 5px;
+    }
+    .outer-container {
+      background-color: rgb(25, 165, 204);
+      box-shadow: 0 0 20px rgba(25, 165, 204, 5);
+      border-radius: 10px;
+      flex: 1;
+      padding-left: 5%;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+    .text-input-register {
+      background-color: #146C94;
+      -webkit-transition: all 0.30s ease-in-out;
+      -moz-transition: all 0.30s ease-in-out;
+      -ms-transition: all 0.30s ease-in-out;
+      -o-transition: all 0.30s ease-in-out;
+      outline: none;
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+      border: 0px solid #DDDDDD;
+      width: 80%; 
+      border-radius: 6px;
+    }
+    .text-input-register:focus {
+      box-shadow: 0 0 10px rgba(81, 203, 238, 5);
+      padding: 3px 0px 3px 3px;
+      margin: 5px 1px 3px 0px;
+      border: 1px solid rgba(81, 203, 238, 5);
+    }
+    .submit-button {
+      font-family: 'IBM Plex Mono', monospace;
+      background-color: black;
+      color: #F6F1F1;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      height: 40px;
+      width: 100px;
+      border: none;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 5);
+    }
+  </style>
+  <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:27%; padding-right:27%; background-color: #F6F1F1;">
+    <div class="outer-container">
+      <h1 class="text-center">Register Here!</h1>
       <form action="\register" method="POST" class="col">
 
         <div class="row-md"> 
           <% if(locals.usernameExists == true){ %>
-            <label for="username" class="row-md pt-2 pb-1 text-danger" style="font-family: Poppins;"> Error: Username already exists </label>
+            <label for="username" class="register-labels" style="color: orange;"> Error: Username already exists </label>
           <% } else { %> 
-            <label for="username" class="row-md pt-2 pb-1" style="font-family: Poppins;">Username</label>
+            <label for="username" class="register-labels" style="color: black;">Username</label>
           <% } %>
         </div>
   
         <div class="row-md">
-          <input class="border-0 row-md bg-secondary rounded-1" type="text" id="username" name="username" />
+          <input class="text-input-register" type="text" id="username" name="username" />
         </div>
           
         <div class="row-md">
             <% if(locals.passwordNoMatch == true) { %>
-              <label for="password" class="col-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Error: Passwords do not match</label>
+              <label for="password" class="register-labels" style="color: orange;">Error: Passwords do not match</label>
             <% } else { %>
-              <label for="password" class="col-md pt-2 pb-1" style="font-family: Poppins;">Password</label>
+              <label for="password" class="register-labels" style="color: black;">Password</label>
             <% } %>  
         </div>
         <div class="row-md">
-          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="password" name="password" />
+          <input class="text-input-register" type="password" id="password" name="password" />
         </div>
 
         <div class="row-md">
           <% if(locals.passwordNoMatch == true) { %>
-            <label for="confirmPassword" class="col-md pt-2 pb-1 text-danger" style="font-family: Poppins;">Error: Passwords do not match</label>
+            <label for="confirmPassword" class="register-labels" style="color: orange;">Error: Passwords do not match</label>
           <% } else { %>
-            <label for="confirmPassword" class="col-md pt-2 pb-1" style="font-family: Poppins;">Confirm Password</label>
+            <label for="confirmPassword" class="register-labels" style="color: black;">Confirm Password</label>
           <% } %> 
         </div>
         <div class="row-md">
-          <input class="border-0 col-sm bg-secondary rounded-1" type="password" id="confirmPassword" name="confirmPassword" />
+          <input class="text-input-register" type="password" id="confirmPassword" name="confirmPassword" />
         </div>
 
 
         <div>
-          <input type="submit" style="font-family: Poppins; width: 25%" class="btn btn-primary mt-3 mb-1" value="Register" />
-          <p style="font-size: 12px;">Already have an account? <a href="/login">Login</a></p>
+          <input type="submit" class="submit-button" value="Register" />
+          <p style="font-size: 12px;">Already have an account? <a href="/login" style="color:orange;">Login</a></p>
         </div>
   
       </form>
