@@ -27,7 +27,50 @@
 .scuuber-cal-text-small {
     color: lightgrey; font-size: 8px;font-family: 'IBM Plex Mono', monospace;
 }
+button, input[type="submit"], input[type="reset"] {
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+#weather-popup {
+  background-color: #F6F1F1;
+  color: #19A7CE;
+  width: 20rem;
+  height: fit-content;
+}
 
+#weather-popup .row {
+  margin: .5rem 0;
+  background-color: #146C94;
+  padding: .5rem;
+  color: #F6F1F1;
+  height: min-content;
+  border-radius: .5rem;
+  font-size: smaller;
+}
+
+#weather-btn {
+  background-color: black;
+  color: #F6F1F1;
+  width: 75%;
+  margin: auto;
+}
+#weather-tooltip{
+    z-index: 3;
+    position: absolute;
+    left:30%;
+    top:30%;
+    margin:auto;
+    width: 24rem;
+}
+#weather-tooltip .card{
+    background-color: #19A7CE;
+    color:#F6F1F1;
+}
     </style>
 <script>
 
@@ -374,60 +417,188 @@ function updateTooltips() {
             event_div.classList.add("text-center")
             element.appendChild(event_div);
 
-        }, 100);       
+        }, 100);
+
+
+       
+        async function weatherSearch() {
+            console.log('weather search called');
+            const location = document.getElementById("location").innerHTML;
+            const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${location}&days=7`;
+            let weatherPopup = document.getElementById('weather-popup');
+            await axios({
+                url: request,
+                method: 'GET',
+                dataType: 'json',
+            })
+            .then(results => {
+            console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+            for(let i = 0; i < 7; i++){
+                document.getElementById('weather-day').innerHTML = days[(d.getDay() + i)%7];
+                document.getElementById('min-temp').innerHTML = results.data.forecast.forecastday[i].day.mintemp_f;
+                document.getElementById('max-temp').innerHTML = results.data.forecast.forecastday[i].day.maxtemp_f;
+                document.getElementById('precip').innerHTML = results.data.forecast.forecastday[i].day.totalprecip_in;
+                document.getElementById('wind').innerHTML = results.data.forecast.forecastday[i].day.maxwind_mph;
+                document.getElementById('weather-results').style.display = "block";
+                weatherPopup.appendChild(document.getElementById('weather-results'));
+            }    
+            })
+            .catch(error => {
+            console.log("There was and error!", error, "Query: ", request);
+                let div = document.createElement('div');
+                let node = document.createTextNode('There was an error');
+                div.appendChild(node);
+                weatherPopup.appendChild(div);
+            });
+            updateDOM();
+        }
+
+
+
+
         // get the calendar div
         //todo make the calendar div scrollable, kind of like gcal
     </script>
-  <div class="container">
-    <!-- print the ejs object called calendarData -->
-    <%= JSON.stringify(calendarData) %>
-        <div class="container" style="border-radius: 30px;">
-            <div class="row" style="height: 100vh;">
-                <!-- ejs loop for 7 days of calendarData-->
-                <% for (let i = 0; i < 7; i++) { %>
-                    <!-- header: todo add weather thing -->
-                    <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid lightgrey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
-                        <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
-                            <h1 class="align-middle" style="color: white;margin-top:20px;">
-                                <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
-                            </h1>
-                        </div>
-                            <!-- ejs loop for 24 hours of calendarData-->
-                            <% for (let j = 0; j < 23; j++) { %>
-                                <hr style="margin-top:3.125vh;z-index:0">
-                                <div style="position: relative; width: 20px; height: 0px">
-                                    <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: white;">
-                                        <p class='scuuber-cal-text-small'>
-                                            <%= times[j] %>
+    
+    <% if(locals.eventId){%>
 
-                                        </p>
-                                    </div>
-                                </div>
-                            <% } %>
-                            <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
-                                <p class="align-middle scuuber-cal-text" style=""> title: 
-                                    <%= calendarData[i][j].title %>
-                                
-                                </p>
-                                <p class="align-middle scuuber-cal-text" style=""> owner: 
-                                    <%= calendarData[i][j].owner %>
-
-                                </p>
-                                <p class="align-middle scuuber-cal-text" style=""> location: 
-
-                                    <%= calendarData[i][j].location %>
-                                </p>
-                                <p class="align-middle scuuber-cal-text" style=""> event id: 
-
-                                    <%= calendarData[i][j].event_id %>
-                                </p>
-                                </div>
-                                <% } %>
-                    </div>                 
-                <%}%>
+        <!-- <div class="row d-flex justify-content-center align-items-center h-100" id="weather-tooltip"> -->
+          <div class="col-md-8 col-lg-6 col-xl-4" id="weather-tooltip">
+    
+            <div class="card" style="border-radius: 35px;">
+              <div class="card-body p-4">
+    
+                <div class="row">
+                  <h6 class="col-10"><%-locals.weather_data.location.name%>, <%-locals.weather_data.location.region%></h6>
+                  <form class="col-2" action="/calendar" method="POST"><button type="submit" style="text-decoration: none;">Close</button></form>
+                </div>
+    
+                <div class="d-flex flex-column text-center mt-5 mb-4">
+                  <h6 class="display-4 mb-0 font-weight-bold" style="color: black;"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxtemp_f%>°F </h6>
+                  <h6 class="display-8 mb-0 font-weight-bold" style="color: black;"> <%-locals.weather_data.forecast.forecastday[locals.index].day.mintemp_f%>°F </h6>
+                  <span class="small" style="color: #F6F1F1"><%-locals.weather_data.forecast.forecastday[locals.index].day.condition.text%></span>
+                </div>
+    
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1" style="font-size: 1rem;">
+                    <div><i class="fas fa-wind fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxwind_mph%> mph
+                      </span></div>
+                    <div><i class="fas fa-tint fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.daily_will_it_snow%>% </span>
+                    </div>
+                    <div><i class="fas fa-sun fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> 0.2h </span>
+                    </div>
+                  </div>  
+                  <img src="<%-locals.weather_data.forecast.forecastday[locals.index].day.condition.icon%>"
+                width="100px">                                                     
+                </div>
+    
+              </div>
             </div>
+    
           </div>
+        <!-- </div> -->
+    
+<%}%>
+    <link rel="stylesheet" href="./../../resources/css/style.css">
+        <div class="row m-1">
+
+        <div class="col-9" id="calendar">
+          <!-- print the ejs object called calendarData -->
+          <!-- <%= JSON.stringify(calendarData) %> -->
+              <div class="container" style="border-radius: 30px;">
+                  <div class="row" style="height: 100vh;">
+                      <!-- ejs loop for 7 days of calendarData-->
+                      <% for (let i = 0; i < 7; i++) { %>
+                          <!-- header: todo add weather thing -->
+                          <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid lightgrey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
+                              <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
+                                  <h1 class="align-middle" style="color: white;margin-top:20px;">
+                                      <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
+                                  </h1>
+                              </div>
+                                  <!-- ejs loop for 24 hours of calendarData-->
+                                  <% for (let j = 0; j < 23; j++) { %>
+                                      <hr style="margin-top:3.125vh;z-index:0">
+                                      <div style="position: relative; width: 20px; height: 0px">
+                                          <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: white;">
+                                              <p class='scuuber-cal-text-small'>
+                                                  <%= times[j] %>
+      
+                                              </p>
+                                          </div>
+                                      </div>
+                                  <% } %>
+                                  <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                                      <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                                        <form action="/calendar" method="POST">
+                                            <p class="align-middle scuuber-cal-text" style=""> title: 
+                                                <%= calendarData[i][j].title %>
+                                            
+                                            </p>
+                                            <p class="align-middle scuuber-cal-text" style=""> owner: 
+                                                <%= calendarData[i][j].owner %>
+            
+                                            </p>
+                                            <p class="align-middle scuuber-cal-text"  style=""> location: 
+            
+                                                <%= calendarData[i][j].location %>
+                                            </p>
+                                            <input type="hidden" name="location" value="<%= calendarData[i][j].location %>"/>
+                                            <input type="hidden" name="eventId" value="<%= calendarData[i][j].event_id %>"/>
+                                            <input type="hidden" name="index" value="<%= i %>"/>
+                                            <p class="align-middle scuuber-cal-text" style=""> event id: 
+            
+                                                <%= calendarData[i][j].event_id %>
+                                            </p>
+                                            <button type="submit">Weather</button>
+                                        </form>
+                                      </div>
+                                      
+                                    <% } %>
+                            </div>                 
+                        <%}%>
+                        </div>
+                </div>
+            </div>
+        
+        <div class="card m-0 col-3" id="weather-popup">
+
+            <form action="/calendar" method="POST">
+            <div class="row">
+                <label for="location">Location</label>
+                <input type="location" id="location" name="location" placeholder="City, State"/>
+            </div>
+            <div class="row">
+                <button type="submit" id="weather-btn" class="btn btn-primary">Get Weather</button>
+            </div>
+            </form>
+    
+            <% if(locals.weather_data){ %>
+            <% const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            const d = new Date();%>
+            <div class="card-header" id="popup-header">
+            Weather for <%-locals.weather_data.location.name%>, <%-locals.weather_data.location.region%>, <%-locals.weather_data.location.country%>
+            </div>
+            <%for(let i = 0; i < 7; i++){ %>
+            <div class="row">
+                <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
+                <div class="col">
+                <div class="list-group-item">Max Temp: <span id="temp"><%- locals.weather_data.forecast.forecastday[i].day.maxtemp_f%></span> f</div>
+                <div class="list-group-item">Min Temp: <span id="temp"><%- locals.weather_data.forecast.forecastday[i].day.mintemp_f%></span> f</div>
+                </div>
+                <div class="col">
+                <div class="list-group-item">Precipiation: <span id="precip"><%- locals.weather_data.forecast.forecastday[i].day.totalprecip_in%></span> in</div>
+                <div class="list-group-item">Wind: <span id="wind"><%- locals.weather_data.forecast.forecastday[i].day.maxwind_mph%></span> mph</div>
+                </div>
+            </div>
+                
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+    <!--Weather tootip-->
+    
+    <div><%-locals.eventId%></div>
           <!-- Button trigger modal -->
   <div id="event-modal" class="modal" tabindex="-1">
     <div class="modal-dialog">

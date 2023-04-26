@@ -119,40 +119,7 @@ const d = new Date();
           <% } %>
           
       </div>
-      <div class="card m-2 col-3" id="weather-popup">
-  
-        <form action="/MyCalendar" method="POST">
-          <div class="row">
-            <label for="location">Location</label>
-            <input type="location" id="location" name="location" placeholder="City, State"/>
-          </div>
-          <div class="row">
-            <button type="submit" id="weather-btn" class="btn btn-primary">Get Weather</button>
-          </div>
-        </form>
-  
-        <% if(locals.data){ %>
-        <div class="card-header" id="popup-header">
-          Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
-        </div>
-          <%for(let i = 0; i < 7; i++){ %>
-          <div class="row">
-            <%console.log("forecastday = , i = ", locals.data.forecast.forecastday[i], ",", i);%>
-            <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
-            <div class="col">
-              <div class="list-group-item">Max Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.maxtemp_f%></span> f</div>
-              <div class="list-group-item">Min Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.mintemp_f%></span> f</div>
-            </div>
-            <div class="col">
-              <div class="list-group-item">Precipiation: <span id="precip"><%- locals.data.forecast.forecastday[i].day.totalprecip_in%></span> in</div>
-              <div class="list-group-item">Wind: <span id="wind"><%- locals.data.forecast.forecastday[i].day.maxwind_mph%></span> mph</div>
-            </div>
-          </div>
-            
-          <% } %>
-          <% } %>
-          
-      </div>
+      
     </div>
 
 </body>

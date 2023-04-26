@@ -198,8 +198,83 @@ app.get('/calendar', async (req, res) => {
   console.log('full_events: ', full_events)
   const processed_full_events = processData(full_events);
 
+
   res.render('pages/calendar', { calendarData: processed_full_events, times: TIMES });
 })
+app.post('/calendar', async (req, res) => {
+  const owner = req.session.user[0]['username'];
+  const get_events_query = `select * from events where owner = $1`;
+  var values = [owner];
+  const get_event_result = await db.any(get_events_query, values);
+  console.log('successfully got events for user: ' + owner);
+
+
+  //******* friend stuff *******/
+
+  // add any events that you are shared with
+  const get_shared_events_query = `select * from users_to_events where username = $1`;
+  var values = [owner];
+  const get_shared_event_result = await db.any(get_shared_events_query, values);
+  // list of event_id
+  const shared_event_ids = get_shared_event_result.map(event => event.event_id);
+  console.log('shared_event_ids: ', shared_event_ids);
+  // get all the events with those event_ids, as long as event.owner != owner
+  const get_shared_events_query2 = `select * from events where event_id = ANY($1)`;
+  var values = [shared_event_ids];
+  const get_shared_event_result2 = await db.any(get_shared_events_query2, values);
+  console.log('successfully got shared events for user: ' + owner);
+  const shared_events = get_shared_event_result2;
+  console.log('shared_events: ', shared_events);
+
+  // filter shared events, only keep the ones that are not owned by owner
+  const filtered_shared_events = shared_events.filter(event => event.owner != owner);
+  console.log('filtered_shared_events: ', filtered_shared_events)
+  console.log('event result: ', get_event_result)
+  const full_events = [].concat(get_event_result, filtered_shared_events);
+  console.log('full_events: ', full_events)
+  const processed_full_events = processData(full_events);
+  let isEvent
+  if (req.body.eventId) {
+    isEvent = req.body.eventId;
+  } else {
+    isEvent = null;
+  }
+  if (req.body.index) {
+    index = req.body.index;
+  } else {
+    index = null;
+  }
+  const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
+  await axios({
+    url: request,
+    method: 'GET',
+    dataType: 'json',
+  })
+    .then(results => {
+      // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+      res.render('pages/calendar', {
+        weather_data: results.data,
+        eventId: isEvent,
+        index: index,
+        calendarData: processed_full_events,
+        times: TIMES
+      })
+    })
+    .catch(error => {
+      console.log("There was and error!", error, "Query: ", request);
+      res.render('pages/calendar', {
+        error: error,
+        eventId: isEvent,
+        index: index,
+        weather_data: null,
+        calendarData: processed_full_events,
+        times: TIMES
+      })
+    });
+
+})
+
+
 
 //WORKS dont fuck with it
 app.get('/friend_calendar', async (req, res) => {
@@ -447,27 +522,26 @@ app.get('/friendRequestList', function (req, res) {
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
-app.get('/home', (req, res) => { res.render('pages/home', { data: null }) });
-// app.get('/home', async (req, res) => {
-//   // Fetch query parameters from the request object
-//   var username = req.session.user[0]['username'];
-//   // Multiple queries using templated strings
-//   var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
-//   // use task to execute multiple queries
-//   const friend_req_data = await db.any(friend_add_queue, username)
-//   console.log("the friend request list for: " + username)
-//   console.log(friend_req_data)
+app.get('/home', async (req, res) => {
+  // Fetch query parameters from the request object
+  var username = req.session.user[0]['username'];
+  // Multiple queries using templated strings
+  var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
+  // use task to execute multiple queries
+  const friend_req_data = await db.any(friend_add_queue, username)
+  console.log("the friend request list for: " + username)
+  console.log(friend_req_data)
 
-//   var friend_list_query = `select * from user_friends where username = $1`;
-//   const friend_data = await db.any(friend_list_query, username)
-//   console.log("the friend list for: " + username)
-//   console.log(friend_data)
-//   res.render('pages/home', {
-//     user: req.session.user[0]['username'],
-//     friend_request_list: friend_req_data,
-//     friend_list: friend_data
-//   })
-// });
+  var friend_list_query = `select * from user_friends where username = $1`;
+  const friend_data = await db.any(friend_list_query, username)
+  console.log("the friend list for: " + username)
+  console.log(friend_data)
+  res.render('pages/home', {
+    user: req.session.user[0]['username'],
+    friend_request_list: friend_req_data,
+    friend_list: friend_data
+  })
+});
 
 app.get('/friendTest', (req, res) => {
   console.log('user')
