@@ -226,11 +226,11 @@ function updateLocationOptions(value) {
 
 function openEventModal() {
     
-    /*
+    
     // Since we will be reusing the same modal for both creating and updating events,
     // we're creating variables to reference the title of the modal and the submit button
     // in javascript so we can update the text suitably
-    const submitButton = document.querySelector('#submit_button');
+    /* const submitButton = document.querySelector('#submit_button');
     const modalTitle = document.querySelector('.modal-title');
   
     // Check if the event exists in the CALENDAR_EVENTS by using `id`
@@ -300,14 +300,16 @@ function openEventModal() {
     // when the form is submitted by clicking on the "Creat/Update Event" button
     const form = document.querySelector('#event-modal form');
     form.setAttribute('action', `javascript:updateEventFromModal(${newid})`);
-    */
+   
   
+    */
+   console.log('Open event called');
     EVENT_MODAL.show();
   }
 
   // Updates the event for a given id with values taken from the modal.
 
-function updateEventFromModal(id) {
+/* function updateEventFromModal(id) {
     CALENDAR_EVENTS[id] = {
       name: document.querySelector('#event-name input').value,
       day: document.querySelector('#weekday select').value,
@@ -319,10 +321,10 @@ function updateEventFromModal(id) {
     };
   
     // Update the dom and hide the event modal
-    updateDOM();
+    updateDOM(); 
     EVENT_MODAL.hide();
-  }
-
+  } 
+*/
 function updateTooltips() {
     // @TODO: Display tooltip with the Name, Time and Location of the event.
     // The formatting of the contents of the tooltip is up to your discretion.
@@ -352,11 +354,11 @@ function updateTooltips() {
         setTimeout(()=>{
             initializeContent();
 
-            for (let i = 0; i < 7; i++) {
+            /* for (let i = 0; i < 7; i++) {
                 const element = document.getElementById("calendar-div-" + i);
                 element.setAttribute('onclick', `openEventModal()`);
                 
-            }
+            } */
 
             const element = document.getElementById("calendar-div-0");
             element.setAttribute('onclick', `openEventModal()`);
@@ -391,6 +393,7 @@ function updateTooltips() {
                             <h1 class="align-middle" style="color: white;margin-top:20px;">
                                 <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                             </h1>
+                            <button onclick="openEventModal()"><i>Open</i></button>
                         </div>
                             <!-- ejs loop for 24 hours of calendarData-->
                             <% for (let j = 0; j < 23; j++) { %>
@@ -405,7 +408,7 @@ function updateTooltips() {
                                 </div>
                             <% } %>
                             <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                                <div onclick="openEventModal()" class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
                                 <p class="align-middle scuuber-cal-text" style=""> title: 
                                     <%= calendarData[i][j].title %>
                                 
