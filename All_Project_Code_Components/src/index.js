@@ -198,7 +198,6 @@ app.get('/calendar', async (req, res) => {
   console.log('full_events: ', full_events)
   const processed_full_events = processData(full_events);
 
-
   res.render('pages/calendar', { calendarData: processed_full_events, times: TIMES });
 })
 app.post('/calendar', async (req, res) => {
