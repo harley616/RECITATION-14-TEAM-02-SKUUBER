@@ -421,37 +421,7 @@ function updateTooltips() {
 
 
        
-        async function weatherSearch() {
-            console.log('weather search called');
-            const location = document.getElementById("location").innerHTML;
-            const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${location}&days=7`;
-            let weatherPopup = document.getElementById('weather-popup');
-            await axios({
-                url: request,
-                method: 'GET',
-                dataType: 'json',
-            })
-            .then(results => {
-            console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-            for(let i = 0; i < 7; i++){
-                document.getElementById('weather-day').innerHTML = days[(d.getDay() + i)%7];
-                document.getElementById('min-temp').innerHTML = results.data.forecast.forecastday[i].day.mintemp_f;
-                document.getElementById('max-temp').innerHTML = results.data.forecast.forecastday[i].day.maxtemp_f;
-                document.getElementById('precip').innerHTML = results.data.forecast.forecastday[i].day.totalprecip_in;
-                document.getElementById('wind').innerHTML = results.data.forecast.forecastday[i].day.maxwind_mph;
-                document.getElementById('weather-results').style.display = "block";
-                weatherPopup.appendChild(document.getElementById('weather-results'));
-            }    
-            })
-            .catch(error => {
-            console.log("There was and error!", error, "Query: ", request);
-                let div = document.createElement('div');
-                let node = document.createTextNode('There was an error');
-                div.appendChild(node);
-                weatherPopup.appendChild(div);
-            });
-            updateDOM();
-        }
+        
 
 
 
@@ -470,7 +440,7 @@ function updateTooltips() {
     
                 <div class="row">
                   <h6 class="col-10"><%-locals.weather_data.location.name%>, <%-locals.weather_data.location.region%></h6>
-                  <form class="col-2" action="/calendar" method="POST"><button type="submit" style="text-decoration: none;">Close</button></form>
+                  <form class="col-2" action="/calendar" method="POST"><button type="submit" style="text-decoration: none;"><i class="fa-solid fa-x"></i></button></form>
                 </div>
     
                 <div class="d-flex flex-column text-center mt-5 mb-4">
@@ -481,11 +451,11 @@ function updateTooltips() {
     
                 <div class="d-flex align-items-center">
                   <div class="flex-grow-1" style="font-size: 1rem;">
-                    <div><i class="fas fa-wind fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxwind_mph%> mph
+                    <div><i class="fa-solid fa-wind" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxwind_mph%> mph
                       </span></div>
                     <div><i class="fas fa-tint fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.daily_will_it_snow%>% </span>
                     </div>
-                    <div><i class="fas fa-sun fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> 0.2h </span>
+                    <div><i class="fa-solid fa-ruler-vertical" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.totalprecip_in%>in </span>
                     </div>
                   </div>  
                   <img src="<%-locals.weather_data.forecast.forecastday[locals.index].day.condition.icon%>"
