@@ -239,6 +239,7 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   console.log('username: ', req.body.username);
   console.log('password: ', req.body.password);
+  console.log('confirmedPassword: ', req.body.confirmPassword);
   const username= req.body.username;
   //hash the password using bcrypt library
   const hash = await bcrypt.hash(req.body.password, 10);
@@ -249,24 +250,29 @@ app.post('/register', async (req, res) => {
     const checker = await db.query('SELECT * FROM users WHERE username = $1', [username]);
 
     //If username is not taken (i.e. check.length === 0):
-    if(checker.length === 0){
+    if(checker.length === 0 && req.body.password === req.body.confirmPassword){
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
       console.log('hash: ', hash);
-      await res.redirect('/login');
-    } else {
+      await res.render('pages/home');
+    } else if(checker.length !== 0) {
 
-    //If username is already taken (i.e. check.length != 0)
+      //If username is already taken (i.e. check.length != 0)
       console.log('username already exists');
-      await res.redirect('/register');
+      await res.render('pages/register', {usernameExists: true, passwordNoMatch: false});
+    } else if(req.body.password != req.body.confirmPassword) {
+      // If the two passwords do not match, throw an error
+      console.log('Entered passwords do not match');
+      await res.render('pages/register', {usernameExists: false, passwordNoMatch: true});
     }
   } catch (error) {
 
-  //General catch-all for errors
-     console.error(error);
-     await res.redirect('/register');
+    //General catch-all for errors
+    console.error(error);
+    await res.redirect('/register');
   }
 
 });
+
 
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
