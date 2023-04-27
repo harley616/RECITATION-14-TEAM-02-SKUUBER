@@ -360,14 +360,10 @@ function updateTooltips() {
                 
             } */
 
-            const element = document.getElementById("calendar-div-0");
-            element.setAttribute('onclick', `openEventModal()`);
             var event_div = document.createElement('div')
 
             //height is 3.125vh per hour
             //marginTop is 3.125vh * starting hour
-            event_div.onclick = openModal;
-
             event_div.style.marginTop = "37.5vh";
             event_div.style.height = "6.25vh";
             event_div.style.background = "lightblue";
@@ -408,7 +404,7 @@ function updateTooltips() {
                                 </div>
                             <% } %>
                             <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                <div onclick="openEventModal()" class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                                <div class="calendarItem" style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
                                 <p class="align-middle scuuber-cal-text" style=""> title: 
                                     <%= calendarData[i][j].title %>
                                 
@@ -425,6 +421,7 @@ function updateTooltips() {
 
                                     <%= calendarData[i][j].event_id %>
                                 </p>
+                                <button onclick="openEventModal()">Open</button>
                                 </div>
                                 <% } %>
                     </div>                 
