@@ -1,51 +1,74 @@
 <header>
-    <style>
-        .scuuber-menu {
-    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
-}
-
-.scuuber-title {
-    color: black; font-size: 30px;font-family: 'IBM Plex Mono', monospace;
-}
-
-.scuuber-text {
-    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
-}
-
-    </style>
-    <nav class="navbar navbar-expand-sm border-bottom">
-      <div class="container">
-        <button
-          class="navbar-toggler ms-auto"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbar-collapse"
-          aria-controls="navbar"
-          aria-expanded="false"
-          aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-          <ul class="navbar-nav me-auto">
-            <a href="/home">
-                <img src="scuuber_large.png" height="50px" width="158px" />
-
-            </a>
-
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/home"  >home</a>
+  <style>
+      .scuuber-menu {
+        color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+      }
+      .scuuber-title {
+        color: black; font-size: 30px;font-family: 'IBM Plex Mono', monospace;
+      }
+      .scuuber-text {
+        color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+      }
+      .dropdown-style {
+        color: black;
+        font-family: 'IBM Plex Mono', monospace;
+        background-color: #b3b3b3;
+        border: 0px; 
+        border-radius: 10px;
+      }
+      .dropdown-item:focus, .dropdown-item:hover {
+        background-color: #969696;
+      }
+      .nav-styling {
+        padding-left: 5%;
+        font-family: 'IBM Plex Mono', monospace;
+      }
+      .img-shift {
+        border-radius: 20px;
+      }
+      .dropdown-toggle {
+        border-radius: 10px;
+      }
+      .dropdown-toggle:hover {
+        background-color: #19A7CE;
+      }
+  </style>
+  <nav class="navbar fixed-bottom navbar-expand-lg navbar-light bg-light nav-styling">
+    <div class="container-fluid">
+      <ul class="navbar-nav">
+        <!-- Dropdown -->
+        <li class="nav-item dropup">
+          <a
+            class="nav-link dropdown-toggle"
+            //href="#"
+            id="navbarDropdownMenuLink"
+            role="button"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+          >
+            <img src="skiing.png" 
+            class="img-thumbnail img-responsive img-shift"
+            height="40px"
+            width="40px"
+            alt="Scuuber" />
+            UserName
+          </a>
+          <ul class="dropdown-menu dropdown-style" aria-labelledby="navbarDropdownMenuLink">
+            <li>
+              <a class="dropdown-item" href="/home">Home</a>
             </li>
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/calendar" >my calendar</a>
+            <li>
+              <a class="dropdown-item" href="/calendar">My Calendar</a>
             </li>
-            <li class="nav-item  me-1">
-                <a class="nav-link scuuber-menu" href="/friend_calendar"  >my friends' calendars</a>
+            <li>
+              <a class="dropdown-item" href="/friend_calendar">Friend's Calendar</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/logout" style="color: red">Logout</a>
             </li>
           </ul>
-          <div class="nav-item me-1">
-                <a class="nav-link scuuber-menu" href="/logout">logout</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-   </header>
+        </li>
+      </ul>
+    </div>
+  </nav>
+ </header>
