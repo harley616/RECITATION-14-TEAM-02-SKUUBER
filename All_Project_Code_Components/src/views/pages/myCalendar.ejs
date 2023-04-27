@@ -19,7 +19,7 @@
 			}
 
 			.calendar-container{
-				width: 100%;
+				width: 70%;
 			}
 
 			.month-container{
@@ -49,8 +49,34 @@
 				text-align: center;
 			}
 
+      #weather-popup {
+        background-color: #F6F1F1;
+        color: #19A7CE;
+        width: 22rem;
+        float: right;
+        height:min-content;
+      }
+
+#weather-popup .row {
+  margin: .5rem;
+  background-color: #146C94;
+  padding: .5rem;
+  color: #F6F1F1;
+  height: min-content;
+}
+
+#weather-btn {
+  background-color: black;
+  color: #F6F1F1;
+  width: 50%;
+  margin: auto;
+}
 	</style>
 
+	</style>
+<%const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const d = new Date();
+%>
 </head>
 
 <body>
@@ -61,28 +87,32 @@
         <h2><%= year %></h2>
     </header>
 
+    <div class="row">
 
-    <div class="calendar-container">
-        <% for(let month = 0;month < calendar.length;month++) { %>
-        <div class="month-container" id="<%= months[month] %>">
-            <h3 style="text-align: center;"> <%= months[month] %> </h3>
-            <div class="day-of-week">
-                <span>Sun</span><span>Mon</span><span>Tue</span><span>
-                    Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-            </div>
-            <% for(let x = 0;x < calendar[month].length;x++) { %>
-            <div class="days">
-                <% for(let y = 0;y < calendar[month][x].length;y++) { %>
-                <div class="date">
-                    <div id="<%=calendar[month][x][y] %>">
-                        <%= calendar[month][x][y] %>
-                    </div>
-                </div>
-                <% } %>
-            </div>
-            <% } %>
-        </div>
-        <% } %>
+      <div class="calendar-container col-9" >
+          <% for(let month = 0;month < locals.calendar.length; month++) { %>
+          <div class="month-container" id="<%= months[month] %>">
+              <h3 style="text-align: center;"> <%= months[month] %> </h3>
+              <div class="day-of-week">
+                  <span>Sun</span><span>Mon</span><span>Tue</span><span>
+                      Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+              </div>
+              <% for(let x = 0;x < calendar[month].length;x++) { %>
+              <div class="days">
+                  <% for(let y = 0;y < calendar[month][x].length;y++) { %>
+                  <div class="date">
+                      <div id="<%=calendar[month][x][y] %>">
+                          <%= calendar[month][x][y] %>
+                      </div>
+                  </div>
+                  <% } %>
+              </div>
+              <% } %>
+          </div>
+          <% } %>
+          
+      </div>
+      
     </div>
 
 </body>
