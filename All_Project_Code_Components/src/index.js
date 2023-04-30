@@ -197,7 +197,7 @@ app.get('/calendar', async (req, res) => {
     console.log('full_events: ', full_events)
     const processed_full_events = processData(full_events);
 
-    res.render('pages/calendar', {calendarData: processed_full_events, times: TIMES});
+    res.render('pages/calendar', {user: owner, calendarData: processed_full_events, times: TIMES});
 })
 
 //WORKS dont fuck with it
@@ -226,7 +226,7 @@ app.get('/friend_calendar', async (req, res) => {
         }
     }
     const processed_calendar_data = processData(friendEvents);
-    res.render('pages/friend_calendar', {calendarData: processed_calendar_data, times: TIMES}); 
+    res.render('pages/friend_calendar', {user: owner, calendarData: processed_calendar_data, times: TIMES}); 
 })
 
 
@@ -253,7 +253,7 @@ app.post('/register', async (req, res) => {
     if(checker.length === 0 && req.body.password === req.body.confirmPassword){
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
       console.log('hash: ', hash);
-      await res.render('pages/home');
+      await res.redirect('/login');
     } else if(checker.length !== 0) {
 
       //If username is already taken (i.e. check.length != 0)
