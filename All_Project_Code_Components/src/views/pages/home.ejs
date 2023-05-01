@@ -18,15 +18,21 @@
             color: black; 
             font-size: 15px;
             font-family: 'IBM Plex Mono', monospace;
+            border-width:0px;
+            background-color:#117c9a;
 
         }
         .side-bar {
-            flex: 0.25;
+            flex: 3;
             height:100vh;
             background-color: #adadad;
             padding:0px;
             align-items: center;
-            box-shadow: 5 0 20px rgba(0, 0, 0, 10);
+            box-shadow: 0 0 30px rgba(173, 173, 173, 5);
+            border-style: solid;
+            border-width: 0px;
+            position: relative;
+            z-index: 10;
         }
         .main-friends {
             flex: 11;
@@ -39,7 +45,7 @@
             -ms-transition: all 0.30s ease-in-out;
             -o-transition: all 0.30s ease-in-out;
             border-radius: 10px;
-            background-color: #adadad;
+            background-color: rgb(173, 173, 173);
             padding-bottom: 10px;
         }
         .friend-icons:hover {
@@ -66,6 +72,7 @@
             align-items: center; 
             border-color: black; 
             border-width: 1px;
+            margin: 0px;
         }
         .add-friends-input {
             -webkit-transition: all 0.30s ease-in-out;
@@ -75,11 +82,58 @@
             background-color: white;
             justify-content: center;
             align-items: center;
-            width: 90%;
+            width: 100%;
             border-radius: 10px;
+            flex: 1;
+            border-style: solid;
+            border-color: red;
+            padding: 0px;
+            margin: 0px;
         }
-        .add-friends-input:focus {
-
+        .add-friends-input:hover {
+            box-shadow: 0 0 10px rgba(81, 203, 238, 5);
+            border: 1px solid rgba(81, 203, 238, 5);
+        }
+        .friend-search {
+            background-color: white;
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            outline: none;
+            /*padding: 3px 0px 3px 3px;*/
+            /*margin: 5px 1px 3px 0px;*/
+            border-color: rgb(25, 165, 204); 
+            border-width: 1px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            /*font-size: 20px;*/
+            height: 35px;
+            width: 100%;
+        }
+        .friend-search:focus {
+            box-shadow: 0 0 10px rgba(81, 203, 238, 5);
+            /*padding: 3px 0px 3px 3px;*/
+            /*margin: 5px 1px 3px 0px;*/
+            border: 1px solid rgba(81, 203, 238, 5);
+            font-family: 'IBM Plex Mono', monospace;
+            /*font-size: 20px;*/
+        }
+        .form {
+            margin: 0px;
+        }
+        .friend-request {
+            border-style: solid; 
+            /*border-color: black; */
+            border-width:0px;
+            background-color: #3babca;
+            width: 90%; 
+            margin-top:15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(81, 203, 238, 5); 
+        }
+        .friend-accept { 
+            background-image: 'skiing-2.png';
         }
     </style>
   <div class="d-flex flex-column container side-bar" style="padding:0px; align-items: center;">
@@ -111,17 +165,16 @@
         <form action="\addFriendRequest" method="POST" name="FriendSendRequest">
             <label class="scuuber-text" for="friend_username">Add a friend by entering their username</label>
             <div class="d-flex row add-friends-input">
-                <div class="form-group col-md my-1" style="width:100%;">
-                    <input class="form-control" type="text" id="friend_username" name="friend_username" required minlength="1" style="border-color: rgb(25, 165, 204); border-width: 1px;" />
+                <div class="form col-md my-1" style="flex: 7;">
+                    <input class="form-control friend-search" type="text" id="friend_username" name="friend_username" style="" />
                 </div>
-                <div class="col my-1" >
+                <div class="col my-1" style="flex: 1;">
                     <input id="submitbutton" type="submit" value="Invite friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 5px;" />
                 </div>
             </div>
-    
         </form>
     </div>
-    <div class="d-flex flex-column" style="width: 100%; align-items: center;">
+    <div class="d-flex flex-column" style="width: 100%; align-items: center; ">
         <p class="scuuber-title">Your friend requests</p>
         <% if (friend_request_list.length == 0) { %>
             <p class="scuuber-text">You have no friend requests</p>
@@ -129,24 +182,28 @@
         <% if (friend_request_list.length > 0) { %>
             <p class="scuuber-text"> You have <%= friend_request_list.length %> friend requests</p>
             <% for (var i = 0; i < friend_request_list.length; i++) {%>
-                <div class="d-flex flex-row list-group">
-                    <div>
-                        <%= friend_request_list[0]['username'] %>
+                <div class="d-flex flex-column friend-request" style="">
+                    <div class="d-flex">
+                        <div class="d-flex me-auto mx-2" style="align-items: center; font-family: 'IBM Plex Mono', monospace;">
+                            <%= friend_request_list[i]['username'] %>
+                        </div>
+                        <div class="d-flex my-1" style="margin-right:10px;">
+                            <form action="acceptFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[i].username %>" /> 
+                                <button type="submit" class="btn btn-outline-info scuuber-btn">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="d-flex my-1" style="margin-right:10px;">
+                            <form action="declineFriend" method="GET">
+                                <input type="hidden" name="username" value="<%= friend_request_list[i].username %>" /> 
+                                <button type="submit" class="btn btn-outline-info scuuber-btn">
+                                    <i class="fa-solid fa-x"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div>
-                        <form action="acceptFriend" method="GET">
-                            <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                            <input type="submit"class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;"  value="Accept" />
-                            <div></div>
-                        </form>
-                    </div>
-                        <form action="declineFriend" method="GET">
-                            <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                            <input type="submit" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" value="Decline" />
-                            <div></div>
-                        </form>
-                    <div>
-
                 </div>
             <% } %>
         <% } %>

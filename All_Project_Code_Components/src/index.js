@@ -316,23 +316,24 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post("/addFriendRequest", (req, res) => {
+app.post("/addFriendRequest", async (req, res) => {
     const query = "INSERT INTO friend_add_queue (username, friend_username) VALUES ($1, $2)";
     const values = [req.session.user[0]['username'], req.body.friend_username];
+    
     db.any(query, values)
-      .then(function () {
-        console.log("Successfully added friend request!");        
-        console.log('from ' + req.session.user[0]['username'])
-        console.log('friend request to ' + req.body.friend_username);
-        console.log(req.body)
-        console.log(values)
-        res.redirect("/home");
-      })
-      .catch(function (err) {
-        console.log(err);
-        res.redirect("/home");
-      });
-  });
+    .then(function () {
+      console.log("Successfully added friend request!");        
+      console.log('from ' + req.session.user[0]['username'])
+      console.log('friend request to ' + req.body.friend_username);
+      console.log(req.body)
+      console.log(values)
+      res.redirect("/home");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/home");
+    });
+});
 
 app.get("/acceptFriend", (req, res) => {
     console.log('accepting friend : ' + req.query.username + ' as ' + req.session.user[0]['username'])
@@ -454,6 +455,7 @@ function getRandomInt(max) {
 }
 
 app.get('/home', async (req, res) => {
+  try {
     // Fetch query parameters from the request object
     var username = req.session.user[0]['username'];
     // Multiple queries using templated strings
@@ -471,6 +473,11 @@ app.get('/home', async (req, res) => {
     friend_request_list: friend_req_data,
     friend_list: friend_data
     })
+  }
+  catch(error) {
+    console.log(error);
+    res.redirect('/login');
+  }
 });
 
 app.get('/friendTest', (req, res) => {
