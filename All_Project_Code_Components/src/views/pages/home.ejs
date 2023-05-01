@@ -67,32 +67,29 @@
             background-color: rgb(104, 104, 104);
         }
         .add-friends-outer {
-            border-style: solid;
+            border-style: none;
             width: 100%; 
             align-items: center; 
             border-color: black; 
             border-width: 1px;
             margin: 0px;
+            background-color: #bebfc5;
         }
         .add-friends-input {
             -webkit-transition: all 0.30s ease-in-out;
             -moz-transition: all 0.30s ease-in-out;
             -ms-transition: all 0.30s ease-in-out;
             -o-transition: all 0.30s ease-in-out;
-            background-color: white;
+            background-color: rgb(139, 142, 152);
             justify-content: center;
             align-items: center;
             width: 100%;
             border-radius: 10px;
             flex: 1;
-            border-style: solid;
+            border-style: none;
             border-color: red;
             padding: 0px;
-            margin: 0px;
-        }
-        .add-friends-input:hover {
-            box-shadow: 0 0 10px rgba(81, 203, 238, 5);
-            border: 1px solid rgba(81, 203, 238, 5);
+            margin-top: 10px;
         }
         .friend-search {
             background-color: white;
@@ -104,20 +101,13 @@
             /*padding: 3px 0px 3px 3px;*/
             /*margin: 5px 1px 3px 0px;*/
             border-color: rgb(25, 165, 204); 
+            border-style: none;
             border-width: 1px;
             border-radius: 6px;
             font-family: 'IBM Plex Mono', monospace;
             /*font-size: 20px;*/
             height: 35px;
             width: 100%;
-        }
-        .friend-search:focus {
-            box-shadow: 0 0 10px rgba(81, 203, 238, 5);
-            /*padding: 3px 0px 3px 3px;*/
-            /*margin: 5px 1px 3px 0px;*/
-            border: 1px solid rgba(81, 203, 238, 5);
-            font-family: 'IBM Plex Mono', monospace;
-            /*font-size: 20px;*/
         }
         .form {
             margin: 0px;
@@ -162,14 +152,14 @@
     <div class="d-flex flex-column add-friends-outer" style="">
         <h1 class="scuuber-title">Add Friends</h1>
 
-        <form action="\addFriendRequest" method="POST" name="FriendSendRequest">
+        <form action="\addFriendRequest" method="POST" name="FriendSendRequest" style="margin-top: 15px; width:90%; justify-content:center;">
             <label class="scuuber-text" for="friend_username">Add a friend by entering their username</label>
             <div class="d-flex row add-friends-input">
                 <div class="form col-md my-1" style="flex: 7;">
                     <input class="form-control friend-search" type="text" id="friend_username" name="friend_username" style="" />
                 </div>
                 <div class="col my-1" style="flex: 1;">
-                    <input id="submitbutton" type="submit" value="Invite friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 5px;" />
+                    <input id="submitbutton" type="submit" value="Invite friend" class="btn btn-primary" style="border-radius: 5px; font-size: 15px; font-family: 'IBM Plex Mono', monospace;" />
                 </div>
             </div>
         </form>
