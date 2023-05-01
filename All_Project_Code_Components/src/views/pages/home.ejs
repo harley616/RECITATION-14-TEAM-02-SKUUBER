@@ -3,7 +3,22 @@
 
 <main>
   <div>
-    hello
+    <p class="scuuber-title">Add a friend</p>
+
+        <form action="\addFriendRequest" method="POST">
+
+            <div class="row">
+                <div class="form-group col-md">
+                    <label class="scuuber-text" for="friend_username">Username:</label>
+                    <input class="form-control" type="text" id="friend_username" name="friend_username" />
+                </div>
+                <div class="col mt-4" >
+                    <input type="submit" value="Add friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" />
+
+                </div>
+            </div>
+    
+        </form>
     
         </form>
         <p class="scuuber-title">Your friend requests</p>
