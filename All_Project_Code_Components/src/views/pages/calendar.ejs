@@ -363,26 +363,7 @@ button, input[type="submit"], input[type="reset"] {
           updateDOM();
       }
       
-      const CALENDAR_EVENTS = [
-          {
-            name: 'running',
-            day: 'tuesday',
-            time: '16:00',
-            modality: 'Remote',
-            location: 'denver',
-            url: 'https://google.com',
-            attendees: 'jeff bezos, elon musk, bill gates',
-          },
-          {
-            name: 'lecture',
-            day: 'monday',
-            time: '11:00',
-            modality: 'In-Person',
-            location: 'denver',
-            url: 'https://google.com',
-            attendees: 'jeff bezos, elon musk, bill gates',
-          },
-        ];
+      const CALENDAR_EVENTS = calendarData;
       
       function updateDOM() {
       
