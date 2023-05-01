@@ -142,7 +142,7 @@ button, input[type="submit"], input[type="reset"] {
                       <% for (let i = 0; i < 7; i++) { %>
                           <!-- header: todo add weather thing -->
                           <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid lightgrey;height: 85vh;margin:0px;padding:0px;margin-top:10px;background-color: #F6F1F1;">
-                              <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:  #146C94;border-radius: 5px;">
+                              <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 12vh;margin:0px;padding:0px;background-color:  #146C94;border-radius: 5px;">
                                 <div class="d-flex" style="justify-content: space-evenly;align-items: center;margin-top: .5rem;">
                                   <h1 style="color: #F6F1F1;">
                                       <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
@@ -177,6 +177,19 @@ button, input[type="submit"], input[type="reset"] {
                                             <p class="align-middle scuuber-cal-text"> event id: 
                                                 <%= calendarData[i][j].event_id %>
                                             </p>
+                                            <% if (calendarData[i][j].shared) { %> 
+                                                <p class="align-middle scuuber-cal-text"> friends: 
+                                                    <div class="row">
+                                                    <% for (let k = 0; k < calendarData[i][j].usernames.length; k++) { %>
+                                                        <div class="col" style="border-radius: 5px; background: black; height:10px; width: 10px; ">
+                                                            <p class='scuuber-cal-text-small'>
+                                                                <%= calendarData[i][j].usernames[k] %>
+                                                            </p>
+                                                        </div>
+                                                    <% } %>
+                                                    </div>
+                                                </p>
+                                            <% } %>
                                             <input type="hidden" name="location" value="<%= calendarData[i][j].location %>"/>
                                             <input type="hidden" name="eventId" value="<%= calendarData[i][j].event_id %>"/>
                                             <input type="hidden" name="index" value="<%= i %>"/>

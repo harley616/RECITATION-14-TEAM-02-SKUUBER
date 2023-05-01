@@ -113,8 +113,8 @@ const processData = (events) => {
   for (let i = 0; i < 7; i++) {
     const futureDate = currentDate + (i * 24 * 60 * 60 * 1000);
     const day = new Date(futureDate).getDay();
-    console.log('filtering events');
-    console.log(events);
+    //console.log('filtering events');
+    //console.log(events);
     const dayEvents = events.filter(event => {
       const eventDate = new Date(event.date);
       return eventDate.getDay() === day;
@@ -126,6 +126,11 @@ const processData = (events) => {
       obj.location = event.location;
       obj.owner = event.owner;
       obj.event_id = event.event_id;
+
+      if (event.usernames != null) {
+        obj.usernames = event.usernames;
+        obj.shared = true;
+      }
       // get time in hours (0-24)
       // the padding is (3.125vh * hours) + 8vh
       // this is where on the calendar the event shows up
@@ -166,14 +171,13 @@ const TIMES = [
   '12 AM',
   '01 AM'
 ]
+
 app.get('/calendar', async (req, res) => {
   const owner = req.session.user[0]['username'];
   const get_events_query = `select * from events where owner = $1`;
   var values = [owner];
   const get_event_result = await db.any(get_events_query, values);
   console.log('successfully got events for user: ' + owner);
-
-  //******* friend stuff *******/
 
   // add any events that you are shared with
   const get_shared_events_query = `select * from users_to_events where username = $1`;
@@ -192,14 +196,45 @@ app.get('/calendar', async (req, res) => {
 
   // filter shared events, only keep the ones that are not owned by owner
   const filtered_shared_events = shared_events.filter(event => event.owner != owner);
+  console.log('filtered shared events');
+  console.log(filtered_shared_events);
+
+  for (let i = 0; i < filtered_shared_events.length; i++) {
+    console.log('in loop...');
+    const event_id = filtered_shared_events[i].event_id;
+    const get_users_to_events_query = `select * from users_to_events where event_id = $1`;
+    var values = [event_id];
+    const get_users_to_events_result = await db.any(get_users_to_events_query, values);
+    console.log('successfully got users_to_events for event_id: ' + event_id);
+    const usernames = get_users_to_events_result.map(user => user.username);
+    console.log('usernames: ', usernames);
+    filtered_shared_events[i].usernames = usernames
+    console.log('added usernames')
+    console.log(usernames);
+    //const get_users_query = `select * from users where username = ANY($1)`;
+    //var values = [usernames];
+    //const get_users_result = await db.any(get_users_query, values);
+    //console.log('successfully got users for usernames: ' + usernames);
+    //filtered_shared_events[i].users = get_users_result;
+  }
+
+
   console.log('filtered_shared_events: ', filtered_shared_events)
   console.log('event result: ', get_event_result)
   const full_events = [].concat(get_event_result, filtered_shared_events);
   console.log('full_events: ', full_events)
   const processed_full_events = processData(full_events);
 
+
+  console.log('processed full events: ', processed_full_events);
+
+
+
+
   res.render('pages/calendar', { calendarData: processed_full_events, times: TIMES });
 })
+
+
 app.post('/calendar', async (req, res) => {
   const owner = req.session.user[0]['username'];
   const get_events_query = `select * from events where owner = $1`;
@@ -229,6 +264,15 @@ app.post('/calendar', async (req, res) => {
   const filtered_shared_events = shared_events.filter(event => event.owner != owner);
   console.log('filtered_shared_events: ', filtered_shared_events)
   console.log('event result: ', get_event_result)
+
+  // for each filtered shared event, get the users added to this event:
+  // get all the users_to_events with the event_id
+    // for each of those, get the username
+    // get all the users with those usernames
+    // add those users to the event object
+
+
+
   const full_events = [].concat(get_event_result, filtered_shared_events);
   console.log('full_events: ', full_events)
   const processed_full_events = processData(full_events);
@@ -243,6 +287,7 @@ app.post('/calendar', async (req, res) => {
   } else {
     index = null;
   }
+
   const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
   await axios({
     url: request,
@@ -689,7 +734,6 @@ app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login");
 });
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server-->

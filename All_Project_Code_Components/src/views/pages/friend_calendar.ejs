@@ -7,11 +7,9 @@
         .scuuber-menu {
     color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
 }
-
 .scuuber-title {
     color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace; font-weight: semibold;
 }
-
 .scuuber-text {
     color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
 }
@@ -27,10 +25,8 @@
 .scuuber-cal-text-small {
     color: lightgrey; font-size: 8px;font-family: 'IBM Plex Mono', monospace;
 }
-
     </style>
 <script>
-
 const CALENDAR_DAYS = [
     'Sunday',
     'Monday',
@@ -40,26 +36,20 @@ const CALENDAR_DAYS = [
     'Friday',
     'Saturday',
   ];
-
 let EVENT_MODAL;
 // @TO DO: Fill out the values for each field correctly.
 // Location and url are intentionally mutually exclusive fields in this scenario.
 // If you are adding value for one, you needn't for the other.
-
 const initializeContent = async () => {
-
     //initializeContent must call /getEvents to get the list of events for the user
     // later we will also call /getFriendEvents and overlay them on the calendar
     // set the element event_name = 
-
     const modal_options = {
         backdrop: 'static',
         keyboard: false,
         focus: true
     }
-
     EVENT_MODAL = new bootstrap.Modal(document.getElementById('event-modal'), modal_options)
-
     /** 
     const calendarElement = document.getElementById('calendar');
 calendarData[i][j]
@@ -114,10 +104,8 @@ calendarData[i][j]
         card.appendChild(body)
     });
     */
-
     updateDOM();
 }
-
 const CALENDAR_EVENTS = [
     {
       name: 'running',
@@ -138,22 +126,17 @@ const CALENDAR_EVENTS = [
       attendees: 'jeff bezos, elon musk, bill gates',
     },
   ];
-
 function updateDOM() {
-
  const events = CALENDAR_EVENTS;
  /*
-
  events.forEach((event, id) => {
    // First, let's try to update the event if it already exists.
-
    // @TODO: Use the `id` parameter to fetch the object if it already exists.
    // Replace <> with the appropriate variable name
    // In templated strings, you can include variables as ${var_name}.
    // For eg: let name = 'John';
    // let msg = `Welcome ${name}`;
    let eventElement = document.querySelector(`#event-${id}`);
-
    // if event is undefined, i.e. it doesn't exist in the CALENDAR_EVENTS array, make a new one.
    if (eventElement === null) {
      eventElement = document.createElement('div'); // @TODO: create a new div element. Use document.createElement().
@@ -162,55 +145,41 @@ function updateDOM() {
      // @TODO: Set the id attribute of the eventElement to be the same as the input id.
      // Replace <> with the correct HTML attribute
      eventElement.id = `event-${id}`;
-
      // Create the element for the Event Name
      const title = document.createElement('div');
      title.classList.add('col', 'event-title');
-
      // @TODO: Append the title element to the event element. Use .append() or .appendChild()
      // with the appropriate parent element.
      eventElement.append(title);
-
      eventElement.setAttribute('data-bs-toggle', 'tooltip');
      eventElement.setAttribute('data-bs-title', 'default tooltip');
-
    } else {
      // @TODO: Remove the old element, just in case we are changing the day while updating the event.
      // Use .remove() with the appropriate parent element.
-
      eventElement.remove();
    }
-
    // Add the Event Name
-
    const title = eventElement.querySelector('div.event-title');
    title.innerHTML = event.name; // event here is an input parameter to the function
-
    // Add a tooltip with more information on hover
    // @TODO: you will add code here when you are working on for Part B.
-
    // @TODO: On clicking the event div, it should open the modal with the fields pre-populated.
    // Replace <> with the triggering action.
    eventElement.setAttribute('onclick', `openEventModal({id: ${id}})`);
-
    // Add the event div to the parent
    document
      .querySelector(`#${event.day} .event-container`)
      .appendChild(eventElement);
  });
  */
-
 }
-
 function updateLocationOptions(value) {
     // @TODO: get the "Location" and "Remote URL" HTML elements from the modal.
     // Use document.querySelector() or document.getElementById().
     const location = document.getElementById('location'); //get the "Location" field
     const remoteUrl = document.getElementById('remote-url'); // get the "Remote URL" field
-
     const remoteUrlForm = document.querySelector('#remote-url input');
     const locationForm= document.querySelector('#remote-url input');
-
   
     // Depending on the "value" change the visibility of these fields on the modal.
     // Use conditional statements.
@@ -223,20 +192,15 @@ function updateLocationOptions(value) {
         location.style.display = 'none';
     }
   }
-
 function openEventModal(owner, event_id, event_name) {
-
     console.log(owner)
     console.log(event_id)
     console.log(event_name)
-
-
     const event_name_descriptor = document.getElementById("modal-event-name");
     console.log(event_name_descriptor);
     event_name_descriptor.innerHTML = "event name: " + event_name;
     const event_owner_descriptor = document.getElementById("modal-event-owner");
     console.log(event_owner_descriptor);
-
     event_owner_descriptor.innerHTML = "event made by: " + owner;
     const event_id_variable = document.getElementById("modal-event-id");
     console.log(event_id_variable);
@@ -253,9 +217,7 @@ function openEventModal(owner, event_id, event_name) {
     // Note that on the first try, when you attempt to access an event that does not exist
     // an event will be added to the list. This is expected.
     let event = {};
-
     let newid = id; //CALENDAR_EVENTS.length;
-
   
     // If event is undefined, i.e it does not exist in the CALENDAR_EVENTS, then we create a new event.
     // Else, we load the current event into the modal.
@@ -280,7 +242,6 @@ function openEventModal(owner, event_id, event_name) {
       // @TODO: Set the id to be the length of the CALENDAR_EVENTS because we are adding a new element
       //CALENDAR_EVENTS.push(event);
       newid = CALENDAR_EVENTS.length;
-
       }
       else {
       // We will default to "Update Event" as the text for the title and the submit button
@@ -292,7 +253,6 @@ function openEventModal(owner, event_id, event_name) {
     // @TODO: Update all form fields of the modal with suitable values from the event.
     // Use document.querySelector() to get the form elements.
     // Hint: If it is a new event, the fields in the modal will be empty.
-
     const EventName = document.querySelector('#event-name input');
     EventName.value = event.name;
     const Weekday = document.querySelector('#weekday select');
@@ -307,7 +267,6 @@ function openEventModal(owner, event_id, event_name) {
     RemoteURL.value = event.url;
     const Attendees = document.querySelector('#attendees input');
     Attendees.value = event.attendees;
-
     // Location options depend on the event modality
     // @TODO: send modality as a variable, replace <> with appropriate argument
     updateLocationOptions(event.modality);
@@ -320,9 +279,7 @@ function openEventModal(owner, event_id, event_name) {
   
     EVENT_MODAL.show();
   }
-
   // Updates the event for a given id with values taken from the modal.
-
 function updateEventFromModal(id) {
     CALENDAR_EVENTS[id] = {
       name: document.querySelector('#event-name input').value,
@@ -338,15 +295,11 @@ function updateEventFromModal(id) {
     updateDOM();
     EVENT_MODAL.hide();
   }
-
   setTimeout(()=>{
             initializeContent();
-
         }, 100); 
-
         // get the calendar div
         //todo make the calendar div scrollable, kind of like gcal
-
     </script>
   <div class="container">
     <!-- print the ejs object called calendarData -->
@@ -363,14 +316,12 @@ function updateEventFromModal(id) {
                             </h1>
                         </div>
                          <!-- ejs loop for 24 hours of calendarData-->
-
                         <% for (let j = 0; j < 23; j++) { %>
                             <hr style="margin-top:3.125vh;z-index:0">
                                 <div style="position: relative; width: 20px; height: 0px">
                                     <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: white;">
                                         <p class='scuuber-cal-text-small'>
                                             <%= times[j] %>
-
                                         </p>
                                     </div>
                                 </div>
@@ -434,4 +385,4 @@ function updateEventFromModal(id) {
     </div>
 </main>
 
-<%- include ('../partials/menu') %>
+<%- include ('../partials/footer') %>
