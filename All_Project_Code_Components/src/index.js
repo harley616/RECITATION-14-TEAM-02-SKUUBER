@@ -373,11 +373,15 @@ app.post('/register', async (req, res) => {
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
       console.log('hash: ', hash);
       await res.redirect('/login');
-    } else {
+    } else if(checker.length !== 0) {
 
       //If username is already taken (i.e. check.length != 0)
       console.log('username already exists');
-      await res.redirect('/register');
+      await res.render('pages/register', {usernameExists: true, passwordNoMatch: false});
+    } else if(req.body.password != req.body.confirmPassword) {
+      // If the two passwords do not match, throw an error
+      console.log('Entered passwords do not match');
+      await res.render('pages/register', {usernameExists: false, passwordNoMatch: true});
     }
   } catch (error) {
 
@@ -387,6 +391,7 @@ app.post('/register', async (req, res) => {
   }
 
 });
+
 
 //--------------------------------------------- L O G I N ---------------------------------------------------------//
 
@@ -567,24 +572,29 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
 app.get('/home', async (req, res) => {
-  // Fetch query parameters from the request object
-  var username = req.session.user[0]['username'];
-  // Multiple queries using templated strings
-  var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
-  // use task to execute multiple queries
-  const friend_req_data = await db.any(friend_add_queue, username)
-  console.log("the friend request list for: " + username)
-  console.log(friend_req_data)
+  try {
+    // Fetch query parameters from the request object
+    var username = req.session.user[0]['username'];
+    // Multiple queries using templated strings
+    var friend_add_queue = `select * from friend_add_queue where friend_username = $1`;
+    // use task to execute multiple queries
+    const friend_req_data = await db.any(friend_add_queue, username)
+    console.log("the friend request list for: " + username)
+    console.log(friend_req_data)
 
-  var friend_list_query = `select * from user_friends where username = $1`;
-  const friend_data = await db.any(friend_list_query, username)
-  console.log("the friend list for: " + username)
-  console.log(friend_data)
-  res.render('pages/home', {
-    user: req.session.user[0]['username'],
+    var friend_list_query = `select * from user_friends where username = $1`;
+    const friend_data = await db.any(friend_list_query, username)
+    console.log("the friend list for: " + username) 
+    console.log(friend_data)
+    res.render('pages/home', {user: req.session.user[0]['username'],
     friend_request_list: friend_req_data,
     friend_list: friend_data
-  })
+    })
+  }
+  catch(error) {
+    console.log(error);
+    res.redirect('/login');
+  }
 });
 
 app.get('/friendTest', (req, res) => {

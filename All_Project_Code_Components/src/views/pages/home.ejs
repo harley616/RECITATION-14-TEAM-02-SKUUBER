@@ -1,118 +1,223 @@
 <%- include ('../partials/header') %>
-<%- include ('../partials/menu') %>
+<%- include ('../partials/menu', {username: user}) %>
 
-<main>
-  <div>
-    <p class="scuuber-title">Add a friend</p>
+<main class="d-flex flex-row">
+    <style>
+        .scuuber-menu {
+            color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+        }
+        .scuuber-title {
+            color: black; 
+            font-family: 'IBM Plex Mono', monospace; 
+            font-weight: semibold;
+        }
+        .scuuber-text {
+            color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
+        }
+        .scuuber-btn {
+            color: black; 
+            font-size: 15px;
+            font-family: 'IBM Plex Mono', monospace;
+            border-width:0px;
+            background-color:#117c9a;
 
-        <form action="\addFriendRequest" method="POST">
+        }
+        .side-bar {
+            flex: 3;
+            height:100vh;
+            background-color: #adadad;
+            padding:0px;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(173, 173, 173, 5);
+            border-style: solid;
+            border-width: 0px;
+            position: relative;
+            z-index: 10;
+        }
+        .main-friends {
+            flex: 11;
+            justify-content: center;
+            background-color: #efefef;
+        }
+        .friend-icons {
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            border-radius: 10px;
+            background-color: rgb(173, 173, 173);
+            padding-bottom: 10px;
+        }
+        .friend-icons:hover {
+            border-radius: 30px;
+        }
+        .friend-box {
+            margin-top: 10px; 
+            width:80%; 
+            justify-content: center; 
+            align-items: center; 
+            border-radius: 7px;
+            align-items: center;
+            color: black; 
+            font-size: 15px;
+            font-family: 'IBM Plex Mono', monospace; 
+            text-decoration: none;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(104, 104, 104);
+        }
+        .add-friends-outer {
+            border-style: none;
+            width: 100%; 
+            align-items: center; 
+            border-color: black; 
+            border-width: 1px;
+            margin: 0px;
+            background-color: #bebfc5;
+        }
+        .add-friends-input {
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            background-color: rgb(139, 142, 152);
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            border-radius: 10px;
+            flex: 1;
+            border-style: none;
+            border-color: red;
+            padding: 0px;
+            margin-top: 10px;
+        }
+        .friend-search {
+            background-color: white;
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            outline: none;
+            /*padding: 3px 0px 3px 3px;*/
+            /*margin: 5px 1px 3px 0px;*/
+            border-color: rgb(25, 165, 204); 
+            border-style: none;
+            border-width: 1px;
+            border-radius: 6px;
+            font-family: 'IBM Plex Mono', monospace;
+            /*font-size: 20px;*/
+            height: 35px;
+            width: 100%;
+        }
+        .form {
+            margin: 0px;
+        }
+        .friend-request {
+            border-style: solid; 
+            /*border-color: black; */
+            border-width:0px;
+            background-color: #3babca;
+            width: 90%; 
+            margin-top:15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(81, 203, 238, 5); 
+        }
+        .friend-accept { 
+            background-image: 'skiing-2.png';
+        }
+    </style>
+  <div class="d-flex flex-column container side-bar" style="padding:0px; align-items: center;">
+    <div class="mt-3 friend-icons" style="justify-content: center; align-items: center;">           
+        <a>
+            <img src="skiing.png" 
+                class="img-thumbnail"
+                height="70px"
+                width="70px"
+                alt="Scuuber" />
+        </a>
+        
+    </div>
+    <div class="d-flex friend-box" style="font-weight: bold; background-color: #1784b7;"> 
+        Friend List      
+    </div>
+    <% if (friend_list.length > 0) { %>
+        <% for (var i = 0; i < friend_list.length; i++) { %>
+            <div class="d-flex friend-box" style="">  
+                <%= friend_list[i]['friend_username'] %>        
+            </div>
+        <% } %>
+    <% } %>
+  </div>  
+  <div class="d-flex flex-row container main-friends" style="padding-top: 30px;">
+    <div class="d-flex flex-column add-friends-outer" style="">
+        <h1 class="scuuber-title">Add Friends</h1>
 
-            <div class="row">
-                <div class="form-group col-md">
-                    <label class="scuuber-text" for="friend_username">Username:</label>
-                    <input class="form-control" type="text" id="friend_username" name="friend_username" />
+        <form action="\addFriendRequest" method="POST" name="FriendSendRequest" style="margin-top: 15px; width:90%; justify-content:center;">
+            <label class="scuuber-text" for="friend_username">Add a friend by entering their username</label>
+            <div class="d-flex row add-friends-input">
+                <div class="form col-md my-1" style="flex: 7;">
+                    <input class="form-control friend-search" type="text" id="friend_username" name="friend_username" style="" />
                 </div>
-                <div class="col mt-4" >
-                    <input type="submit" value="Add friend" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" />
-
+                <div class="col my-1" style="flex: 1;">
+                    <input id="submitbutton" type="submit" value="Invite friend" class="btn btn-primary" style="border-radius: 5px; font-size: 15px; font-family: 'IBM Plex Mono', monospace;" />
                 </div>
             </div>
-    
         </form>
-    
-        </form>
+    </div>
+    <div class="d-flex flex-column" style="width: 100%; align-items: center; ">
         <p class="scuuber-title">Your friend requests</p>
         <% if (friend_request_list.length == 0) { %>
             <p class="scuuber-text">You have no friend requests</p>
         <% } %>
         <% if (friend_request_list.length > 0) { %>
             <p class="scuuber-text"> You have <%= friend_request_list.length %> friend requests</p>
-            <% for (var i = 0; i < friend_request_list.length; i++)%>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <div class="row">
-                        <div class="form-group w-50">
-                            <p class="scuuber-text"><%= friend_request_list[0]['username'] %></p>
-
+            <% for (var i = 0; i < friend_request_list.length; i++) {%>
+                <div class="d-flex flex-column friend-request" style="">
+                    <div class="d-flex">
+                        <div class="d-flex me-auto mx-2" style="align-items: center; font-family: 'IBM Plex Mono', monospace;">
+                            <%= friend_request_list[i]['username'] %>
                         </div>
-                        <div class="col-sm">
+                        <div class="d-flex my-1" style="margin-right:10px;">
                             <form action="acceptFriend" method="GET">
-                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                                <input type="submit"class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;"  value="Accept friend" />
-                                <div></div>
+                                <input type="hidden" name="username" value="<%= friend_request_list[i].username %>" /> 
+                                <button type="submit" class="btn btn-outline-info scuuber-btn">
+                                    <i class="fa fa-check"></i>
+                                </button>
                             </form>
                         </div>
-                        <div class="col-sm">
+                        <div class="d-flex my-1" style="margin-right:10px;">
                             <form action="declineFriend" method="GET">
-                                <input type="hidden" name="username" value="<%= friend_request_list[0].username %>" /> 
-                                <input type="submit" class="btn btn-outline-info scuuber-btn" style="border-radius: 30px;" value="Decline friend" />
-                                <div></div>
+                                <input type="hidden" name="username" value="<%= friend_request_list[i].username %>" /> 
+                                <button type="submit" class="btn btn-outline-info scuuber-btn">
+                                    <i class="fa-solid fa-x"></i>
+                                </button>
                             </form>
                         </div>
                     </div>
-                   
-                </li>
-            </ul>
-        <% } %>
-        <p class="scuuber-title">Your friends</p>
-        <% if (friend_list.length == 0) { %>
-            <p class="scuuber-text">You have no friends. Better get you some friends</p>
-        <% } %>
-        <% if (friend_list.length > 0) { %>
-                <p class="scuuber-text">You have <%= friend_list.length %> friends </p>
-                <% for (var i = 0; i < friend_list.length; i++) { %>
-
-                <div class="row">
-                <ul class="list-group w-50">
-                    <li class="list-group-item">
-                        <%= friend_list[i]['friend_username'] %>
-                    </li>
-                </ul>
                 </div>
-                <% } %>
+            <% } %>
         <% } %>
     </div>
-    <!--
-    <div class="card m-2" style="width: 24rem;float:right;" id="weather-popup">
-  <div>
-    hello
-    
-    <div class="card m-2" id="weather-popup">
-
-      <form action="/home" method="POST">
-        <div class="row">
-          <label for="location">Location</label>
-          <input type="location" id="location" name="location" placeholder="City, State"/>
-        </div>
-        <div class="row">
-          <button type="submit" id="weather-btn" class="btn btn-primary">Get Weather</button>
-        </div>
-      </form>
-
-      <% if(locals.data){ %>
-      <div class="card-header" id="popup-header">
-        Weather for <%-locals.data.location.name%>, <%-locals.data.location.region%>, <%-locals.data.location.country%>
-      </div>
-        <%for(let i = 0; i < 7; i++){ %>
-        <div class="row">
-          <%console.log("forecastday = , i = ", locals.data.forecast.forecastday[i], ",", i);%>
-          <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
-          <div class="col">
-            <div class="list-group-item">Max Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.maxtemp_f%></span> f</div>
-            <div class="list-group-item">Min Temp: <span id="temp"><%- locals.data.forecast.forecastday[i].day.mintemp_f%></span> f</div>
-          </div>
-          <div class="col">
-            <div class="list-group-item">Precipiation: <span id="precip"><%- locals.data.forecast.forecastday[i].day.totalprecip_in%></span> in</div>
-            <div class="list-group-item">Wind: <span id="wind"><%- locals.data.forecast.forecastday[i].day.maxwind_mph%></span> mph</div>
-          </div>
-        </div>
-          
-        <% } %>
-        <% } %>
         
     </div>
-    -->
   </div>
+
+  <script>
+    // Little JS script to prevent the user from trying add a friend with a blank username
+    let input = document.getElementById("friend_username");
+    let output = document.getElementById("submitbutton");
+
+    output.disabled = true;
+    input.addEventListener("change", stateHandle);
+
+    function stateHandle() {
+        if(document.getElementById("friend_username").value === ""){
+            output.disabled = true;
+        } else {
+            output.disabled = false;
+        }
+    }
+</script>
 
 </main>
 
