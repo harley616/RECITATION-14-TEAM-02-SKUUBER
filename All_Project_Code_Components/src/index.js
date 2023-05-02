@@ -817,7 +817,25 @@ app.delete("/deleteEvent_by_User", (req, res) => {
       res.redirect('/calendar');
     });
 });
-
+// --------------------Update Event API----------------------------
+app.post('/updateEvent', async (req, res) => {
+  
+  const title = req.body.title;
+  const location = req.body.location;
+  const update_event_id = req.body.event_id;
+  var values = [title, location, update_event_id];
+  // add the event to events table
+  const query = "UPDATE events SET title=$1, location=$2 WHERE event_id=$3;";
+  db.any(query, values)
+    .then(function () {
+      console.log("Successfully updated event: "+update_event_id);
+      res.redirect('/calendar');
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/calendar');
+    });
+})
 
 app.get("/logout", (req, res) => {
   req.session.destroy();
