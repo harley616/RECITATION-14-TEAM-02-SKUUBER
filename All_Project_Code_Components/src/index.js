@@ -87,7 +87,7 @@ app.use(express.static("public"));
 // TODO - Include your API routes here
 
 app.get('/', (req, res) => {
-  res.render('pages/login')
+  res.render('pages/startpage')
 });
 
 app.get('/welcome', (req, res) => {

@@ -1,0 +1,70 @@
+<%- include ('../partials/header') %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <style>
+    .outer-container {
+      background-color: white;
+      box-shadow: 0 0 20px rgba(25, 165, 204, 5);
+      border-radius: 10px;
+      flex: 1;
+      padding-left: 0%;
+      opacity: 0.75;
+    }
+    .outer-container:hover {
+        opacity: 1;
+    }
+    body {
+        /* background-image: url("https://wallpaperaccess.com/full/487823.jpg"); */
+        
+        /* background-image: url("https://cdn.wallpapersafari.com/27/14/Yvk6je.jpg"); */
+        /* https://hagadone.media.clients.ellingtoncms.com/img/photos/2021/12/29/Schweitzer-escape-bridgeview-12292021_t1170.jpg?5cc718665ab672dba93d511ab4c682bb370e5f86 */
+        background-image: url("https://www.signatureluxurytravel.com.au/wp-content/uploads/2020/10/Ski-tour-climbing-Piz-Buin-Mountain.jpg");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .submit-button {
+      font-family: 'IBM Plex Mono', monospace;
+      background-color: black;
+      color: #F6F1F1;
+      margin-top: 15px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      height: 40px;
+      width: 100px;
+      border: none;
+      box-shadow: 0 0 7px rgba(0, 0, 0, 5);
+    }
+    .rightcenter {
+        display: block;
+        margin-left: 15px;
+        margin-right: 25px;
+        width: 50%;
+    }
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+  </style>
+</head>
+
+<body>
+    <div class="container-fluid d-flex align-items-center justify-content-center" style="height: 100vh; padding-left:60%; padding-right:10%;">
+        <div class="outer-container">
+            <img src="./scuuber_large.png" style="height: 22vh; width: 75vh;" class="center" id = "scuuber-image">
+            <a href="login">
+            <div>
+                <input type="submit" class="submit-button center" value="Get Started"/>
+            </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<%- include ('../partials/footer') %>
