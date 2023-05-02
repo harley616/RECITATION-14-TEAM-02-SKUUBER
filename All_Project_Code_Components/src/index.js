@@ -242,6 +242,9 @@ app.get('/calendar', async (req, res) => {
 
 
 app.post('/calendar', async (req, res) => {
+  if (!req.body.location) {
+    res.redirect('/calendar');
+  }
 
   if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
@@ -323,17 +326,8 @@ app.post('/calendar', async (req, res) => {
         })
         .catch(error => {
           console.log("There was and error!", error, "Query: ", request);
-          res.render('pages/calendar', {
-            user: owner,
-            error: error,
-            eventId: isEvent,
-            index: index,
-            weather_data: null,
-            calendarData: processed_full_events,
-            times: TIMES
-          })
+          res.redirect('/calendar')
 
-          res.status(200).send('Success!');
         });
 
 
@@ -388,6 +382,9 @@ app.get('/friend_calendar', async (req, res) => {
 })
 
 app.post('/friend_calendar', async (req, res) => {
+  if (!req.body.location) {
+    res.redirect('/friend_calendar');
+  }
   if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
     console.log("Time out, logging user out...");
@@ -448,17 +445,8 @@ app.post('/friend_calendar', async (req, res) => {
       })
       .catch(error => {
         console.log("There was and error!", error, "Query: ", request);
-        res.render('pages/friend_calendar', {
-          user: owner,
-          error: error,
-          eventId: isEvent,
-          index: index,
-          weather_data: null,
-          calendarData: friendEvents,
-          times: TIMES
-        })
+        res.redirect('/friend_calendar');
 
-        res.status(200).send('Success!');
       });
   }
 })
