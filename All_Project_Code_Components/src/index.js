@@ -377,14 +377,13 @@ app.get('/friend_calendar', async (req, res) => {
       var values = [friend_username];
       const get_friend_events_result = await db.any(get_friend_events_query, values);
       console.log('successfully got events for user: ' + friend_username, "results: ", get_friend_events_result);
-      friendEvents = processData(get_friend_events_result);
-      // for (let j = 1; j < get_friend_events_result.length; j++) {
-      //   friendEvents.push(get_friend_events_result[j]);
-      // }
+      for (let j = 0; j < get_friend_events_result.length; j++) {
+        friendEvents.push(get_friend_events_result[j]);
+      }
     }
-    // const processed_calendar_data = processData(friendEvents);
-    console.log("Calendar data:", friendEvents);
-    res.render('pages/friend_calendar', { user: owner, calendarData: friendEvents, times: TIMES });
+    const processed_calendar_data = processData(friendEvents);
+    console.log("Calendar data:", processed_calendar_data);
+    res.render('pages/friend_calendar', { user: owner, calendarData: processed_calendar_data, times: TIMES });
   }
 })
 
