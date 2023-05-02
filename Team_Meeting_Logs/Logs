@@ -63,4 +63,17 @@ Week Four / April 25
 
 Scribed by Andrey Lototskiy
 
-
+Project Board:
+ - Made sure that all user stories has descriptions and tags
+ - Moved tasks that we had finished into the finished tab
+ 
+ Things that we did:
+  - We add new UI changes for every single page, to make the website more presentable, this included
+  CSS and JavaScript styles for pages.
+  - We fixed bugs in the API routes, and we also fixed bugs with the calendar events API's
+  - We hosted the webpage using Microscoft Azure
+  
+  Things for this week:
+  - We need to write our presentation
+  - We need to make sure that all of our changes are merged into main
+ 
