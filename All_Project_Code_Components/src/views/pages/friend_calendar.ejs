@@ -3,40 +3,137 @@
 
 <main>
 
-    <style>
-        .scuuber-menu {
-    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+    
+  <style>
+    .scuuber-menu {
+color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace;text-decoration: underline;
+}
+*{
+font-family: 'IBM Plex Mono', monospace;
 }
 .scuuber-title {
-    color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace; font-weight: semibold;
+color: black; font-size: 19px;font-family: 'IBM Plex Mono', monospace; font-weight: semibold;
 }
+
 .scuuber-text {
-    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
+color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace; text-decoration: none;
 }
 .scuuber-btn {
-    color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;
+color: black; font-size: 15px;font-family: 'IBM Plex Mono', monospace;
 }
 .scuuber-cal-text {
-    color: black; font-size: 10px;font-family: 'IBM Plex Mono', monospace;
-    margin-top: 0;
-    margin-bottom: 0;
-    margin-left:10px;
+color: black; font-size: 10px;font-family: 'IBM Plex Mono', monospace;
+margin-top: 0;
+margin-bottom: 0;
+margin-left:10px;
 }
 .scuuber-cal-text-small {
-    color: lightgrey; font-size: 8px;font-family: 'IBM Plex Mono', monospace;
+color: lightgrey; 
+font-size: 8px;font-family: 'IBM Plex Mono', monospace;
+}
+button, input[type="submit"], input[type="reset"] {
+background: none;
+color: inherit;
+border: none;
+padding: 0;
+font: inherit;
+cursor: pointer;
+outline: inherit;
+}
+#weather-popup {
+background-color: #F6F1F1;
+color: #19A7CE;
+width: 20rem;
+height: fit-content;
+font-size: smaller;
+}
+
+#weather-popup .row {
+margin: .5rem 0;
+background-color: #146C94;
+padding: .5rem;
+color: #F6F1F1;
+height: min-content;
+border-radius: .5rem;
+font-size: smaller;
+}
+
+#weather-btn {
+background-color: black;
+color: #F6F1F1;
+width: 75%;
+margin: auto;
+}
+#weather-tooltip{
+z-index: 3;
+position: absolute;
+left:30%;
+top:30%;
+margin:auto;
+width: 24rem;
+}
+#weather-tooltip .card{
+background-color: #19A7CE;
+color:#F6F1F1;
+
+}
+.calendarItem{
+height: max-content;
+border-radius:10px; 
+width: 100%;
+position:absolute;
+margin:0px;
+padding:.5rem 0 ;
+}
+*::-webkit-scrollbar {
+display: none; /* for Chrome, Safari, and Opera */
+}
+
+.calendarItem{
+background-color: #19A7CE;
 }
 
 .center {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+display: block;
+margin-left: auto;
+margin-right: auto;
 }
 
 .headingitem{
-  background-color: #001e39;
-  /* background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/099/716/small_2x/mountain-beautiful-landscape-background-design-illustration-free-vector.jpg"); */
-  padding: 10px;
+background-color: #001e39;
+/* background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/099/716/small_2x/mountain-beautiful-landscape-background-design-illustration-free-vector.jpg"); */
+padding: 10px;
+font-size: 16px;font-family: 'IBM Plex Mono';
 }
+
+.addbutton{
+opacity: .75;
+}
+
+.glow {
+color: #fff;
+text-align: center;
+-webkit-animation: glow 1s ease-in-out infinite alternate;
+-moz-animation: glow 1s ease-in-out infinite alternate;
+animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+from {
+text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+}
+to {
+text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+}
+}
+
+.addbutton:hover{
+opacity: 1;
+-webkit-animation: glow 1s ease-in-out infinite alternate;
+-moz-animation: glow 1s ease-in-out infinite alternate;
+animation: glow 1s ease-in-out infinite alternate;
+}
+
     </style>
 
 <div class="container-fluid d-flex align-items-center justify-content-center center headingitem" style="height: 20vh;">
@@ -53,6 +150,263 @@
   </div>
 </div>
 
+<% var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; %>
+<% var today = new Date(); %>
+<% var dayNames = daysOfWeek.slice(today.getDay()).concat(daysOfWeek.slice(0, today.getDay())); %>
+<% var currMonth = today.getMonth(); %>
+<% var monthsOfYear = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."]; %>
+<% var nameMonth = monthsOfYear[currMonth]%>
+
+<!-- <table class="container-fluid d-flex align-items-center justify-content-center center">
+  <thead>
+    <tr>
+      <% var dayNames = daysOfWeek.slice(today.getDay()).concat(daysOfWeek.slice(0, today.getDay())); %>
+      <th><%= dayNames[0] %></th>
+      <th><%= dayNames[1] %></th>
+      <th><%= dayNames[2] %></th>
+      <th><%= dayNames[3] %></th>
+      <th><%= dayNames[4] %></th>
+      <th><%= dayNames[5] %></th>
+      <th><%= dayNames[6] %></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table> -->
+    
+    <% if(locals.eventId){%>
+
+        <!-- <div class="row d-flex justify-content-center align-items-center h-100" id="weather-tooltip"> -->
+          <div class="col-md-8 col-lg-6 col-xl-4" id="weather-tooltip">
+
+    
+            <div class="card" style="border-radius: 35px;">
+              <div class="card-body p-4">
+    
+                <div class="row">
+                  <h6 class="col-10"><%-locals.weather_data.location.name%>, <%-locals.weather_data.location.region%></h6>
+                  <div class="col-2" ><button onclick="closeWeatherModal()" style="text-decoration: none;"><i class="fa-solid fa-x"></i></button></div>
+                </div>
+    
+                <div class="d-flex flex-column text-center mt-5 mb-4">
+                  <h6 class="display-4 mb-0 font-weight-bold" style="color: black;"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxtemp_f%>°F </h6>
+                  <h6 class="display-8 mb-0 font-weight-bold" style="color: black;"> <%-locals.weather_data.forecast.forecastday[locals.index].day.mintemp_f%>°F </h6>
+                  <span class="small" style="color: #F6F1F1"><%-locals.weather_data.forecast.forecastday[locals.index].day.condition.text%></span>
+                </div>
+    
+                <div class="d-flex align-items-center">
+                  <div class="flex-grow-1" style="font-size: 1rem;">
+                    <div><i class="fa-solid fa-wind" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.maxwind_mph%> mph
+                      </span></div>
+                    <div><i class="fas fa-tint fa-fw" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.daily_will_it_snow%>% </span>
+                    </div>
+                    <div><i class="fa-solid fa-ruler-vertical" style="color: #F6F1F1;"></i> <span class="ms-1"> <%-locals.weather_data.forecast.forecastday[locals.index].day.totalprecip_in%>in </span>
+                    </div>
+                  </div>  
+                  <img src="<%-locals.weather_data.forecast.forecastday[locals.index].day.condition.icon%>"
+                width="100px">                                                     
+                </div>
+    
+              </div>
+            </div>
+    
+          </div>
+        <!-- </div> -->
+    
+<%}%>
+    <link rel="stylesheet" href="./../../resources/css/style.css">
+        <div class="row m-1">
+
+        <div class="col-9" id="calendar">
+          <!-- print the ejs object called calendarData -->
+          <!-- <%= JSON.stringify(calendarData) %> -->
+              <div class="container" style="border-radius: 30px;">
+                  <div class="row" style="height: 100vh;">
+                      <!-- ejs loop for 7 days of calendarData-->
+                      <% for (let i = 0; i < 7; i++) { %>
+                          <!-- header: todo add weather thing -->
+                          
+                          <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid lightgrey;height: 85vh;margin:0px;padding:0px;margin-top:10px;background-color: #F6F1F1;">
+                              <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 12vh;margin:0px;padding:0px;background-color:  #146C94;border-radius: 5px;">
+                                <div> 
+                                  <h1 style="font-size: medium; padding-top: 4px;"> <%= dayNames[i] %></h1>
+                                </div>
+                                                                
+                                <div class="d-flex" style="justify-content: space-evenly;align-items: center;margin-top: .5rem;">
+                                  <h1 style="color: #F6F1F1;">
+                                    <%= nameMonth %> <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
+                                  </h1>
+                                  <div ><button onclick="openEventModal()"><i class="fa-solid fa-plus addbutton" style="color:#da8336"></i></button></div>
+                                </div>
+                              </div>
+                                  <!-- ejs loop for 24 hours of calendarData-->
+                                  <% for (let j = 0; j < 23; j++) { %>
+                                      <hr style="margin-top:3.125vh;z-index:0">
+                                      <div style="position: relative; width: 20px; height: 0px">
+                                          <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: #F6F1F1;">
+                                              <p class='scuuber-cal-text-small'style="color:black;">
+                                                  <%= times[j] %>
+      
+                                              </p>
+                                          </div>
+                                      </div>
+                                  <% } %>
+                                  <% for (let j = 0; j < calendarData[i].length; j++) { %>
+                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>">
+                                        <form action="/calendar" method="POST">
+                                            <p class="align-middle scuuber-cal-text" > title: 
+                                                <%= calendarData[i][j].title %>
+                                            </p>
+                                            <p class="align-middle scuuber-cal-text" > owner: 
+                                                <%= calendarData[i][j].owner %>
+                                            </p>
+                                            <p class="align-middle scuuber-cal-text" > location: 
+                                                <%= calendarData[i][j].location %>
+                                            </p>
+                                            <p class="align-middle scuuber-cal-text"> event id: 
+                                                <%= calendarData[i][j].event_id %>
+                                            </p>
+                                            <% if (calendarData[i][j].shared) { %> 
+                                                <p class="align-middle scuuber-cal-text"> friends: 
+                                                    <div class="row">
+                                                    <% for (let k = 0; k < calendarData[i][j].usernames.length; k++) { %>
+                                                        <div class="col" style="border-radius: 5px; background: black; height:10px; width: 10px; ">
+                                                            <p class='scuuber-cal-text-small'>
+                                                                <%= calendarData[i][j].usernames[k] %>
+                                                            </p>
+                                                        </div>
+                                                    <% } %>
+                                                    </div>
+                                                </p>
+                                            <% } %>
+                                            <input type="hidden" name="location" value="<%= calendarData[i][j].location %>"/>
+                                            <input type="hidden" name="eventId" value="<%= calendarData[i][j].event_id %>"/>
+                                            <input type="hidden" name="index" value="<%= i %>"/>
+                                            <div class="row">
+
+                                              <button class='col-6'type="submit"><i class="fa-solid fa-cloud-moon-rain" style="color:#F6F1F1"></i></button>
+
+                                              <div class="col-6"><i class="fa-solid fa-book-open" onclick="openUpdateEventModal('<%= calendarData[i][j].title %>', '<%= calendarData[i][j].location %>', '<%= calendarData[i][j].event_id %>')" style="color:#F6F1F1"></i></div>
+                                            </div>
+                                            </form>
+                                      </div>
+                                      
+                                    <% } %>
+                            </div>                 
+                        <%}%>
+                        </div>
+                </div>
+            </div>
+        
+        <div class="card m-0 col-3" id="weather-popup">
+
+          <div>
+            <h1 class="center" style="margin-left: auto; margin-right: auto; margin-top: 4%; font-size: large; text-align: center;">Got Weather?</h1>
+            <p class="center" style="margin-left: auto; margin-right: auto; font-size: small; text-align: center; color: #001e39;"><em>Check out the snow before you go!</em></p>
+          </div>
+
+            <form action="/calendar" method="POST">
+            <div class="row">
+                <label for="location">Location</label>
+                <input type="location" id="location" name="location" placeholder="City, State"/>
+            </div>
+            <div class="row">
+                <button type="submit" id="weather-btn" class="btn btn-primary">Get Weather</button>
+            </div>
+            </form>
+    
+            <% if(locals.weather_data){ %>
+            <% const days = ["Sunday","Monday", "Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            const d = new Date();%>
+            <div class="card-header" id="popup-header">
+            Weather for <%-locals.weather_data.location.name%>, <%-locals.weather_data.location.region%>, <%-locals.weather_data.location.country%>
+            </div>
+            <%for(let i = 0; i < 7; i++){ %>
+            <div class="row">
+                <div class="card-title" style="font-weight:bold;"><%- days[(d.getDay() + i)%7] %></div>
+                <div class="col">
+                <div class="list-group-item">Max Temp: <span id="temp"><%- locals.weather_data.forecast.forecastday[i].day.maxtemp_f%></span> f</div>
+                <div class="list-group-item">Min Temp: <span id="temp"><%- locals.weather_data.forecast.forecastday[i].day.mintemp_f%></span> f</div>
+                </div>
+                <div class="col">
+                <div class="list-group-item">Precipiation: <span id="precip"><%- locals.weather_data.forecast.forecastday[i].day.totalprecip_in%></span> in</div>
+                <div class="list-group-item">Wind: <span id="wind"><%- locals.weather_data.forecast.forecastday[i].day.maxwind_mph%></span> mph</div>
+                </div>
+            </div>
+                
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+    <!--Weather tootip-->
+    
+    <div><%-locals.eventId%></div>
+          <!-- Button trigger modal -->
+  <div id="event-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add a ride</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="addEvent", method="post">
+                <div class="mb-3" id="title">
+                    <label for="title" class="form-label">Event Name</label>
+                    <input type="text" name="title" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="date">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="time">
+
+                    <label for="time" class="form-label">Time</label>
+                    <input type="time" name="time" class="form-control"  required>
+                </div>
+
+                <div class="mb-3" id="location">
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control"  required>
+                </div>
+
+                <button id="submit_button" class="btn btn-primary" type="submit">
+                    Create Event
+                </button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="update-event-modal" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Update Ride</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="updateEvent", method="post">
+                <div class="mb-3" >
+                    <label for="title" class="form-label">Event Name</label>
+                    <input type="text" name="title" class="form-control"  id="update-title" required>
+                </div>
+                <div class="mb-3" >
+                    <label for="location" class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control" id="update-location" required>
+                </div>
+                <input type="hidden" name="event_id" class="form-control" id="update-event_id" required>
+                <button id="submit_button" class="btn btn-primary" type="submit">
+                    Update Event
+                </button>
+              </form>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
 
 
 
