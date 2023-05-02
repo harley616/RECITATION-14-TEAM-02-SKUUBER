@@ -64,7 +64,7 @@
             text-decoration: none;
             justify-content: center;
             align-items: center;
-            background-color: #001e39;
+            background-color: #0064bc;
         }
         .add-friends-outer {
             border-style: none;
@@ -146,6 +146,12 @@
         <% for (var i = 0; i < friend_list.length; i++) { %>
             <div class="d-flex friend-box" style="">  
                 <%= friend_list[i]['friend_username'] %>        
+                <form action="removeFriend" method="GET" style="float: right; padding-left: 50px">
+                    <input type="hidden" name="username" value="<%= friend_list[i].friend_username %>" /> 
+                    <button type="submit" class="btn btn-outline-info scuuber-btn">
+                        <i class="fa fa-x"></i>
+                    </button>
+                </form>
             </div>
         <% } %>
     <% } %>
@@ -153,7 +159,6 @@
   <div class="d-flex flex-row container main-friends" style="padding-top: 30px;">
     <div class="d-flex flex-column add-friends-outer" style="">
         <h1 class="scuuber-title">Add Friends</h1>
-
         <form action="\addFriendRequest" method="POST" name="FriendSendRequest" style="margin-top: 15px; width:90%; justify-content:center;">
             <label class="scuuber-text" for="friend_username">Add a friend by entering their username</label>
             <div class="d-flex row add-friends-input">
