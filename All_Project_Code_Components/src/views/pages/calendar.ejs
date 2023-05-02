@@ -197,7 +197,7 @@ button, input[type="submit"], input[type="reset"] {
 
                                               <button class='col-6'type="submit"><i class="fa-solid fa-cloud-moon-rain" style="color:#F6F1F1"></i></button>
 
-                                              <div class="col-6"><i class="fa-solid fa-book-open" onclick="openUpdateEventModal('<%= calendarData[i][j].title %>', '<%= calendarData[i][j].location %>', )" style="color:#F6F1F1"></i></div>
+                                              <div class="col-6"><i class="fa-solid fa-book-open" onclick="openUpdateEventModal('<%= calendarData[i][j].title %>', '<%= calendarData[i][j].location %>', '<%= calendarData[i][j].event_id %>')" style="color:#F6F1F1"></i></div>
                                             </div>
                                             </form>
                                       </div>
@@ -303,7 +303,7 @@ button, input[type="submit"], input[type="reset"] {
                     <label for="location" class="form-label">Location</label>
                     <input type="text" name="location" class="form-control" id="update-location" required>
                 </div>
-
+                <input type="hidden" name="event_id" class="form-control" id="update-event_id" required>
                 <button id="submit_button" class="btn btn-primary" type="submit">
                     Update Event
                 </button>
@@ -597,7 +597,7 @@ button, input[type="submit"], input[type="reset"] {
          console.log('Open event called');
           EVENT_MODAL.show();
         }
-    function openUpdateEventModal(calendarData, location) {
+    function openUpdateEventModal(calendarData, location, event_id) {
         
         
         
@@ -605,6 +605,7 @@ button, input[type="submit"], input[type="reset"] {
         
         document.getElementById('update-title').value = calendarData;
         document.getElementById('update-location').value = location;
+        document.getElementById('update-event_id').value = event_id;
         console.log(calendarData)
         console.log(location)
         UPDATE_EVENT_MODAL.show();
