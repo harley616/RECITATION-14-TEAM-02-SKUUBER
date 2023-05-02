@@ -242,9 +242,6 @@ app.get('/calendar', async (req, res) => {
 
 
 app.post('/calendar', async (req, res) => {
-  if (!req.body.location) {
-    res.redirect('/calendar');
-  }
 
   if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
@@ -382,9 +379,6 @@ app.get('/friend_calendar', async (req, res) => {
 })
 
 app.post('/friend_calendar', async (req, res) => {
-  if (!req.body.location) {
-    res.redirect('/friend_calendar');
-  }
   if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
     console.log("Time out, logging user out...");
