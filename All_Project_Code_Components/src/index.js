@@ -246,110 +246,110 @@ app.get('/calendar', async (req, res) => {
 
 app.post('/calendar', async (req, res) => {
 
-  if (typeof req.session.user === 'undefined' && typeof req.session.user[0] === 'undefined') {
-    // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
-    console.log("Time out, logging user out...");
-    res.render('pages/login');
-  } else {
+  // if (typeof req.session.user === 'undefined' && typeof req.session.user[0] === 'undefined') {
+  //   // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
+  //   console.log("Time out, logging user out...");
+  //   res.render('pages/login');
+  // } else {
 
-    try {
-
-
-      const owner = req.session.user[0]['username'];
-      const get_events_query = `select * from events where owner = $1`;
-      var values = [owner];
-      const get_event_result = await db.any(get_events_query, values);
-      console.log('successfully got events for user: ' + owner);
+  try {
 
 
-      //******* friend stuff *******/
-
-      // add any events that you are shared with
-      const get_shared_events_query = `select * from users_to_events where username = $1`;
-      var values = [owner];
-      const get_shared_event_result = await db.any(get_shared_events_query, values);
-      // list of event_id
-      const shared_event_ids = get_shared_event_result.map(event => event.event_id);
-      console.log('shared_event_ids: ', shared_event_ids);
-      // get all the events with those event_ids, as long as event.owner != owner
-      const get_shared_events_query2 = `select * from events where event_id = ANY($1)`;
-      var values = [shared_event_ids];
-      const get_shared_event_result2 = await db.any(get_shared_events_query2, values);
-      console.log('successfully got shared events for user: ' + owner);
-      const shared_events = get_shared_event_result2;
-      console.log('shared_events: ', shared_events);
-
-      // filter shared events, only keep the ones that are not owned by owner
-      const filtered_shared_events = shared_events.filter(event => event.owner != owner);
-      console.log('filtered_shared_events: ', filtered_shared_events)
-      console.log('event result: ', get_event_result)
-
-      // for each filtered shared event, get the users added to this event:
-      // get all the users_to_events with the event_id
-      // for each of those, get the username
-      // get all the users with those usernames
-      // add those users to the event object
+    const owner = req.session.user[0]['username'];
+    const get_events_query = `select * from events where owner = $1`;
+    var values = [owner];
+    const get_event_result = await db.any(get_events_query, values);
+    console.log('successfully got events for user: ' + owner);
 
 
+    //******* friend stuff *******/
 
-      const full_events = [].concat(get_event_result, filtered_shared_events);
-      console.log('full_events: ', full_events)
-      const processed_full_events = processData(full_events);
-      let isEvent
-      if (req.body.eventId) {
-        isEvent = req.body.eventId;
-      } else {
-        isEvent = null;
-      }
-      if (req.body.index) {
-        index = req.body.index;
-      } else {
-        index = null;
-      }
+    // add any events that you are shared with
+    const get_shared_events_query = `select * from users_to_events where username = $1`;
+    var values = [owner];
+    const get_shared_event_result = await db.any(get_shared_events_query, values);
+    // list of event_id
+    const shared_event_ids = get_shared_event_result.map(event => event.event_id);
+    console.log('shared_event_ids: ', shared_event_ids);
+    // get all the events with those event_ids, as long as event.owner != owner
+    const get_shared_events_query2 = `select * from events where event_id = ANY($1)`;
+    var values = [shared_event_ids];
+    const get_shared_event_result2 = await db.any(get_shared_events_query2, values);
+    console.log('successfully got shared events for user: ' + owner);
+    const shared_events = get_shared_event_result2;
+    console.log('shared_events: ', shared_events);
 
-      const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
-      await axios({
-        url: request,
-        method: 'GET',
-        dataType: 'json',
-      })
-        .then(results => {
-          // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-          res.render('pages/calendar', {
-            user: owner,
-            weather_data: results.data,
-            eventId: isEvent,
-            index: index,
-            calendarData: processed_full_events,
-            times: TIMES
-          })
+    // filter shared events, only keep the ones that are not owned by owner
+    const filtered_shared_events = shared_events.filter(event => event.owner != owner);
+    console.log('filtered_shared_events: ', filtered_shared_events)
+    console.log('event result: ', get_event_result)
+
+    // for each filtered shared event, get the users added to this event:
+    // get all the users_to_events with the event_id
+    // for each of those, get the username
+    // get all the users with those usernames
+    // add those users to the event object
+
+
+
+    const full_events = [].concat(get_event_result, filtered_shared_events);
+    console.log('full_events: ', full_events)
+    const processed_full_events = processData(full_events);
+    let isEvent
+    if (req.body.eventId) {
+      isEvent = req.body.eventId;
+    } else {
+      isEvent = null;
+    }
+    if (req.body.index) {
+      index = req.body.index;
+    } else {
+      index = null;
+    }
+
+    const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
+    await axios({
+      url: request,
+      method: 'GET',
+      dataType: 'json',
+    })
+      .then(results => {
+        // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+        res.render('pages/calendar', {
+          user: owner,
+          weather_data: results.data,
+          eventId: isEvent,
+          index: index,
+          calendarData: processed_full_events,
+          times: TIMES
         })
-        .catch(error => {
-          console.log("There was and error!", error, "Query: ", request);
-          res.render('pages/calendar', {
-            user: owner,
-            error: error,
-            eventId: isEvent,
-            index: index,
-            weather_data: null,
-            calendarData: processed_full_events,
-            times: TIMES
-          })
+      })
+      .catch(error => {
+        console.log("There was and error!", error, "Query: ", request);
+        res.render('pages/calendar', {
+          user: owner,
+          error: error,
+          eventId: isEvent,
+          index: index,
+          weather_data: null,
+          calendarData: processed_full_events,
+          times: TIMES
+        })
 
-          res.status(200).send('Success!');
-        });
+        res.status(200).send('Success!');
+      });
 
-
-    }
-
-    catch {
-
-      res.status(500).send('An error occurred');
-      res.render('pages/login');
-
-    }
 
   }
+
+  catch {
+
+    res.status(500).send('An error occurred');
+    res.render('pages/login');
+
+  }
+
+
 
 })
 
