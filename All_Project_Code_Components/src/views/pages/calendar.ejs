@@ -267,10 +267,10 @@ button, input[type="submit"], input[type="reset"] {
                                             </p>
                                             <% if (calendarData[i][j].shared) { %> 
                                                 <p class="align-middle scuuber-cal-text"> friends: 
-                                                    <div class="row">
+                                                    <div class="row" style="margin-left: 20px">
                                                     <% for (let k = 0; k < calendarData[i][j].usernames.length; k++) { %>
-                                                        <div class="col" style="border-radius: 5px; background: black; height:10px; width: 10px; ">
-                                                            <p class='scuuber-cal-text-small'>
+                                                        <div >
+                                                            <p class='scuuber-cal-text' style="background-color: orange; padding: 0 10px; margin: 2px;width: 75px; border-radius: 5px">
                                                                 <%= calendarData[i][j].usernames[k] %>
                                                             </p>
                                                         </div>
@@ -338,7 +338,6 @@ button, input[type="submit"], input[type="reset"] {
         </div>
     </div>
     <!--Weather tootip-->
-    
     <div><%-locals.eventId%></div>
           <!-- Button trigger modal -->
   <div id="event-modal" class="modal" tabindex="-1">
