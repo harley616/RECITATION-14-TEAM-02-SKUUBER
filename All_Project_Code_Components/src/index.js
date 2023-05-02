@@ -73,8 +73,6 @@ app.use(
   })
 );
 
-
-
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -93,9 +91,6 @@ app.get('/', (req, res) => {
 app.get('/welcome', (req, res) => {
   res.json({ status: 'success', message: 'Welcome!' });
 });
-
-
-
 
 //--------------------------------------------- R E G I S T E R ---------------------------------------------------------//
 
