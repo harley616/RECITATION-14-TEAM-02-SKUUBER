@@ -236,7 +236,7 @@ animation: glow 1s ease-in-out infinite alternate;
                                   <h1 style="color: #F6F1F1;">
                                     <%= nameMonth %> <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                                   </h1>
-                                  <div ><button onclick="openEventModal()"><i class="fa-solid fa-plus addbutton" style="color:#da8336"></i></button></div>
+                                  <div ></div>
                                 </div>
                               </div>
                                   <!-- ejs loop for 24 hours of calendarData-->
@@ -252,8 +252,15 @@ animation: glow 1s ease-in-out infinite alternate;
                                       </div>
                                   <% } %>
                                   <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>">
-                                        <form action="/calendar" method="POST">
+                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>"
+                                        
+                                        onclick="openEventModal(
+                                
+                                        '<%= calendarData[i][j].owner %>',
+                                        '<%= calendarData[i][j].event_id %>',
+                                        '<%= calendarData[i][j].title %>'
+                                    )"
+                                        >
                                             <p class="align-middle scuuber-cal-text" > title: 
                                                 <%= calendarData[i][j].title %>
                                             </p>
@@ -288,7 +295,6 @@ animation: glow 1s ease-in-out infinite alternate;
 
                                               <div class="col-6"><i class="fa-solid fa-book-open" onclick="openUpdateEventModal('<%= calendarData[i][j].title %>', '<%= calendarData[i][j].location %>', '<%= calendarData[i][j].event_id %>')" style="color:#F6F1F1"></i></div>
                                             </div>
-                                            </form>
                                       </div>
                                       
                                     <% } %>
@@ -339,47 +345,31 @@ animation: glow 1s ease-in-out infinite alternate;
         </div>
     </div>
     <!--Weather tootip-->
-    
     <div><%-locals.eventId%></div>
           <!-- Button trigger modal -->
-  <div id="event-modal" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add a ride</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form action="addEvent", method="post">
-                <div class="mb-3" id="title">
-                    <label for="title" class="form-label">Event Name</label>
-                    <input type="text" name="title" class="form-control"  required>
+          <div id="event-modal" class="modal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add shared event to your calendar</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="mb-3" id="date">
-                    <label for="date" class="form-label">Date</label>
-                    <input type="date" name="date" class="form-control"  required>
+                <div class="modal-body">
+                    <form action="addSelfToFriendEvent", method="post">
+                        <input id="modal-event-id" type="hidden" name="event_id" value="placeholder" /> 
+                        <p id="modal-event-name"></p>
+                        <p id="modal-event-owner"></p>
+                        <p>Add event to calendar?</p>
+        
+                        <button id="submit_button" class="btn btn-primary" type="submit">
+                            Add
+                        </button>
+                      </form>
                 </div>
-
-                <div class="mb-3" id="time">
-
-                    <label for="time" class="form-label">Time</label>
-                    <input type="time" name="time" class="form-control"  required>
-                </div>
-
-                <div class="mb-3" id="location">
-                    <label for="location" class="form-label">Location</label>
-                    <input type="text" name="location" class="form-control"  required>
-                </div>
-
-                <button id="submit_button" class="btn btn-primary" type="submit">
-                    Create Event
-                </button>
-              </form>
-        </div>
-      </div>
-    </div>
-  </div>
+              </div>
+            </div>
+          </div>
+            </div>
   <div id="update-event-modal" class="modal" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -407,22 +397,6 @@ animation: glow 1s ease-in-out infinite alternate;
     </div>
   </div>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 <script>
 const CALENDAR_DAYS = [
@@ -726,15 +700,14 @@ function updateEventFromModal(id) {
                    
                         <% } %>
                         <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                            <div class="calendarItem" 
+                            <div class="calendarItem"
                             onclick="openEventModal(
-                                
                                 '<%= calendarData[i][j].owner %>',
                                 '<%= calendarData[i][j].event_id %>',
                                 '<%= calendarData[i][j].title %>'
                             )"
                             
-                            style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:rgb(246, 241, 241)">
+                            style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:red">
                             <p class="align-middle scuuber-cal-text" style=""> title: 
                                 <%= calendarData[i][j].title %>
                             
