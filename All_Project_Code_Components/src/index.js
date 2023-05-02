@@ -796,19 +796,28 @@ app.get("/declineFriend", async (req, res) => {
 });
 
 // --------------------Delete Event API----------------------------
-app.get('/deleteEvent_byID', async (req, res) => {
+app.get('/deleteEvent_byID/:event_id', async (req, res) => {
   const user = req.session.user[0]['username'];
-
+  var delete_event_id = req.params.event_id;
+  console.log(user)
+  console.log(delete_event_id)
   const select_event_query = 'Select * FROM events WHERE event_id = $1';
-  db.any(select_event_query, req.body.event_id)
-    .then(function () {
+  db.any(select_event_query, delete_event_id)
+    .then(data => {
+      console.log(data)
       if (user === data[0].owner) {
         console.log(user + ' owns the event');
-        res.redirect('/deleteEvent_byID_Owner', { event_id: req.body.event_id });
+        const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
+        const query_2 = "DELETE FROM events WHERE event_id = $1;";
+        db.task('get-everything', task => { return task.batch([task.any(query_1, delete_event_id), task.any(query_2, delete_event_id)]); })
+
+        res.redirect('/calendar')
       }
       else {
         console.log(user + ' user does not own event')
-        res.redirect('/deleteEvent_byID_Party', { event_id: req.body.event_id })
+        const query = "DELETE FROM users_to_events WHERE event_id = $1;";
+        db.any(query, delete_event_id)
+        res.redirect('/calendar')
       }
     })
     .catch(err => {
@@ -817,10 +826,11 @@ app.get('/deleteEvent_byID', async (req, res) => {
       res.redirect('/calendar')
     });
 });
-app.delete("/deleteEvent_byID_Owner", (req, res) => {
+app.delete("/deleteEvent_byID_Owner/:event_id", (req, res) => {
+  console.log("we got here bitch")
   const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
-  const query_2 = "DELETE FROM users WHERE event_id = $1;";
-  const value = req.body.event_id
+  const query_2 = "DELETE FROM events WHERE event_id = $1;";
+  const value = req.params.event_id;
   db.task('get-everything', task => {
     return task.batch([task.any(query_1, value), task.any(query_2, value)]);
   })
@@ -833,9 +843,9 @@ app.delete("/deleteEvent_byID_Owner", (req, res) => {
       res.redirect("/calendar");
     });
 });
-app.delete("/deleteEvent_byID_Party", (req, res) => {
+app.delete("/deleteEvent_byID_Party/:event_id", (req, res) => {
   const query = "DELETE FROM users_to_events WHERE event_id = $1;";
-  const value = req.body.event_id
+  const value = req.params.event_id;
   db.any(query, value)
     .then(function () {
       console.log("Successfully deleted " + req.session.user[0]['username'] + ' from event_id ' + value);
