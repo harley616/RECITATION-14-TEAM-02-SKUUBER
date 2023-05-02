@@ -231,7 +231,7 @@ app.get('/calendar', async (req, res) => {
 
 
 
-  res.render('pages/calendar', { calendarData: processed_full_events, times: TIMES });
+  res.render('pages/calendar', {user: owner, calendarData: processed_full_events, times: TIMES });
 })
 
 
@@ -346,7 +346,7 @@ app.get('/friend_calendar', async (req, res) => {
     }
   }
   const processed_calendar_data = processData(friendEvents);
-  res.render('pages/friend_calendar', { calendarData: processed_calendar_data, times: TIMES });
+  res.render('pages/friend_calendar', {user: owner, calendarData: processed_calendar_data, times: TIMES });
 })
 
 
