@@ -500,50 +500,6 @@ const CALENDAR_EVENTS = [
   ];
 function updateDOM() {
  const events = CALENDAR_EVENTS;
- /*
- events.forEach((event, id) => {
-   // First, let's try to update the event if it already exists.
-   // @TODO: Use the `id` parameter to fetch the object if it already exists.
-   // Replace <> with the appropriate variable name
-   // In templated strings, you can include variables as ${var_name}.
-   // For eg: let name = 'John';
-   // let msg = `Welcome ${name}`;
-   let eventElement = document.querySelector(`#event-${id}`);
-   // if event is undefined, i.e. it doesn't exist in the CALENDAR_EVENTS array, make a new one.
-   if (eventElement === null) {
-     eventElement = document.createElement('div'); // @TODO: create a new div element. Use document.createElement().
-     // Adding classes to the <div> element.
-     eventElement.classList = 'event row border rounded m-1 py-1';
-     // @TODO: Set the id attribute of the eventElement to be the same as the input id.
-     // Replace <> with the correct HTML attribute
-     eventElement.id = `event-${id}`;
-     // Create the element for the Event Name
-     const title = document.createElement('div');
-     title.classList.add('col', 'event-title');
-     // @TODO: Append the title element to the event element. Use .append() or .appendChild()
-     // with the appropriate parent element.
-     eventElement.append(title);
-     eventElement.setAttribute('data-bs-toggle', 'tooltip');
-     eventElement.setAttribute('data-bs-title', 'default tooltip');
-   } else {
-     // @TODO: Remove the old element, just in case we are changing the day while updating the event.
-     // Use .remove() with the appropriate parent element.
-     eventElement.remove();
-   }
-   // Add the Event Name
-   const title = eventElement.querySelector('div.event-title');
-   title.innerHTML = event.name; // event here is an input parameter to the function
-   // Add a tooltip with more information on hover
-   // @TODO: you will add code here when you are working on for Part B.
-   // @TODO: On clicking the event div, it should open the modal with the fields pre-populated.
-   // Replace <> with the triggering action.
-   eventElement.setAttribute('onclick', `openEventModal({id: ${id}})`);
-   // Add the event div to the parent
-   document
-     .querySelector(`#${event.day} .event-container`)
-     .appendChild(eventElement);
- });
- */
 }
 function updateLocationOptions(value) {
     // @TODO: get the "Location" and "Remote URL" HTML elements from the modal.

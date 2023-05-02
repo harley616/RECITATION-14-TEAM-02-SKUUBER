@@ -518,6 +518,7 @@ app.get("/acceptFriend", (req, res) => {
       res.redirect("/home");
     });
 });
+
 app.delete("/declineFriendRequest", (req, res) => {
   const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
   const values = [req.session.user, req.body.friend_username];
@@ -531,6 +532,24 @@ app.delete("/declineFriendRequest", (req, res) => {
       res.sendStatus(500);
     });
 });
+
+app.get("/removeFriend", async (req, res) => {
+    console.log('removing friend : ' + req.query.username + ' as ' + req.session.user[0]['username'])
+    const friend_username = req.session.user[0]['username'];
+    const username = req.query.username
+    console.log('deleting user_friends')
+    const query = "DELETE FROM user_friends WHERE username = $1 AND friend_username = $2;";
+    const query_2 = "DELETE FROM user_friends WHERE username = $2 AND friend_username = $1;";
+    const values = [username, friend_username];
+    console.log('values: ' + values);
+    const result_1 = await db.any(query, values);
+    const result_2 = await db.any(query_2, values);
+    console.log('successfully deleted.')
+    console.log(result_1);
+    console.log(result_2);
+    res.redirect("/home");
+})
+
 app.get('/friendList', function (req, res) {
   // Fetch query parameters from the request object
   var username = req.session.user;
