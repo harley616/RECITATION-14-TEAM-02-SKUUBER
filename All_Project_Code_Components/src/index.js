@@ -740,6 +740,85 @@ app.get("/declineFriend", async (req, res) => {
   res.redirect("/home");
 });
 
+// --------------------Delete Event API----------------------------
+app.get('/deleteEvent_byID', async (req, res) => {
+  const user = req.session.user[0]['username'];
+  
+  const select_event_query = 'Select * FROM events WHERE event_id = $1';
+  db.any(select_event_query, req.body.event_id)
+    .then(function () {
+      if(user === data[0].owner){
+        console.log(user+' owns the event');
+        res.redirect('/deleteEvent_byID_Owner', {event_id: req.body.event_id});
+      }
+      else{
+        console.log(user+' user does not own event')
+        res.redirect('/deleteEvent_byID_Party', {event_id: req.body.event_id})
+      }
+    })
+    .catch(err => {
+      console.log('Uh Oh spaghettio');
+      console.log(err);
+      res.redirect('/calendar')
+    });
+});
+app.delete("/deleteEvent_byID_Owner", (req, res) => {
+  const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
+  const query_2 = "DELETE FROM users WHERE event_id = $1;";
+  const value = req.body.event_id
+  db.task('get-everything', task => {
+    return task.batch([task.any(query_1,value), task.any(query_2,value)]);
+  })
+    .then(function () {
+      console.log("Successfully deleted "+req.session.user[0]['username']+' event. event_id: '+value);
+      res.redirect("/home");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect("/calendar");
+    });
+});
+app.delete("/deleteEvent_byID_Party", (req, res) => {
+  const query = "DELETE FROM users_to_events WHERE event_id = $1;";
+  const value = req.body.event_id
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted "+req.session.user[0]['username']+' from event_id '+value);
+      res.redirect("/calendar");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/calendar');
+    });
+});
+app.delete("/deleteEvent_by_Date", (req, res) => {
+  const query = "DELETE FROM events WHERE date < $1;";
+  const value = req.body.cutOff_Date
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted events prior to: "+value);
+      res.redirect("/home");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/home');
+    });
+});
+app.delete("/deleteEvent_by_User", (req, res) => {
+  const query = "DELETE FROM events WHERE owner =  $1;";
+  const value = req.session.user[0]['username'];
+  db.any(query, value)
+    .then(function () {
+      console.log("Successfully deleted events from user: "+value);
+      res.redirect("/calendar");
+    })
+    .catch(function (err) {
+      console.log(err);
+      res.redirect('/calendar');
+    });
+});
+
+
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.render("pages/login");
