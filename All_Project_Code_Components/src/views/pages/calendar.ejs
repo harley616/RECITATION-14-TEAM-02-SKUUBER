@@ -1,5 +1,6 @@
 <%- include ('../partials/header') %>
 <%- include ('../partials/menu', {username: user}) %>
+<%- include ('../partials/footer') %>
 
 <main>
 
@@ -88,13 +89,96 @@ button, input[type="submit"], input[type="reset"] {
     display: none; /* for Chrome, Safari, and Opera */
 }
 
-    </style>
+.calendarItem{
+  background-color: #19A7CE;
+}
 
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.headingitem{
+  background-color: #001e39;
+  /* background-image: url("https://static.vecteezy.com/system/resources/thumbnails/002/099/716/small_2x/mountain-beautiful-landscape-background-design-illustration-free-vector.jpg"); */
+  padding: 10px;
+  font-size: 16px;font-family: 'IBM Plex Mono';
+}
+
+.addbutton{
+  opacity: .75;
+}
+
+.glow {
+  color: #fff;
+  text-align: center;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+
+.addbutton:hover{
+  opacity: 1;
+  -webkit-animation: glow 1s ease-in-out infinite alternate;
+  -moz-animation: glow 1s ease-in-out infinite alternate;
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+</style>
+
+<div class="container-fluid d-flex align-items-center justify-content-center center headingitem" style="height: 20vh;">
+
+  <div class="container-fluid" style="width: 1000px; padding-left: 100px;">
+    <div class="container-fluid">
+      <h1 class="center" style="color:#F6F1F1">My Calendar</h1>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="container-fluid" style="height: 5vh;">
+      <p class="center" style="color:#F6F1F1">Welcome to your calendar! Here you can see all your rides for this week.</p>
+    </div>
+  </div>
+</div>
+
+<% var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]; %>
+<% var today = new Date(); %>
+<% var dayNames = daysOfWeek.slice(today.getDay()).concat(daysOfWeek.slice(0, today.getDay())); %>
+<% var currMonth = today.getMonth(); %>
+<% var monthsOfYear = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sep.", "Oct.", "Nov.", "Dec."]; %>
+<% var nameMonth = monthsOfYear[currMonth]%>
+
+<!-- <table class="container-fluid d-flex align-items-center justify-content-center center">
+  <thead>
+    <tr>
+      <% var dayNames = daysOfWeek.slice(today.getDay()).concat(daysOfWeek.slice(0, today.getDay())); %>
+      <th><%= dayNames[0] %></th>
+      <th><%= dayNames[1] %></th>
+      <th><%= dayNames[2] %></th>
+      <th><%= dayNames[3] %></th>
+      <th><%= dayNames[4] %></th>
+      <th><%= dayNames[5] %></th>
+      <th><%= dayNames[6] %></th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table> -->
     
     <% if(locals.eventId){%>
 
         <!-- <div class="row d-flex justify-content-center align-items-center h-100" id="weather-tooltip"> -->
           <div class="col-md-8 col-lg-6 col-xl-4" id="weather-tooltip">
+
     
             <div class="card" style="border-radius: 35px;">
               <div class="card-body p-4">
@@ -141,13 +225,18 @@ button, input[type="submit"], input[type="reset"] {
                       <!-- ejs loop for 7 days of calendarData-->
                       <% for (let i = 0; i < 7; i++) { %>
                           <!-- header: todo add weather thing -->
+                          
                           <div id="calendar-div-<%=i%>" class="col-sm overflow-auto" style="position:relative;border: 0.5px solid lightgrey;height: 85vh;margin:0px;padding:0px;margin-top:10px;background-color: #F6F1F1;">
                               <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 12vh;margin:0px;padding:0px;background-color:  #146C94;border-radius: 5px;">
+                                <div> 
+                                  <h1 style="font-size: medium; padding-top: 4px;"> <%= dayNames[i] %></h1>
+                                </div>
+                                                                
                                 <div class="d-flex" style="justify-content: space-evenly;align-items: center;margin-top: .5rem;">
                                   <h1 style="color: #F6F1F1;">
-                                      <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
+                                    <%= nameMonth %> <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
                                   </h1>
-                                  <div ><button onclick="openEventModal()"><i class="fa-solid fa-plus" style="color:#F6F1F1"></i></button></div>
+                                  <div ><button onclick="openEventModal()"><i class="fa-solid fa-plus addbutton" style="color:#da8336"></i></button></div>
                                 </div>
                               </div>
                                   <!-- ejs loop for 24 hours of calendarData-->
@@ -163,7 +252,7 @@ button, input[type="submit"], input[type="reset"] {
                                       </div>
                                   <% } %>
                                   <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                      <div class="calendarItem" style="top:<%=calendarData[i][j].padding %>;background-color: #19A7CE;">
+                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>">
                                         <form action="/calendar" method="POST">
                                             <p class="align-middle scuuber-cal-text" > title: 
                                                 <%= calendarData[i][j].title %>
@@ -210,6 +299,11 @@ button, input[type="submit"], input[type="reset"] {
             </div>
         
         <div class="card m-0 col-3" id="weather-popup">
+
+          <div>
+            <h1 class="center" style="margin-left: auto; margin-right: auto; margin-top: 4%; font-size: large; text-align: center;">Got Weather?</h1>
+            <p class="center" style="margin-left: auto; margin-right: auto; font-size: small; text-align: center; color: #001e39;"><em>Check out the snow before you go!</em></p>
+          </div>
 
             <form action="/calendar" method="POST">
             <div class="row">
@@ -689,5 +783,3 @@ button, input[type="submit"], input[type="reset"] {
               //todo make the calendar div scrollable, kind of like gcal
           </script>
 </main>
-
-<%- include ('../partials/footer') %>
