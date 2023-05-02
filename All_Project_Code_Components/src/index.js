@@ -254,7 +254,7 @@ app.post('/calendar', async (req, res) => {
   if (typeof req.session.user !== 'undefined' && typeof req.session.user[0] !== 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
     console.log("Time out, logging user out...");
-    res.render('pages/login');
+    res.render('pages/startpage');
   } else {
 
   try{
@@ -348,7 +348,7 @@ app.post('/calendar', async (req, res) => {
   catch {
 
     res.status(500).send('An error occurred');
-    res.render('pages/login');
+    res.render('pages/startpage');
 
   }
 
@@ -360,6 +360,14 @@ app.post('/calendar', async (req, res) => {
 
 //WORKS dont fuck with it
 app.get('/friend_calendar', async (req, res) => {
+
+  try {
+
+  } catch {
+    res.status(500).send('An error occurred');
+    res.render('pages/startpage');
+  }
+
   // get list of your friends
   const owner = req.session.user[0]['username'];
   const get_friends_query = `select * from user_friends where username = $1`;
@@ -523,6 +531,7 @@ app.get("/acceptFriend", (req, res) => {
       res.redirect("/home");
     });
 });
+
 app.delete("/declineFriendRequest", (req, res) => {
   const query = "DELETE FROM friend_add_queue WHERE username = $1 AND friend_username = $2;";
   const values = [req.session.user, req.body.friend_username];
@@ -536,6 +545,8 @@ app.delete("/declineFriendRequest", (req, res) => {
       res.sendStatus(500);
     });
 });
+
+
 app.get('/friendList', function (req, res) {
   // Fetch query parameters from the request object
   var username = req.session.user;
@@ -609,6 +620,8 @@ app.get('/friendRequestList', function (req, res) {
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
+
+
 app.get('/home', async (req, res) => {
   try {
     // Fetch query parameters from the request object
@@ -649,6 +662,7 @@ app.get("/MyCalendar", (req, res) => {
 
   res.render("pages/MyCalendar", { calendar: calendar(year), months, year });
 });
+
 app.post("/MyCalendar", async (req, res) => {
   const year = 2023;
   const months = ["January", "February", "March", "April", "May", "June", "July",
@@ -816,6 +830,7 @@ app.delete("/deleteEvent_byID_Owner", (req, res) => {
       res.redirect("/calendar");
     });
 });
+
 app.delete("/deleteEvent_byID_Party", (req, res) => {
   const query = "DELETE FROM users_to_events WHERE event_id = $1;";
   const value = req.body.event_id
@@ -829,6 +844,7 @@ app.delete("/deleteEvent_byID_Party", (req, res) => {
       res.redirect('/calendar');
     });
 });
+
 app.delete("/deleteEvent_by_Date", (req, res) => {
   const query = "DELETE FROM events WHERE date < $1;";
   const value = req.body.cutOff_Date
@@ -842,6 +858,7 @@ app.delete("/deleteEvent_by_Date", (req, res) => {
       res.redirect('/home');
     });
 });
+
 app.delete("/deleteEvent_by_User", (req, res) => {
   const query = "DELETE FROM events WHERE owner =  $1;";
   const value = req.session.user[0]['username'];
@@ -855,6 +872,7 @@ app.delete("/deleteEvent_by_User", (req, res) => {
       res.redirect('/calendar');
     });
 });
+
 // --------------------Update Event API----------------------------
 app.post('/updateEvent', async (req, res) => {
   
