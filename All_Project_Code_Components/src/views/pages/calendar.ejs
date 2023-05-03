@@ -98,6 +98,9 @@ button, input[type="submit"], input[type="reset"] {
 *::-webkit-scrollbar {
     display: none; /* for Chrome, Safari, and Opera */
 }
+form {    
+    display: inline;
+}
 
 .calendarItem{
   background-color: #19A7CE;
@@ -404,12 +407,20 @@ button, input[type="submit"], input[type="reset"] {
                 <div class="mb-3" >
                     <label for="location" class="form-label">Location</label>
                     <input type="text" name="location" class="form-control" id="update-location" required>
+                </div class="row">
+                    <input type="hidden" name="event_id" class="form-control" id="update-event_id" required>
+                    <div class="col text-end">
+                        <button type="button" class="btn btn-danger" style="background-color: #FFB6C1;" onclick="deleteEvent()" >
+                            Delete Event
+                        </button>
+                        <button id="submit_button" class="btn btn-primary" type="submit" data-bs-dismiss="modal">
+                            Update Event
+                        </button>
+                        
+                    </div>
                 </div>
-                <input type="hidden" name="event_id" class="form-control" id="update-event_id" required>
-                <button id="submit_button" class="btn btn-primary" type="submit">
-                    Update Event
-                </button>
               </form>
+              
         </div>
       </div>
     </div>
@@ -712,7 +723,14 @@ button, input[type="submit"], input[type="reset"] {
         console.log(location)
         UPDATE_EVENT_MODAL.show();
     }
-      
+    function deleteEvent(){
+        UPDATE_EVENT_MODAL.hide();
+        delete_event_id =  document.getElementById('update-event_id').value;
+        fetch(`/deleteEvent_byID/${delete_event_id}`, {
+            method: 'GET'
+        })
+        location.reload();
+    }
         // Updates the event for a given id with values taken from the modal.
       
       /* function updateEventFromModal(id) {

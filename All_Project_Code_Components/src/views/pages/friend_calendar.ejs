@@ -267,15 +267,8 @@ animation: glow 1s ease-in-out infinite alternate;
                                       </div>
                                   <% } %>
                                   <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>"
-                                        
-                                        onclick="openEventModal(
-                                
-                                        '<%= calendarData[i][j].owner %>',
-                                        '<%= calendarData[i][j].event_id %>',
-                                        '<%= calendarData[i][j].title %>'
-                                    )"
-                                        >
+                                      <div class="calendarItem" style="top: <%=calendarData[i][j].padding %>">
+                                        <form method="POST" action="/friend_calendar">
                                             <p class="align-middle scuuber-cal-text" > title: 
                                                 <%= calendarData[i][j].title %>
                                             </p>
@@ -308,8 +301,14 @@ animation: glow 1s ease-in-out infinite alternate;
 
                                               <button class='col-6'type="submit"><i class="fa-solid fa-cloud-moon-rain" style="color:#F6F1F1"></i></button>
 
-                                              <div class="col-6"><i class="fa-solid fa-book-open" onclick="openUpdateEventModal('<%= calendarData[i][j].title %>', '<%= calendarData[i][j].location %>', '<%= calendarData[i][j].event_id %>')" style="color:#F6F1F1"></i></div>
+                                              <div class="col-6"><i class="fa-solid fa-book-open" 
+                                              onclick="openEventModal(
+                                                '<%= calendarData[i][j].owner %>',
+                                                '<%= calendarData[i][j].event_id %>',
+                                                '<%= calendarData[i][j].title %>'
+                                                )" style="color:#F6F1F1"></i></div>
                                             </div>
+                                          </form>
                                       </div>
                                       
                                     <% } %>
@@ -326,7 +325,7 @@ animation: glow 1s ease-in-out infinite alternate;
             <p class="center" style="margin-left: auto; margin-right: auto; font-size: small; text-align: center; color: #001e39;"><em>Check out the snow before you go!</em></p>
           </div>
 
-            <form action="/calendar" method="POST">
+            <form action="/friend_calendar" method="POST">
             <div class="row">
                 <label for="location">Location</label>
                 <input type="location" id="location" name="location" placeholder="City, State"/>
@@ -412,8 +411,14 @@ animation: glow 1s ease-in-out infinite alternate;
     </div>
   </div>
     </div>
+    <%- include ('../partials/footer') %>
 
 <script>
+  function closeWeatherModal(){
+        console.log('Close weather called')
+        let modal = document.getElementById("weather-tooltip");
+        modal.style.display = "none";
+      }
 const CALENDAR_DAYS = [
     'Sunday',
     'Monday',
@@ -515,50 +520,6 @@ const CALENDAR_EVENTS = [
   ];
 function updateDOM() {
  const events = CALENDAR_EVENTS;
- /*
- events.forEach((event, id) => {
-   // First, let's try to update the event if it already exists.
-   // @TODO: Use the `id` parameter to fetch the object if it already exists.
-   // Replace <> with the appropriate variable name
-   // In templated strings, you can include variables as ${var_name}.
-   // For eg: let name = 'John';
-   // let msg = `Welcome ${name}`;
-   let eventElement = document.querySelector(`#event-${id}`);
-   // if event is undefined, i.e. it doesn't exist in the CALENDAR_EVENTS array, make a new one.
-   if (eventElement === null) {
-     eventElement = document.createElement('div'); // @TODO: create a new div element. Use document.createElement().
-     // Adding classes to the <div> element.
-     eventElement.classList = 'event row border rounded m-1 py-1';
-     // @TODO: Set the id attribute of the eventElement to be the same as the input id.
-     // Replace <> with the correct HTML attribute
-     eventElement.id = `event-${id}`;
-     // Create the element for the Event Name
-     const title = document.createElement('div');
-     title.classList.add('col', 'event-title');
-     // @TODO: Append the title element to the event element. Use .append() or .appendChild()
-     // with the appropriate parent element.
-     eventElement.append(title);
-     eventElement.setAttribute('data-bs-toggle', 'tooltip');
-     eventElement.setAttribute('data-bs-title', 'default tooltip');
-   } else {
-     // @TODO: Remove the old element, just in case we are changing the day while updating the event.
-     // Use .remove() with the appropriate parent element.
-     eventElement.remove();
-   }
-   // Add the Event Name
-   const title = eventElement.querySelector('div.event-title');
-   title.innerHTML = event.name; // event here is an input parameter to the function
-   // Add a tooltip with more information on hover
-   // @TODO: you will add code here when you are working on for Part B.
-   // @TODO: On clicking the event div, it should open the modal with the fields pre-populated.
-   // Replace <> with the triggering action.
-   eventElement.setAttribute('onclick', `openEventModal({id: ${id}})`);
-   // Add the event div to the parent
-   document
-     .querySelector(`#${event.day} .event-container`)
-     .appendChild(eventElement);
- });
- */
 }
 function updateLocationOptions(value) {
     // @TODO: get the "Location" and "Remote URL" HTML elements from the modal.
@@ -688,87 +649,4 @@ function updateEventFromModal(id) {
         // get the calendar div
         //todo make the calendar div scrollable, kind of like gcal
     </script>
-  <div class="container">
-    <!-- print the ejs object called calendarData -->
-    <%= JSON.stringify(calendarData) %>
-        <div class="container">
-            <div class="row" style="height: 100vh;border-radius:10px">
-                <!-- ejs loop for 7 days of calendarData-->
-                <% for (let i = 0; i < 7; i++) { %>
-                    <!-- header: todo add weather thing -->
-                    <div id="calendar-div-<%=i%>" class="col-sm" style="position:relative;border: 0.5px solid grey;height: 85vh;margin:0px;padding:0px;margin-top:10px;">
-                        <div class="weather_and_day text-center align-middle" style="border: 1px solid white;height: 10vh;margin:0px;padding:0px;background-color:rgba(56, 206, 239, 1);border-radius: 5px;">
-                            <h1 class="align-middle" style="color: white;margin-top:20px;">
-                                <%= new Date((Date.now() + (i * 24 * 60 * 60 * 1000))).getDate() %>
-                            </h1>
-                        </div>
-                         <!-- ejs loop for 24 hours of calendarData-->
-                        <% for (let j = 0; j < 23; j++) { %>
-                            <hr style="margin-top:3.125vh;z-index:0">
-                                <div style="position: relative; width: 20px; height: 0px">
-                                    <div style="position: absolute; left: 80px; top: -20px;width: 29px; padding-left: 2px;font-size: 8px; background-color: white;">
-                                        <p class='scuuber-cal-text-small'>
-                                            <%= times[j] %>
-                                        </p>
-                                    </div>
-                                </div>
-                   
-                        <% } %>
-                        <% for (let j = 0; j < calendarData[i].length; j++) { %>
-                            <div class="calendarItem"
-                            onclick="openEventModal(
-                                '<%= calendarData[i][j].owner %>',
-                                '<%= calendarData[i][j].event_id %>',
-                                '<%= calendarData[i][j].title %>'
-                            )"
-                            
-                            style="border-radius:10px; width: 100%;position:absolute;height:10vh;margin:0px;top:<%=calendarData[i][j].padding %>;background-color:red">
-                            <p class="align-middle scuuber-cal-text" style=""> title: 
-                                <%= calendarData[i][j].title %>
-                            
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> owner: 
-                                <%= calendarData[i][j].owner %>
-                  
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> location: 
-                 
-                                <%= calendarData[i][j].location %>
-                            </p>
-                            <p class="align-middle scuuber-cal-text" style=""> event id: 
-                       
-                                <%= calendarData[i][j].event_id %>
-                            </p>
-                            </div>
-                        <% } %>
-                    </div>                 
-                <%}%>
-            </div>
-          </div>
-          <!-- Button trigger modal -->
-  <div id="event-modal" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Add shared event to your calendar</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <form action="addSelfToFriendEvent", method="post">
-                <input id="modal-event-id" type="hidden" name="event_id" value="placeholder" /> 
-                <p id="modal-event-name"></p>
-                <p id="modal-event-owner"></p>
-                <p>Add event to calendar?</p>
-
-                <button id="submit_button" class="btn btn-primary" type="submit">
-                    Add
-                </button>
-              </form>
-        </div>
-      </div>
-    </div>
-  </div>
-    </div>
-</main>
-
-<%- include ('../partials/footer') %>
+  

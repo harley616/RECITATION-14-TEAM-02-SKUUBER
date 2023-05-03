@@ -178,7 +178,7 @@ app.get('/calendar', async (req, res) => {
     var values = [owner];
     const get_event_result = await db.any(get_events_query, values);
     console.log('successfully got events for user: ' + owner);
-  
+
     // add any events that you are shared with
     const get_shared_events_query = `select * from users_to_events where username = $1`;
     var values = [owner];
@@ -193,12 +193,12 @@ app.get('/calendar', async (req, res) => {
     console.log('successfully got shared events for user: ' + owner);
     const shared_events = get_shared_event_result2;
     console.log('shared_events: ', shared_events);
-  
+
     // filter shared events, only keep the ones that are not owned by owner
     const filtered_shared_events = shared_events.filter(event => event.owner != owner);
     console.log('filtered shared events');
     console.log(filtered_shared_events);
-  
+
     for (let i = 0; i < filtered_shared_events.length; i++) {
       console.log('in loop...');
       const event_id = filtered_shared_events[i].event_id;
@@ -217,44 +217,41 @@ app.get('/calendar', async (req, res) => {
       //console.log('successfully got users for usernames: ' + usernames);
       //filtered_shared_events[i].users = get_users_result;
     }
-  
-  
+
+
     console.log('filtered_shared_events: ', filtered_shared_events)
     console.log('event result: ', get_event_result)
     const full_events = [].concat(get_event_result, filtered_shared_events);
     console.log('full_events: ', full_events)
     const processed_full_events = processData(full_events);
-  
-  
+
+
     console.log('processed full events: ', processed_full_events);
-  
-  
-  
-  
-    res.render('pages/calendar', {user: owner, calendarData: processed_full_events, times: TIMES });
+
+
+
+
+    res.render('pages/calendar', { user: owner, calendarData: processed_full_events, times: TIMES });
 
   }
-
-  catch {
-    console.log("Logging user out...");
+  catch (error) {
+    console.log("Logging user out...", error);
     res.render('pages/login');
   }
-
-
 })
 
 
 app.post('/calendar', async (req, res) => {
 
-  if (typeof req.session.user !== 'undefined' && typeof req.session.user[0] !== 'undefined') {
+  if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
     console.log("Time out, logging user out...");
     res.render('pages/startpage');
   } else {
 
-  try{
+    try {
 
-        
+
       const owner = req.session.user[0]['username'];
       const get_events_query = `select * from events where owner = $1`;
       var values = [owner];
@@ -286,9 +283,9 @@ app.post('/calendar', async (req, res) => {
 
       // for each filtered shared event, get the users added to this event:
       // get all the users_to_events with the event_id
-        // for each of those, get the username
-        // get all the users with those usernames
-        // add those users to the event object
+      // for each of those, get the username
+      // get all the users with those usernames
+      // add those users to the event object
 
 
 
@@ -316,6 +313,7 @@ app.post('/calendar', async (req, res) => {
         .then(results => {
           // the results will be displayed on the terminal if the docker containers are running // Send some parameters
           res.render('pages/calendar', {
+            user: owner,
             weather_data: results.data,
             eventId: isEvent,
             index: index,
@@ -325,29 +323,21 @@ app.post('/calendar', async (req, res) => {
         })
         .catch(error => {
           console.log("There was and error!", error, "Query: ", request);
-          res.render('pages/calendar', {
-            error: error,
-            eventId: isEvent,
-            index: index,
-            weather_data: null,
-            calendarData: processed_full_events,
-            times: TIMES
-          })
+          res.redirect('/calendar')
 
-          res.status(200).send('Success!');
-    });
+        });
 
 
+    }
+
+    catch {
+
+      res.status(500).send('An error occurred');
+      res.render('pages/login');
+
+    }
   }
 
-  catch {
-
-    res.status(500).send('An error occurred');
-    res.render('pages/startpage');
-
-  }
-
-}
 
 })
 
@@ -355,39 +345,104 @@ app.post('/calendar', async (req, res) => {
 
 //WORKS dont fuck with it
 app.get('/friend_calendar', async (req, res) => {
+  if (typeof req.session.user === 'undefined') {
+    // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
+    console.log("Time out, logging user out...");
+    res.render('pages/login');
+  } else {
+    // get list of your friends
+    const owner = req.session.user[0]['username'];
+    const get_friends_query = `select * from user_friends where username = $1`;
+    var values = [owner];
+    const get_friends_result = await db.any(get_friends_query, values);
+    console.log('successfully got friends for user: ' + owner);
+    const friends = get_friends_result;
+    const friend_usernames = friends.map(friend => friend.friend_username);
+    console.log('friend_usernames: ', friend_usernames);
 
-  try {
-
-  } catch {
-    res.status(500).send('An error occurred');
-    res.render('pages/startpage');
-  }
-
-  // get list of your friends
-  const owner = req.session.user[0]['username'];
-  const get_friends_query = `select * from user_friends where username = $1`;
-  var values = [owner];
-  const get_friends_result = await db.any(get_friends_query, values);
-  console.log('successfully got friends for user: ' + owner);
-  const friends = get_friends_result;
-  const friend_usernames = friends.map(friend => friend.friend_username);
-  console.log('friend_usernames: ', friend_usernames);
-
-  // get events for each friend
-  const friendEvents = [];
-  const get_friend_events_query = `select * from events where owner = $1`;
-  for (let i = 0; i < friend_usernames.length; i++) {
-    const friend_username = friend_usernames[i];
-    var values = [friend_username];
-    const get_friend_events_result = await db.any(get_friend_events_query, values);
-    console.log('successfully got events for user: ' + friend_username);
-    const friend_events = get_friend_events_result[0];
-    for (let j = 1; j < get_friend_events_result.length; j++) {
-      friendEvents.push(get_friend_events_result[j]);
+    // get events for each friend
+    let friendEvents = [];
+    const get_friend_events_query = `select * from events where owner = $1`;
+    for (let i = 0; i < friend_usernames.length; i++) {
+      const friend_username = friend_usernames[i];
+      var values = [friend_username];
+      const get_friend_events_result = await db.any(get_friend_events_query, values);
+      console.log('successfully got events for user: ' + friend_username, "results: ", get_friend_events_result);
+      for (let j = 0; j < get_friend_events_result.length; j++) {
+        friendEvents.push(get_friend_events_result[j]);
+      }
     }
+    const processed_calendar_data = processData(friendEvents);
+    console.log("Calendar data:", processed_calendar_data);
+    res.render('pages/friend_calendar', { user: owner, calendarData: processed_calendar_data, times: TIMES });
   }
-  const processed_calendar_data = processData(friendEvents);
-  res.render('pages/friend_calendar', {user: owner, calendarData: processed_calendar_data, times: TIMES });
+})
+
+app.post('/friend_calendar', async (req, res) => {
+  if (typeof req.session.user === 'undefined') {
+    // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
+    console.log("Time out, logging user out...");
+    res.render('pages/login');
+  } else {
+    // get list of your friends
+    const owner = req.session.user[0]['username'];
+    const get_friends_query = `select * from user_friends where username = $1`;
+    var values = [owner];
+    const get_friends_result = await db.any(get_friends_query, values);
+    console.log('successfully got friends for user: ' + owner);
+    const friends = get_friends_result;
+    const friend_usernames = friends.map(friend => friend.friend_username);
+    console.log('friend_usernames: ', friend_usernames);
+
+    // get events for each friend
+    let friendEvents = [];
+    const get_friend_events_query = `select * from events where owner = $1`;
+    for (let i = 0; i < friend_usernames.length; i++) {
+      const friend_username = friend_usernames[i];
+      var values = [friend_username];
+      const get_friend_events_result = await db.any(get_friend_events_query, values);
+      console.log('successfully got events for user: ' + friend_username, "results: ", get_friend_events_result);
+      friendEvents = processData(get_friend_events_result);
+      // for (let j = 1; j < get_friend_events_result.length; j++) {
+      //   friendEvents.push(get_friend_events_result[j]);
+      // }
+    }
+    // const processed_calendar_data = processData(friendEvents);
+    console.log("Calendar data:", friendEvents);
+    const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
+    let isEvent
+    if (req.body.eventId) {
+      isEvent = req.body.eventId;
+    } else {
+      isEvent = null;
+    }
+    if (req.body.index) {
+      index = req.body.index;
+    } else {
+      index = null;
+    }
+    await axios({
+      url: request,
+      method: 'GET',
+      dataType: 'json',
+    })
+      .then(results => {
+        // the results will be displayed on the terminal if the docker containers are running // Send some parameters
+        res.render('pages/friend_calendar', {
+          user: owner,
+          weather_data: results.data,
+          eventId: isEvent,
+          index: index,
+          calendarData: friendEvents,
+          times: TIMES
+        })
+      })
+      .catch(error => {
+        console.log("There was and error!", error, "Query: ", request);
+        res.redirect('/friend_calendar');
+
+      });
+  }
 })
 
 
@@ -414,15 +469,15 @@ app.post('/register', async (req, res) => {
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
       console.log('hash: ', hash);
       await res.redirect('/login');
-    } else if(checker.length !== 0) {
+    } else if (checker.length !== 0) {
 
       //If username is already taken (i.e. check.length != 0)
       console.log('username already exists');
-      await res.render('pages/register', {usernameExists: true, passwordNoMatch: false});
-    } else if(req.body.password != req.body.confirmPassword) {
+      await res.render('pages/register', { usernameExists: true, passwordNoMatch: false });
+    } else if (req.body.password != req.body.confirmPassword) {
       // If the two passwords do not match, throw an error
       console.log('Entered passwords do not match');
-      await res.render('pages/register', {usernameExists: false, passwordNoMatch: true});
+      await res.render('pages/register', { usernameExists: false, passwordNoMatch: true });
     }
   } catch (error) {
 
@@ -541,6 +596,22 @@ app.delete("/declineFriendRequest", (req, res) => {
     });
 });
 
+app.get("/removeFriend", async (req, res) => {
+  console.log('removing friend : ' + req.query.username + ' as ' + req.session.user[0]['username'])
+  const friend_username = req.session.user[0]['username'];
+  const username = req.query.username
+  console.log('deleting user_friends')
+  const query = "DELETE FROM user_friends WHERE username = $1 AND friend_username = $2;";
+  const query_2 = "DELETE FROM user_friends WHERE username = $2 AND friend_username = $1;";
+  const values = [username, friend_username];
+  console.log('values: ' + values);
+  const result_1 = await db.any(query, values);
+  const result_2 = await db.any(query_2, values);
+  console.log('successfully deleted.')
+  console.log(result_1);
+  console.log(result_2);
+  res.redirect("/home");
+})
 
 app.get('/friendList', function (req, res) {
   // Fetch query parameters from the request object
@@ -630,14 +701,15 @@ app.get('/home', async (req, res) => {
 
     var friend_list_query = `select * from user_friends where username = $1`;
     const friend_data = await db.any(friend_list_query, username)
-    console.log("the friend list for: " + username) 
+    console.log("the friend list for: " + username)
     console.log(friend_data)
-    res.render('pages/home', {user: req.session.user[0]['username'],
-    friend_request_list: friend_req_data,
-    friend_list: friend_data
+    res.render('pages/home', {
+      user: req.session.user[0]['username'],
+      friend_request_list: friend_req_data,
+      friend_list: friend_data
     })
   }
-  catch(error) {
+  catch (error) {
     console.log(error);
     res.redirect('/login');
   }
@@ -788,19 +860,28 @@ app.get("/declineFriend", async (req, res) => {
 });
 
 // --------------------Delete Event API----------------------------
-app.get('/deleteEvent_byID', async (req, res) => {
+app.get('/deleteEvent_byID/:event_id', async (req, res) => {
   const user = req.session.user[0]['username'];
-  
+  var delete_event_id = req.params.event_id;
+  console.log(user)
+  console.log(delete_event_id)
   const select_event_query = 'Select * FROM events WHERE event_id = $1';
-  db.any(select_event_query, req.body.event_id)
-    .then(function () {
-      if(user === data[0].owner){
-        console.log(user+' owns the event');
-        res.redirect('/deleteEvent_byID_Owner', {event_id: req.body.event_id});
+  db.any(select_event_query, delete_event_id)
+    .then(data => {
+      console.log(data)
+      if (user === data[0].owner) {
+        console.log(user + ' owns the event');
+        const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
+        const query_2 = "DELETE FROM events WHERE event_id = $1;";
+        db.task('get-everything', task => { return task.batch([task.any(query_1, delete_event_id), task.any(query_2, delete_event_id)]); })
+
+        res.redirect('/calendar')
       }
-      else{
-        console.log(user+' user does not own event')
-        res.redirect('/deleteEvent_byID_Party', {event_id: req.body.event_id})
+      else {
+        console.log(user + ' user does not own event')
+        const query = "DELETE FROM users_to_events WHERE event_id = $1;";
+        db.any(query, delete_event_id)
+        res.redirect('/calendar')
       }
     })
     .catch(err => {
@@ -809,15 +890,16 @@ app.get('/deleteEvent_byID', async (req, res) => {
       res.redirect('/calendar')
     });
 });
-app.delete("/deleteEvent_byID_Owner", (req, res) => {
+app.delete("/deleteEvent_byID_Owner/:event_id", (req, res) => {
+  console.log("we got here bitch")
   const query_1 = "DELETE FROM users_to_events WHERE event_id = $1;";
-  const query_2 = "DELETE FROM users WHERE event_id = $1;";
-  const value = req.body.event_id
+  const query_2 = "DELETE FROM events WHERE event_id = $1;";
+  const value = req.params.event_id;
   db.task('get-everything', task => {
-    return task.batch([task.any(query_1,value), task.any(query_2,value)]);
+    return task.batch([task.any(query_1, value), task.any(query_2, value)]);
   })
     .then(function () {
-      console.log("Successfully deleted "+req.session.user[0]['username']+' event. event_id: '+value);
+      console.log("Successfully deleted " + req.session.user[0]['username'] + ' event. event_id: ' + value);
       res.redirect("/home");
     })
     .catch(function (err) {
@@ -825,13 +907,12 @@ app.delete("/deleteEvent_byID_Owner", (req, res) => {
       res.redirect("/calendar");
     });
 });
-
-app.delete("/deleteEvent_byID_Party", (req, res) => {
+app.delete("/deleteEvent_byID_Party/:event_id", (req, res) => {
   const query = "DELETE FROM users_to_events WHERE event_id = $1;";
-  const value = req.body.event_id
+  const value = req.params.event_id;
   db.any(query, value)
     .then(function () {
-      console.log("Successfully deleted "+req.session.user[0]['username']+' from event_id '+value);
+      console.log("Successfully deleted " + req.session.user[0]['username'] + ' from event_id ' + value);
       res.redirect("/calendar");
     })
     .catch(function (err) {
@@ -845,7 +926,7 @@ app.delete("/deleteEvent_by_Date", (req, res) => {
   const value = req.body.cutOff_Date
   db.any(query, value)
     .then(function () {
-      console.log("Successfully deleted events prior to: "+value);
+      console.log("Successfully deleted events prior to: " + value);
       res.redirect("/home");
     })
     .catch(function (err) {
@@ -859,7 +940,7 @@ app.delete("/deleteEvent_by_User", (req, res) => {
   const value = req.session.user[0]['username'];
   db.any(query, value)
     .then(function () {
-      console.log("Successfully deleted events from user: "+value);
+      console.log("Successfully deleted events from user: " + value);
       res.redirect("/calendar");
     })
     .catch(function (err) {
@@ -870,7 +951,7 @@ app.delete("/deleteEvent_by_User", (req, res) => {
 
 // --------------------Update Event API----------------------------
 app.post('/updateEvent', async (req, res) => {
-  
+
   const title = req.body.title;
   const location = req.body.location;
   const update_event_id = req.body.event_id;
@@ -879,7 +960,7 @@ app.post('/updateEvent', async (req, res) => {
   const query = "UPDATE events SET title=$1, location=$2 WHERE event_id=$3;";
   db.any(query, values)
     .then(function () {
-      console.log("Successfully updated event: "+update_event_id);
+      console.log("Successfully updated event: " + update_event_id);
       res.redirect('/calendar');
     })
     .catch(function (err) {
