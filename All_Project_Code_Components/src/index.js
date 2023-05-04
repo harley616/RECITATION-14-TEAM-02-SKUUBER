@@ -879,8 +879,8 @@ app.get('/deleteEvent_byID/:event_id', async (req, res) => {
       }
       else {
         console.log(user + ' user does not own event')
-        const query = "DELETE FROM users_to_events WHERE event_id = $1;";
-        db.any(query, delete_event_id)
+        const query = "DELETE FROM users_to_events WHERE event_id = $1 AND username = $2;";
+        db.any(query, [delete_event_id, user])
         res.redirect('/calendar')
       }
     })
