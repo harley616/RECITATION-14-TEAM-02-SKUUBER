@@ -170,9 +170,6 @@ const TIMES = [
 app.get('/calendar', async (req, res) => {
 
   try {
-
-
-
     const owner = req.session.user[0]['username'];
     const get_events_query = `select * from events where owner = $1`;
     var values = [owner];
@@ -251,15 +248,11 @@ app.post('/calendar', async (req, res) => {
 
     try {
 
-
       const owner = req.session.user[0]['username'];
       const get_events_query = `select * from events where owner = $1`;
       var values = [owner];
       const get_event_result = await db.any(get_events_query, values);
       console.log('successfully got events for user: ' + owner);
-
-
-      //******* friend stuff *******/
 
       // add any events that you are shared with
       const get_shared_events_query = `select * from users_to_events where username = $1`;
@@ -278,20 +271,37 @@ app.post('/calendar', async (req, res) => {
 
       // filter shared events, only keep the ones that are not owned by owner
       const filtered_shared_events = shared_events.filter(event => event.owner != owner);
+      console.log('filtered shared events');
+      console.log(filtered_shared_events);
+
+      for (let i = 0; i < filtered_shared_events.length; i++) {
+        console.log('in loop...');
+        const event_id = filtered_shared_events[i].event_id;
+        const get_users_to_events_query = `select * from users_to_events where event_id = $1`;
+        var values = [event_id];
+        const get_users_to_events_result = await db.any(get_users_to_events_query, values);
+        console.log('successfully got users_to_events for event_id: ' + event_id);
+        const usernames = get_users_to_events_result.map(user => user.username);
+        console.log('usernames: ', usernames);
+        filtered_shared_events[i].usernames = usernames
+        console.log('added usernames')
+        console.log(usernames);
+        //const get_users_query = `select * from users where username = ANY($1)`;
+        //var values = [usernames];
+        //const get_users_result = await db.any(get_users_query, values);
+        //console.log('successfully got users for usernames: ' + usernames);
+        //filtered_shared_events[i].users = get_users_result;
+      }
+
+
       console.log('filtered_shared_events: ', filtered_shared_events)
       console.log('event result: ', get_event_result)
-
-      // for each filtered shared event, get the users added to this event:
-      // get all the users_to_events with the event_id
-      // for each of those, get the username
-      // get all the users with those usernames
-      // add those users to the event object
-
-
-
       const full_events = [].concat(get_event_result, filtered_shared_events);
       console.log('full_events: ', full_events)
       const processed_full_events = processData(full_events);
+
+
+      console.log('processed full events: ', processed_full_events);
       let isEvent
       if (req.body.eventId) {
         isEvent = req.body.eventId;
@@ -343,7 +353,7 @@ app.post('/calendar', async (req, res) => {
 
 
 
-//WORKS dont fuck with it
+
 app.get('/friend_calendar', async (req, res) => {
   if (typeof req.session.user === 'undefined') {
     // req.session.user[0]['username'] exists, so we can create a variable equal to req.session.user
@@ -408,7 +418,7 @@ app.post('/friend_calendar', async (req, res) => {
       // }
     }
     // const processed_calendar_data = processData(friendEvents);
-    console.log("Calendar data:", friendEvents);
+    // console.log("Calendar data:", friendEvents);
     const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=14`;
     let isEvent
     if (req.body.eventId) {
@@ -453,8 +463,6 @@ app.get('/register', (req, res) => {
 
 // Register
 app.post('/register', async (req, res) => {
-  console.log('username: ', req.body.username);
-  console.log('password: ', req.body.password);
   const username = req.body.username;
   //hash the password using bcrypt library
   const hash = await bcrypt.hash(req.body.password, 10);
@@ -467,7 +475,6 @@ app.post('/register', async (req, res) => {
     //If username is not taken (i.e. check.length === 0):
     if (checker.length === 0) {
       const insertion = await db.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
-      console.log('hash: ', hash);
       await res.redirect('/login');
     } else if (checker.length !== 0) {
 
@@ -497,8 +504,8 @@ app.get('/login', (req, res) => {
 
 // Login
 app.post('/login', async (req, res) => {
-  console.log('username: ', req.body.username);
-  console.log('password: ', req.body.password);
+  // console.log('username: ', req.body.username);
+  // console.log('password: ', req.body.password);
   //console.log('hashed password: ',  await bcrypt.hash(req.body.password, 10));
   const username = req.body.username;
   try {
@@ -720,45 +727,7 @@ app.get('/friendTest', (req, res) => {
   console.log(req.session.user)
 
 });
-const calendar = require("./views/pages/calendarconfig");
 
-app.get("/MyCalendar", (req, res) => {
-  const year = 2023;
-  const months = ["January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"];
-
-  res.render("pages/MyCalendar", { calendar: calendar(year), months, year });
-});
-
-app.post("/MyCalendar", async (req, res) => {
-  const year = 2023;
-  const months = ["January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December"];
-
-  const request = `http://api.weatherapi.com/v1/forecast.json?key=${process.env.WEATHER_API_KEY}&q=${req.body.location}&days=7`;
-  await axios({
-    url: request,
-    method: 'GET',
-    dataType: 'json',
-  })
-    .then(results => {
-      console.log("query results", results.data); // the results will be displayed on the terminal if the docker containers are running // Send some parameters
-      res.render('pages/MyCalendar', {
-        data: results.data,
-        calendar: calendar(year),
-        months,
-        year
-      })
-    })
-    .catch(error => {
-      console.log("There was and error!", error, "Query: ", request);
-      res.render('pages/MyCalendar', {
-        error: error,
-        data: null,
-        calendar: calendar(year), months, year
-      })
-    });
-});
 
 // add an event for a user
 // must have a NAME, TIME (in hours, 0-24), LOCATION (Boulder, CO)
@@ -879,8 +848,8 @@ app.get('/deleteEvent_byID/:event_id', async (req, res) => {
       }
       else {
         console.log(user + ' user does not own event')
-        const query = "DELETE FROM users_to_events WHERE event_id = $1;";
-        db.any(query, delete_event_id)
+        const query = "DELETE FROM users_to_events WHERE event_id = $1 AND username = $2;";
+        db.any(query, [delete_event_id, user])
         res.redirect('/calendar')
       }
     })
